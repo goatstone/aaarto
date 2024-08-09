@@ -1,0 +1,31 @@
+{
+  "name": "hedera-tutorial",
+  "version": "1.0.0",
+  "description": "A repo to follow along with the Hedera tutorial : https://docs.hedera.com/hedera",
+  "main": "index.js",
+  "type":"module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@hashgraph/sdk": "^2.48.1",
+    "@helia/unixfs": "^3.0.7",
+    "axios": "^1.7.3",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "helia": "^4.2.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoseHerminioCollas/hedera-tutorial.git"
+  },
+  "author": "jose collas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoseHerminioCollas/hedera-tutorial/issues"
+  },
+  "homepage": "https://github.com/JoseHerminioCollas/hedera-tutorial#readme"
+}
