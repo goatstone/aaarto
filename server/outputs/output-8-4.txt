@@ -1,0 +1,17 @@
+ node 101-basics.js 
+add event unixfs:importer:progress:file:read { bytesRead: 15n, chunkSize: 15n, path: undefined }
+add event blocks:put:providers:notify CID(bafkreife2klsil6kaxqhvmhgldpsvk5yutzm4i5bgjoq6fydefwtihnesa)
+add event blocks:put:blockstore:put CID(bafkreife2klsil6kaxqhvmhgldpsvk5yutzm4i5bgjoq6fydefwtihnesa)
+add event unixfs:importer:progress:file:write {
+  bytesWritten: 15n,
+  cid: CID(bafkreife2klsil6kaxqhvmhgldpsvk5yutzm4i5bgjoq6fydefwtihnesa),
+  path: undefined
+}
+add event unixfs:importer:progress:file:layout {
+  cid: CID(bafkreife2klsil6kaxqhvmhgldpsvk5yutzm4i5bgjoq6fydefwtihnesa),
+  path: undefined
+}
+Added file: bafkreife2klsil6kaxqhvmhgldpsvk5yutzm4i5bgjoq6fydefwtihnesa
+cat event blocks:get:blockstore:get CID(bafkreife2klsil6kaxqhvmhgldpsvk5yutzm4i5bgjoq6fydefwtihnesa)
+cat event unixfs:exporter:progress:raw { bytesRead: 15n, totalBytes: 15n, fileSize: 15n }
+Added file contents: Hello World 101
