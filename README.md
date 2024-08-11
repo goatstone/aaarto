@@ -30,6 +30,17 @@ Test the files
 npm run test
 ```
 
+## Create an NFT Aaarto
+
+
+### Step One: Create/Define a Token
+
+Use runTokenCreate to create the definition of a Token that will enable minting of the the defined token.
+
+```
+tokenCreate(TOKEN_NAME, TOKEN_SYMBOL, client, ID, supplyKey)
+```
+
 ## This site has been started with Next.js a starter
 ### Next.js + Jest
 
