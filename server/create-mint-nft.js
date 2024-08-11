@@ -1,13 +1,14 @@
-require("dotenv").config();
-const {
+import dotenv from "dotenv";
+import {
   Client,
   AccountId,
   PrivateKey,
   TokenType,
   TokenSupplyType,
   TokenCreateTransaction,
-} = require("@hashgraph/sdk");
+} from "@hashgraph/sdk";
 
+dotenv.config();
 // Configure accounts and client, and generate needed keys
 const operatorId = AccountId.fromString(process.env.OPERATOR_ID);
 const operatorKey = PrivateKey.fromStringDer(process.env.OPERATOR_PVKEY);
@@ -39,4 +40,6 @@ async function createMintNFT(tokenName, tokenSymbol) {
   //Log the token ID
   return tokenId;
 }
-createMintNFT('Goatstone','GOATSTONE').then((r)=>console.log(`tokentID: ${r} ${new Date()}`))
+createMintNFT("Goatstone-A", "GOATSTONE_A").then((r) =>
+  console.log(`tokentID: ${r} ${new Date()}`)
+);
