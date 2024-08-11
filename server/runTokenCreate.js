@@ -1,6 +1,6 @@
 import { Client, AccountId, PrivateKey } from "@hashgraph/sdk";
 import dotenv from "dotenv";
-import tokenCreate from "./tokenCreate.js";
+import tokenCreate from '#root/server/tokenCreate.js';
 
 dotenv.config();
 const ID = {
