@@ -1,6 +1,9 @@
 {
   "private": true,
   "type": "module",
+  "imports": {
+    "#root/*.js": "./*.js"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

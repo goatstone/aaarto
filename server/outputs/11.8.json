@@ -1,0 +1,22 @@
+{
+  "status": "SUCCESS",
+  "accountId": null,
+  "filedId": null,
+  "contractId": null,
+  "topicId": null,
+  "tokenId": "0.0.4678173",
+  "scheduleId": null,
+  "exchangeRate": {
+    "hbars": 30000,
+    "cents": 159063,
+    "expirationTime": "2024-08-13T17:00:00.000Z",
+    "exchangeRateInCents": 5.3021
+  },
+  "topicSequenceNumber": "0",
+  "topicRunningHash": "",
+  "totalSupply": "0",
+  "scheduledTransactionId": null,
+  "serials": [],
+  "duplicates": [],
+  "children": []
+}
