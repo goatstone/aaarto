@@ -27,9 +27,8 @@ async function tokenCreate(tokenName, tokenSymbol, client, ID, supplyKey) {
   const nftCreateTxSign = await nftCreate.sign(ID.treasuryKey);
   const nftCreateSubmit = await nftCreateTxSign.execute(client);
   const nftCreateRx = await nftCreateSubmit.getReceipt(client);
-  const tokenId = nftCreateRx.tokenId;
 
-  return tokenId;
+  return [nftCreateRx.tokenId, supplyKey];
 }
 
 export default tokenCreate;
