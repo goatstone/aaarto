@@ -1,22 +1,19 @@
-import { Client, AccountId, PrivateKey } from "@hashgraph/sdk";
-import dotenv from "dotenv";
+import { PrivateKey } from "@hashgraph/sdk";
 import tokenMint from "#root/server/tokenMint.js";
+import getClient from "#root/server/getClient.js";
+import getID from "#root/server/getID.js";
 
-dotenv.config();
-const ID = {
-  operatorId: AccountId.fromString(process.env.OPERATOR_ID),
-  operatorKey: PrivateKey.fromStringDer(process.env.OPERATOR_PVKEY),
-  treasuryId: AccountId.fromString(process.env.OPERATOR_ID),
-  treasuryKey: PrivateKey.fromStringDer(process.env.OPERATOR_PVKEY),
-};
-const client = Client.forTestnet().setOperator(ID.operatorId, ID.operatorKey);
-const supplyKey = PrivateKey.generate();
+const ID = getID();
+const client = getClient(ID.operatorId, ID.operatorKey);
+// const supplyKey = PrivateKey.generate();
 const CID = [
   Buffer.from(
     "ipfs://bafyreiao6ajgsfji6qsgbqwdtjdu5gmul7tv2v3pd6kjgcw5o65b2ogst4/metadata.json"
   ),
 ];
-const tokenId = "0.0.4673245";
+const tokenId = "0.0.4677756";
+const sk = '0xc00598834bebf0818badc584951abc69174ca44f411cc22bade93a48cfa8131d'
+const supplyKey= PrivateKey.fromStringED25519(sk)
 tokenMint(client, tokenId, CID, supplyKey).then((response) =>
   console.log(`tokenMint: ${response} ${new Date()}`)
 );
