@@ -1,18 +1,14 @@
-import { Client, AccountId, PrivateKey } from "@hashgraph/sdk";
-import dotenv from "dotenv";
-import tokenCreate from '#root/server/tokenCreate.js';
+import { PrivateKey } from "@hashgraph/sdk";
+import tokenCreate from "#root/server/tokenCreate.js";
+import getClient from "#root/server/getClient.js";
+import getID from "#root/server/getID.js";
 
-dotenv.config();
-const ID = {
-  operatorId: AccountId.fromString(process.env.OPERATOR_ID),
-  operatorKey: PrivateKey.fromStringDer(process.env.OPERATOR_PVKEY),
-  treasuryId: AccountId.fromString(process.env.OPERATOR_ID),
-  treasuryKey: PrivateKey.fromStringDer(process.env.OPERATOR_PVKEY),
-};
-const client = Client.forTestnet().setOperator(ID.operatorId, ID.operatorKey);
+const TOKEN_NAME = "GOATSONE abc";
+const TOKEN_SYMBOL = "GOATSTONE_ABC";
 const supplyKey = PrivateKey.generate();
-const TOKEN_NAME = "GOATSONE-ART";
-const TOKEN_SYMBOL = "GOATSTONE_A";
-tokenCreate(TOKEN_NAME, TOKEN_SYMBOL, client, ID, supplyKey).then((r) =>
-  console.log(`tokentID: ${r} ${new Date()}`)
+const ID = getID()
+const client = getClient(ID.operatorId, ID.operatorKey)
+
+tokenCreate(TOKEN_NAME, TOKEN_SYMBOL, client, getID(), supplyKey).then(
+  (r) => console.log(`tokentID: ${r} ${new Date()}`)
 );
