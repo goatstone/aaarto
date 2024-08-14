@@ -7,7 +7,7 @@ async function pinFileToIPFS(files, JWT) {
   try {
     const upload = await pinata.upload.fileArray(files);
 
-    return upload
+    return upload;
   } catch (error) {
     console.warn("pinFileToIPFS error: ", error);
   }
