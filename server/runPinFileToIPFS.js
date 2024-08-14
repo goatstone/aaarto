@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const JWT = process.env.PINATA_KEY;
+// upload SVG art to IPFS
 const art = `<svg version="1.1" width="300" height="300" xmlns="http://www.w3.org/2000/svg" id="art">
   <rect width="100%" height="100%" fill="gray" />
   <circle cx="150" cy="100" r="80" fill="green" />
@@ -17,14 +18,14 @@ const artBlob = new Blob([art], {
 const artFile = new File([artBlob], "aaarto.svg", {
   type: "image/svg+xml",
 });
-pinFileToIPFS([artFile], JWT).then((response) => {
-  console.log("pinFileToIPFS: ", response);
-});
-
+// pinFileToIPFS([artFile], JWT).then((response) => {
+//   console.log("pinFileToIPFS: ", response);
+// });
+// Upload a JSON metadata to Pinata IPFS
 const metaData = {
-  name: "AAA",
+  name: "Aaarto",
   description: "Art",
-  image: "ipfs://QmT9v4igGjUryGsTgGEzVYnxe7T5dkaDCpqSSFo7J8wydQ",
+  image: "ipfs://bafybeibqfxwodobqnrxlttyhdxqqi4crxl6wws6bbnyqwgpgjq66m7jcoe/aaarto.svg",
 };
 const metaDataBlob = new Blob([JSON.stringify(metaData, null, 2)], {
   type: "application/json",
@@ -32,6 +33,6 @@ const metaDataBlob = new Blob([JSON.stringify(metaData, null, 2)], {
 const metaDataFile = new File([metaDataBlob], "metadata.json", {
   type: "application/json",
 });
-// pinFileToIPFS([metaDataFile], JWT).then((response) => {
-//   console.log("Aaarto", response);
-// });
+pinFileToIPFS([metaDataFile], JWT).then((response) => {
+  console.log("Aaarto", response);
+});
