@@ -9,7 +9,7 @@ const art = `<svg version="1.1" width="300" height="300" xmlns="http://www.w3.or
   <rect width="100%" height="100%" fill="gray" />
   <circle cx="150" cy="100" r="80" fill="green" />
   <text x="150" y="125" font-size="50" text-anchor="middle" fill="white">
-    ART 8
+    ART 9
   </text>
 </svg>`;
 const artBlob = new Blob([art], {
@@ -25,7 +25,7 @@ const artFile = new File([artBlob], "aaarto.svg", {
 const metaData = {
   name: "Aaarto",
   description: "Art",
-  image: "ipfs://bafybeibqfxwodobqnrxlttyhdxqqi4crxl6wws6bbnyqwgpgjq66m7jcoe/aaarto.svg",
+  image: "ipfs://bafybeidy4pe55a3umpaq3psw2stpuc7yni346kln7mhcpu3lwvlbdlwg6i/aaarto.svg",
 };
 const metaDataBlob = new Blob([JSON.stringify(metaData, null, 2)], {
   type: "application/json",
