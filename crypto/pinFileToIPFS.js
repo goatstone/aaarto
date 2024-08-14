@@ -1,11 +1,25 @@
 import { PinataSDK } from "pinata";
 
-async function pinFileToIPFS(files, JWT) {
+/**
+ * Provide content and config, upload a file to IPFS
+ * @param {string} content
+ * @param {string} JWT
+ * @param {string} fileName
+ * @param {string} fileType
+ * @returns
+ */
+async function pinFileToIPFS(content, JWT, fileName, fileType) {
+  const blob = new Blob([content], {
+    type: fileType,
+  });
+  const file = new File([blob], fileName, {
+    type: fileType,
+  });
   const pinata = new PinataSDK({
     pinataJwt: JWT,
   });
   try {
-    const upload = await pinata.upload.fileArray(files);
+    const upload = await pinata.upload.fileArray([file]);
 
     return upload;
   } catch (error) {
