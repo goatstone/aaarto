@@ -1,10 +1,6 @@
 import bodyParser from "body-parser";
-import pinFileToIPFS from "./pinFileToIPFS.js";
-import getFormData from "./getFormData.js";
-import dotenv from "dotenv";
+import pinFileToIPFS from "#root/crypto/pinFileToIPFS.js";
 
-dotenv.config();
-const JWT = process.env.PINATA_KEY;
 /**
 A server to support the upload of an SVG file
 save the file to IPFS
@@ -30,11 +26,7 @@ const aaartoServer = (app, port) => {
   });
   app.post("/addfile", ({ body }, res) => {
     const { art } = body;
-    const formData = getFormData(art);
-    pinFileToIPFS(formData, JWT).then((r) => {
-      res.send(r);
-    });
-    console.log("Aaarto post");
+    console.log("Aaarto post", art);
   });
   app.listen(port, () => {
     console.log(`Aaarto application listening on port ${port}`);
