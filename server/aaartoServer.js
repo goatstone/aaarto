@@ -26,9 +26,9 @@ const aaartoServer = (app, port) => {
   });
   app.post("/mintart", ({ body }, res) => {
     const { art } = body;
-    mintArt().then((response) => {
+    mintArt(art).then((response) => {
       console.log("Aaarto post", art, response);
-      res.send({ok:true});
+      res.send({ ok: true });
     });
   });
   app.listen(port, () => {
