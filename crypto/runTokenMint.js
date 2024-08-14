@@ -1,13 +1,13 @@
 import { PrivateKey } from "@hashgraph/sdk";
-import tokenMint from "#root/server/tokenMint.js";
-import getClient from "#root/server/getClient.js";
-import getID from "#root/server/getID.js";
+import tokenMint from "#root/crypto/tokenMint.js";
+import getClient from "#root/crypto/util/getClient.js";
+import getID from "#root/crypto/util/getID.js";
 
 const ID = getID();
 const client = getClient(ID.operatorId, ID.operatorKey);
 const CID = [
   Buffer.from(
-    "ipfs://bafyreiao6ajgsfji6qsgbqwdtjdu5gmul7tv2v3pd6kjgcw5o65b2ogst4/metadata.json"
+    "ipfs://bafybeihsqjxeoy2ktmvlvqr67uzjiargyxiyaqfxcvc4uexbh7rev36wsa/metadata.json"
   ),
 ];
 const tokenId = "0.0.4678180";
