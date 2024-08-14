@@ -8,7 +8,7 @@ export default function AaartoButton() {
     setA(el?.outerHTML);
   }, []);
   const abc = () => {
-    const req = new Request("http://localhost:8000/test", {
+    const req = new Request("http://localhost:8000/mintart", {
       method: "POST",
       body: JSON.stringify({ art: a }),
       headers: { "Content-Type": "application/json" },
