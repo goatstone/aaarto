@@ -1,41 +1,16 @@
-// import axios from "axios";
 import { PinataSDK } from "pinata";
 
-async function pinFileToIPFS(file, JWT) {
+async function pinFileToIPFS(files, JWT) {
   const pinata = new PinataSDK({
     pinataJwt: JWT,
   });
   try {
- 
-    const upload = await pinata.upload.fileArray([file]);
+    const upload = await pinata.upload.fileArray(files);
 
-    console.log(upload);
+    return upload
   } catch (error) {
-    console.log(error);
+    console.warn("pinFileToIPFS error: ", error);
   }
 }
 
-// await main();
-
-// const pinFileToIPFS = async (formData, JWT) => {
-// };
-
 export default pinFileToIPFS;
-
-// try {
-//   const res = await axios.post(
-//     "https://api.pinata.cloud/pinning/pinFileToIPFS",
-//     formData,
-//     {
-//       maxBodyLength: "Infinity",
-//       headers: {
-//         "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
-//         Authorization: `Bearer ${JWT}`,
-//       },
-//     }
-//   );
-//   console.info(res.data);
-//   return res.data;
-// } catch (error) {
-//   console.error(error);
-// }

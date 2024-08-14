@@ -1,80 +1,50 @@
-import getFormData from "./getFormData.js";
 import pinFileToIPFS from "./pinFileToIPFS.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const JWT = process.env.PINATA_KEY;
-const art = "ART";
-const meta = {
-  name: "ART",
-  description: "art work",
-  image: "ipfs://QmT9v4igGjUryGsTgGEzVYnxe7T5dkaDCpqSSFo7J8wydQ/LEAF1.jpg",
+// mock the fetch function to prevent server calls
+global.fetch = () => {
+  console.log("mock fetch");
+  return { ok: true, json: () => ({ a: 1 }) };
 };
 
-const formData = getFormData(art);
+const JWT = process.env.PINATA_KEY;
 
-const json = { hello: "world" };
-const blob = new Blob([JSON.stringify(json, null, 2)], {
-  type: "application/json",
+const art = `<svg version="1.1" width="300" height="300" xmlns="http://www.w3.org/2000/svg" id="art">
+  <rect width="100%" height="100%" fill="gray" />
+  <circle cx="150" cy="100" r="80" fill="green" />
+  <text x="150" y="125" font-size="50" text-anchor="middle" fill="white">
+    ART 1
+  </text>
+</svg>`;
+const artBlob = new Blob([art], {
+  type: "image/svg+xml",
 });
-// const file = new File([blob], "hello.json", { type: "application/json" });
-// const data = new FormData();
-// data.append("file", file, "metadata.json");
-// const file = new File(["Zzzzzz"], "Testing.txt", { type: "text/plain" });
+const artFile = new File([artBlob], "aaarto.svg", {
+  type: "image/svg+xml",
+});
+const d = {
+  IpfsHash: "xxx",
+  PinSize: 349,
+  Timestamp: "2024-08-14T14:58:11.387Z",
+  isDuplicate: true,
+};
+pinFileToIPFS([artFile], JWT).then((response) => {
+  console.log("Aaarto", response);
+});
 
-// const upload = await pinata.upload.file(file);
-
-// const upload = await pinata.upload.json({
-//   name: "XXX",
-//   description: "A Pinnie NFT from Pinata",
-//   image: "ipfs://bafkreih5aznjvttude6c3wbvqeebb6rlx5wkbzyppv7garjiubll2ceym4"
-// }).addMetadata({
-//   name: "a.png",
-//   keyValues: {
-//     whimsey: 100
-//   }
-// })
-//    const file = new File(["Zzzzzz"], "Testing.txt", { type: "text/plain" });
-// const upload = await pinata.upload.file(file);
-// const upload = await pinata.upload.json({
-//   name: "XXX",
-//   description: "A Pinnie NFT from Pinata",
-//   image: "ipfs://bafkreih5aznjvttude6c3wbvqeebb6rlx5wkbzyppv7garjiubll2ceym4"
-// }).addMetadata({
-//   name: "a.png",
-//   keyValues: {
-//     whimsey: 100
-//   }
-// })
-const j = {
+const metaData = {
   name: "AAA",
   description: "Art",
   image: "ipfs://QmT9v4igGjUryGsTgGEzVYnxe7T5dkaDCpqSSFo7J8wydQ",
 };
-const blob2 = new Blob([JSON.stringify(j, null, 2)], {
+const metaDataBlob = new Blob([JSON.stringify(metaData, null, 2)], {
   type: "application/json",
 });
-const file1 = new File([blob2], "metadata.json", {
+const metaDataFile = new File([metaDataBlob], "metadata.json", {
   type: "application/json",
 });
-// const file2 = new File(["hello world again!"], "hello2.txt", {
-//   type: "text/plain",
+// pinFileToIPFS([metaDataFile], JWT).then((response) => {
+//   console.log("Aaarto", response);
 // });
-pinFileToIPFS(file1, JWT).then((response) => {
-  console.log("Aaarto", response);
-});
-
-// {
-//     "name": "LEAF1.jpg",
-//     "creator": "Mother Nature",
-//     "description": "Autumn",
-//     "type": "image/jpg",
-//     "format": "none",
-//     "properties": {
-//       "city": "Boston",
-//       "season": "Fall",
-//       "decade": "20's"
-//     },
-//     "image": "ipfs://bafybeig35bheyqpi4qlnuljpok54ud753bnp62fe6jit343hv3oxhgnbfm/LEAF1.jpg"
-//   }
