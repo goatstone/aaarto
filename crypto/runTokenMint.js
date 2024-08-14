@@ -1,7 +1,7 @@
 import { PrivateKey } from "@hashgraph/sdk";
 import tokenMint from "#root/crypto/tokenMint.js";
-import getClient from "#root/crypto/getClient.js";
-import getID from "#root/crypto/getID.js";
+import getClient from "#root/crypto/util/getClient.js";
+import getID from "#root/crypto/util/getID.js";
 
 const ID = getID();
 const client = getClient(ID.operatorId, ID.operatorKey);

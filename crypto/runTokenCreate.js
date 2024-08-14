@@ -1,10 +1,10 @@
 import { PrivateKey } from "@hashgraph/sdk";
-import tokenCreate from "#root/server/tokenCreate.js";
-import getClient from "#root/server/getClient.js";
-import getID from "#root/server/getID.js";
+import tokenCreate from "#root/crypto/tokenCreate.js";
+import getClient from "#root/crypto/util/getClient.js";
+import getID from "#root/crypto/util/getID.js";
 
-const TOKEN_NAME = "GOATSONE abc";
-const TOKEN_SYMBOL = "GOATSTONE_ABC";
+const TOKEN_NAME = "GOATSONE xyz";
+const TOKEN_SYMBOL = "GOATSTONE_XYZ";
 const supplyKey = PrivateKey.generate();
 const ID = getID()
 const client = getClient(ID.operatorId, ID.operatorKey)
