@@ -1,6 +1,6 @@
 import aaartoServer from "../aaartoServer";
 
-describe.skip("aaartoServer", () => {
+describe("aaartoServer", () => {
   const mock ={
     set:jest.fn(),
     use:jest.fn(),
