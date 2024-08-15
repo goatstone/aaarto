@@ -4,54 +4,39 @@ import getPinataJWT from "./util/getPinataJWT.js";
 import tokenMint from "#root/crypto/tokenMint.js";
 import getClient from "#root/crypto/util/getClient.js";
 import getID from "#root/crypto/util/getID.js";
+import getMetaData from "#root/crypto/util/getMetaData.js";
 
 const ID = getID();
 const client = getClient(ID.operatorId, ID.operatorKey);
 // An NFT token called Goatstone
 const tokenId = "0.0.4678180";
 // supply key from above token
-const supplyKey = PrivateKey.fromStringED25519("302e020100300506032b657004220420a3e3c2e2c0e7f1ddd4068028df3a8d5a52ef7f66ae44aa78e82c2b116ad2272f");
-
-let cid='';
-  // Upload a JSON metadata file to Pinata IPFS
-  const metaData = {
-    name: "Aaarto",
-    description: "Aaarto is Art",
-    image:
-      `ipfs://${cid}/aaarto.svg`,
-  };
+const supplyKey = PrivateKey.fromStringED25519(
+  "302e020100300506032b657004220420a3e3c2e2c0e7f1ddd4068028df3a8d5a52ef7f66ae44aa78e82c2b116ad2272f"
+);
 /**
  * Take a string of art and mint it
  */
 const mintArt = async (art) => {
-
   // Pin the art
-  const response = await pinFileToIPFS(
+  const pinImageResponse = await pinFileToIPFS(
     art,
     getPinataJWT(),
     "aaarto.svg",
     "image/svg+xml"
   );
-  // Pin the JSON
-  cid = response.cid;//TODO check the object  
-  const response2= await pinFileToIPFS(
-    JSON.stringify(metaData, null, 2),
+  // Pin the data
+  const pinDataResponse = await pinFileToIPFS(
+    JSON.stringify(getMetaData(pinImageResponse.IpfsHash), null, 2),
     getPinataJWT(),
     "metadata.json",
     "applicaton/json"
-  )
-
+  );
   // Mint the NFT
-  const CID = [
-    Buffer.from(
-      `ipfs://${response2.cid}/metadata.json`
-    ),
-  ];
-    tokenMint(client, tokenId, CID, supplyKey).then((response) => {
-    console.log(`tokenMint: ${new Date()}`, response.serials, response.tokenId);
-  });
-  
-  return response2;
+  const CID = [Buffer.from(`https://ipfs.io/ipfs/${pinDataResponse.IpfsHash}/metadata.json`)];
+  const mintResponse = await tokenMint(client, tokenId, CID, supplyKey);
+
+  return { pinImageResponse, pinDataResponse, mintResponse };
 };
 
 export default mintArt;

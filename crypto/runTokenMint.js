@@ -7,7 +7,7 @@ const ID = getID();
 const client = getClient(ID.operatorId, ID.operatorKey);
 const CID = [
   Buffer.from(
-    "ipfs://bafybeihsqjxeoy2ktmvlvqr67uzjiargyxiyaqfxcvc4uexbh7rev36wsa/metadata.json"
+    "ipfs://bafybeiafvn6xtuyqlylxe2db5erqgscawkgb5txbfovotwsmuurh6xqa3m/metadata.json"
   ),
 ];
 const tokenId = "0.0.4678180";
