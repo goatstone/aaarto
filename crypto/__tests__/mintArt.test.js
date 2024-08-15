@@ -1,5 +1,19 @@
 import mintArt from "#root/crypto/mintArt.js";
-
+// mock the props so they do not throw errors, errors that show up only in tests
+jest.mock("@hashgraph/sdk", () => {
+  const o = jest.requireActual("@hashgraph/sdk");
+  const uint8 = new Uint8Array(2);
+  uint8[0] = '42';
+    return {
+    ...o,
+    PrivateKey: {
+      ...o.PrivateKey,
+      fromStringDer: () => uint8,
+       fromStringED25519: () => uint8,
+    },
+  };
+});
+jest.mock("../util/getClient.js");
 jest.mock("../pinFileToIPFS.js");
 jest.mock("../tokenMint");
 
