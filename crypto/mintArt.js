@@ -29,13 +29,13 @@ const mintArt = async (art) => {
     "metadata.json",
     "applicaton/json"
   );
-  // Mint the NFT
-  const CID = [
-    Buffer.from(
-      `https://ipfs.io/ipfs/${pinDataResponse.IpfsHash}/metadata.json`
-    ),
-  ];
-  const mintResponse = await tokenMint(client, tokenId, CID, sK);
+  const ipfs_address = `ipfs://${pinDataResponse.IpfsHash}/metadata.json`;
+  const mintResponse = await tokenMint(
+    client,
+    tokenId,
+    ipfs_address,
+    supplyKey
+  );
 
   return { pinImageResponse, pinDataResponse, mintResponse };
 };

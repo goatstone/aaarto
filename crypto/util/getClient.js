@@ -6,7 +6,7 @@ import { Client } from "@hashgraph/sdk";
  * @param {string} operatorKey 
  * @returns Client
  */
-const getClient = (operatorId, operatorKey) =>
+const getClient = async (operatorId, operatorKey) =>
   Client.forTestnet().setOperator(operatorId, operatorKey);
 
 export default getClient;
