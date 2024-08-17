@@ -1,4 +1,3 @@
-import { PrivateKey } from "@hashgraph/sdk";
 import tokenMint from "#root/crypto/tokenMint.js";
 import getClient from "#root/crypto/util/getClient.js";
 import getID from "#root/crypto/util/getID.js";

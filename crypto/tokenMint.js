@@ -15,7 +15,7 @@ async function tokenMint(
   supplyKeyStringED25519
 ) {
   const supplyKey = PrivateKey.fromStringED25519(supplyKeyStringED25519);
-  const CID = [Buffer.from(`ipfs://${ipfs_address}/metadata.json`)];
+  const CID = [Buffer.from(`https://ipfs.io/ipfs/${ipfs_address}/metadata.json`)];
   const maxTransactionFee = new Hbar(20);
   const mintTx = new TokenMintTransaction()
     .setTokenId(tokenId)

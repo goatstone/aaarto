@@ -23,21 +23,22 @@ const mintArt = async (art) => {
     "image/svg+xml"
   );
   // Pin the data
-  const pinDataResponse = await pinFileToIPFS(
-    JSON.stringify(getMetaData(pinImageResponse.IpfsHash), null, 2),
-    getPinataJWT(),
-    "metadata.json",
-    "applicaton/json"
-  );
-  const ipfs_address = `ipfs://${pinDataResponse.IpfsHash}/metadata.json`;
-  const mintResponse = await tokenMint(
-    client,
-    tokenId,
-    ipfs_address,
-    supplyKey
-  );
+  // const pinDataResponse = await pinFileToIPFS(
+  //   JSON.stringify(getMetaData(pinImageResponse.IpfsHash), null, 2),
+  //   getPinataJWT(),
+  //   "metadata.json",
+  //   "applicaton/json"
+  // );
+  // const ipfs_address = `ipfs://${pinDataResponse.IpfsHash}/metadata.json`;
+  // const mintResponse = await tokenMint(
+  //   client,
+  //   tokenId,
+  //   ipfs_address,
+  //   supplyKey
+  // );
 
-  return { pinImageResponse, pinDataResponse, mintResponse };
+  // return { pinImageResponse, pinDataResponse, mintResponse };
+  return { pinImageResponse  };
 };
 
 export default mintArt;
