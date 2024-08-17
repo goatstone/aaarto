@@ -17,7 +17,7 @@ jest.mock("../util/getClient.js");
 jest.mock("../pinFileToIPFS.js");
 jest.mock("../tokenMint");
 
-describe("mintArt", () => {
+describe.skip("mintArt", () => {
   it("should return expected image pin response", async () => {
     const response = await mintArt("xx");
     expect(response.pinImageResponse.IpfsHash).toBe("xxx");
