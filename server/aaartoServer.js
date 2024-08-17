@@ -1,5 +1,5 @@
 import bodyParser from "body-parser";
-import pinFileToIPFS from "#root/crypto/pinFileToIPFS.js";
+import mintArt from "#root/crypto/mintArt.js";
 
 /**
 A server to support the upload of an SVG file
@@ -19,17 +19,20 @@ const aaartoServer = (app, port) => {
     next();
   });
   app.get("/", (req, res) => {
-    res.render("index", { hello: "Aaarto" });
+    res.send("hello");
   });
   app.post("/test", (req, res) => {
     console.log("test path", req.body.art);
   });
-  app.post("/addfile", ({ body }, res) => {
+  app.post("/mintart", ({ body }, res) => {
     const { art } = body;
-    console.log("Aaarto post", art);
+    mintArt(art).then((response) => {
+      console.log("Aaarto post", art, response);
+      res.send({ ok: true });
+    });
   });
   app.listen(port, () => {
-    console.log(`Aaarto application listening on port ${port}`);
+    console.log(`Aaarto server listening on port ${port}`);
   });
 };
 

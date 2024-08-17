@@ -1,18 +1,18 @@
-import { PrivateKey } from "@hashgraph/sdk";
 import tokenMint from "#root/crypto/tokenMint.js";
 import getClient from "#root/crypto/util/getClient.js";
 import getID from "#root/crypto/util/getID.js";
+import getConfig from "#root/crypto/util/getConfig.js";
+import { argv } from "node:process";
 
+if (!argv[2]) throw "Supply ipfs_address";
+const ipfs_address = argv[2];
 const ID = getID();
-const client = getClient(ID.operatorId, ID.operatorKey);
-const CID = [
-  Buffer.from(
-    "ipfs://bafybeihsqjxeoy2ktmvlvqr67uzjiargyxiyaqfxcvc4uexbh7rev36wsa/metadata.json"
-  ),
-];
-const tokenId = "0.0.4678180";
-const supplyKey = PrivateKey.fromStringED25519("302e020100300506032b657004220420a3e3c2e2c0e7f1ddd4068028df3a8d5a52ef7f66ae44aa78e82c2b116ad2272f");
-console.log("ss", supplyKey);
-tokenMint(client, tokenId, CID, supplyKey).then((response) => {
-  console.log(`tokenMint: ${new Date()}`, response.serials, response.tokenId);
-});
+const client = await getClient(ID.operatorId, ID.operatorKey);
+const { tokenId, supplyKeyStringED25519 } = getConfig();
+const response = await tokenMint(
+  client,
+  tokenId,
+  ipfs_address,
+  supplyKeyStringED25519
+);
+console.log(`tokenMint: ${new Date()}`, response.serials, response.tokenId);

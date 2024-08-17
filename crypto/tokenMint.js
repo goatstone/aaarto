@@ -1,18 +1,25 @@
-import { Hbar, TokenMintTransaction } from "@hashgraph/sdk";
+import { Hbar, TokenMintTransaction, PrivateKey } from "@hashgraph/sdk";
 
 /**
  * Mint tokens on the Hedera network
  * @param {HederaClient} client
  * @param {NFT Token ID} tokenId
- * @param {Array} CID
- * @param {string} supplyKey
+ * @param {string} ipfs_address
+ * @param {string} supplyKeyStringED25519
  * @returns
  */
-async function tokenMint(client, tokenId, CID, supplyKey) {
+async function tokenMint(
+  client,
+  tokenId,
+  ipfs_address,
+  supplyKeyStringED25519
+) {
+  const supplyKey = PrivateKey.fromStringED25519(supplyKeyStringED25519);
+  const CID = [Buffer.from(`https://ipfs.io/ipfs/${ipfs_address}/metadata.json`)];
   const maxTransactionFee = new Hbar(20);
   const mintTx = new TokenMintTransaction()
     .setTokenId(tokenId)
-    .setMetadata(CID) //Batch minting - UP TO 10 NFTs in single tx
+    .setMetadata(CID)
     .setMaxTransactionFee(maxTransactionFee)
     .freezeWith(client);
   const mintTxSign = await mintTx.sign(supplyKey);
