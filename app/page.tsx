@@ -9,7 +9,7 @@ export default function Page() {
         <rect width="100%" height="100%" fill="gray" />
         <circle cx="150" cy="100" r="80" fill="green" />
         <text x="50" y="125" fill="white">
-          AAA
+          MAIN
         </text>
       </svg>
       <AaartoButton />
