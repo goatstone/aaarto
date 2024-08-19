@@ -11,8 +11,8 @@ const TOKEN_NAME = argv[2];
 const TOKEN_SYMBOL = argv[3];
 const supplyKey = PrivateKey.generate();
 const ID = getID();
-const client = getClient(ID.operatorId, ID.operatorKey);
-
+const client = await getClient(ID.operatorId, ID.operatorKey);
+console.log(client)
 tokenCreate(TOKEN_NAME, TOKEN_SYMBOL, client, getID(), supplyKey).then((r) =>
   console.log(`tokentID: ${r} ${new Date()}`)
 );
