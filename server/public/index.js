@@ -21,6 +21,16 @@ const erase = (targetEl) => {
   if (targetEl.id === "canvas") return;
   targetEl.parentElement.removeChild(targetEl);
 };
+const handleClick = () => {
+  const el = document.getElementById("art");
+  const req = new Request("/mintart", {
+    method: "POST",
+    body: JSON.stringify({ art: el?.outerHTML }),
+    headers: { "Content-Type": "application/json" },
+  });
+  fetch(req);
+};
+
 const makeCanvas = () => {
   const canvas = document.querySelector("#art");
   canvas.addEventListener("click", (event) => {

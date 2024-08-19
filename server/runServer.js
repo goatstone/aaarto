@@ -1,4 +1,3 @@
-import express from "express";
-import aaartoServer from "./aaartoServer.js";
+import mintArtServer from "./mintArtServer.js";
 
-aaartoServer(express, 8000);
+mintArtServer(8000);

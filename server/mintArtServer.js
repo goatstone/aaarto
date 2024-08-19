@@ -1,20 +1,16 @@
 import bodyParser from "body-parser";
 import mintArt from "#root/crypto/mintArt.js";
 import path from "path";
-console.log(import.meta.filename);
-console.log(import.meta.dirname);
+import express from "express";
+
 /**
 A server to support the upload of an SVG file
 save the file to IPFS
 record the file as an NFT on Hedera
 */
-const aaartoServer = (express, port) => {
-  // var htmlPath = path.join(__dirname, '');
-  const htmlPath = path.join(import.meta.dirname, "public");
+const mintArtServer = (port) => {
   const app = express();
-  app.use(express.static(htmlPath));
-
-  app.set("view engine", "ejs");
+  app.use(express.static(path.join(import.meta.dirname, "public")));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use((req, res, next) => {
@@ -39,8 +35,8 @@ const aaartoServer = (express, port) => {
     });
   });
   app.listen(port, () => {
-    console.log(`Aaarto server listening on port ${port}`);
+    console.log(`Server listening on port ${port}`);
   });
 };
 
-export default aaartoServer;
+export default mintArtServer;
