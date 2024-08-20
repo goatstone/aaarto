@@ -12,10 +12,11 @@ h1 {
   font-size: 1em;
   color: #eee;
 }
-h1 a{
+a{
     font-size: 0.75em;
     text-decoration: none;
     color: #ccc;
+    padding: 0.5em;
 }
 div {
   position: absolute;
