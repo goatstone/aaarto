@@ -21,7 +21,15 @@ const erase = (targetEl) => {
   if (targetEl.id === "canvas") return;
   targetEl.parentElement.removeChild(targetEl);
 };
-const handleClick = () => {
+const handleClick = (event) => {
+  console.log(event);
+  const target = event.target;
+  target.innerText = "Mint again in less than one minutes";
+  target.disabled = true;
+  setTimeout(() => {
+    target.disabled = false;
+    target.innerText = "Mint The Aaarto";
+  }, (1000 * 60));
   const el = document.getElementById("art");
   const req = new Request("/mintart", {
     method: "POST",
