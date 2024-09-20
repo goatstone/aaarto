@@ -8,9 +8,8 @@ With the Aaarto program, the process of creating the art and the quality of the 
 
 Aaarto was designed and developed by Jose Collas. Jose has a long history of web development and has a deep interest in crypto.
 
-### The project is currently running at:
+### The project is not running online:
 
-[http://172.232.24.171/](http://172.232.24.171/)
 
 ### These NFTs minted can be viewed here:
 
