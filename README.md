@@ -10,13 +10,14 @@ With the Aaarto program, the process of creating the art and the characteristics
 
 ## User Journey
 
-- On initial view of the application, the user is presented with a screen that prompts the user to open their crypto wallet. The appliction Aaarto will connect with the users wallet.
+- On initial view of the application, the user is presented with a screen that prompts the user to open their crypto wallet. The application Aaarto will connect with the users' wallet.
 - Once the wallet is open, the user is presented with a drawing application. This drawing application is simple. It offers brushes in the shape of squares and circles. Tools to set the shapes' sizes and colors are offered to the user. An erase tool is offered to enable the deletion of the shapes applied to the canvas.
 - The user can draw images with the application and at any time select the "Create NFT" button to mint the image as an NFT.
-- Once the user initiates the minting, they are prompted for the name of the art work. When all required data is supplied the user is presened with a button "Create" that will enable the creation of the art work as an NFT.
-- The NFT will be saved to the users wallet.
+- Once the user initiates the minting, they are prompted for the name of the artwork. When all required data is supplied, the user is presented with a button "Create" that will enable the creation of the artwork as an NFT.
+- The NFT will be saved to the users' wallet.
 
-- 
+
+
 Aaarto was designed and developed by Jose Collas. Jose has a long history of web development and has a deep interest in crypto.
 
 ### The project is not running online:
