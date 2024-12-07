@@ -14,16 +14,15 @@ With the Aaarto program, the process of creating the art and the characteristics
 
 - On initial view of the application, the user is presented with a screen that prompts the user to open their crypto wallet. The application Aaarto will connect with the users' wallet.
 - Once the wallet is open, the user is presented with a drawing application. This drawing application is simple. It offers brushes in the shape of squares and circles. Tools to set the shapes' sizes and colors are offered to the user. An erase tool is offered to enable the deletion of the shapes applied to the canvas.
-<img src="art/aaarto_screen_4.png" width="500" />
-
+<img src="art/aaarto_screen_4.png" width="200" />
 
 - The user can draw images with the application and at any time select the "Create NFT" button to mint the image as an NFT.
 - Once the user initiates the minting, they are prompted for the name of the artwork. When all required data is supplied, the user is presented with a button "Create" that will enable the creation of the artwork as an NFT.
 - The NFT will be saved to the users' wallet.
 - The token will be visible on Hashscan
-<img src="art/aaarto_screen_2.png" width="500" />
-<img src="art/aaarto_screen_1.png" width="500" />
-<img src="art/aaarto_screen_3.png" width="500" />
+<img src="art/aaarto_screen_2.png" width="200" />
+<img src="art/aaarto_screen_1.png" width="200" />
+<img src="art/aaarto_screen_3.png" width="200" />
 
 ## Future Roadmap
 
