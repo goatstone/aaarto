@@ -37,8 +37,6 @@ With the Aaarto program, the process of creating the art and the characteristics
 
 - The NFT will be saved to the users' wallet.
 
-- The token will be visible on Hashscan
-<img src="art/aaarto_screen_2.png" width="200" />
 
 ## Future Roadmap
 
