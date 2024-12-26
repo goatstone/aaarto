@@ -7,7 +7,7 @@ Aaarto is online at:
 
 Aaarto is an online drawing program that enables the minting of art work as an NFT on the Hedera network. 
 
-The drawing application part of Aaarto enables the creation of art by the adding or removing of circles and squares of various sizes and colors onto a canvas area. Tools to set the shapes' sizes and colors are offered to the user. An erase tool is offered to enable the deletion of the shapes applied to the canvas.
+The drawing application part of Aaarto enables the creation of art by the adding of circles and squares of various sizes and colors onto a canvas area. Tools to set the shapes' sizes and colors are offered to the user. An erase tool is offered to enable the deletion of the shapes applied to the canvas.
 
 At any point in the creation of the art, the user can create an NFT of the art.
 
