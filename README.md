@@ -24,14 +24,16 @@ With the Aaarto program, the process of creating the art and the characteristics
 
 ## User Journey
 
-- On initial view of the application, the user is presented with a drawing application. This drawing application is simple. A button with the lable "Open Wallet" is also present.
+- On initial view of Aaarto, the user is presented with a drawing application. This drawing application is simple. A button with the label "Open Wallet" is also present.
 <img src="art/aaarto_screen_4.png" width="200" />
 
-- The user can draw images with the application and at any time select the "Open Wallet" button to begin the process of minting the image as an NFT.
+- The user can draw images with the application and at any time select the "Open Wallet" button.
 
-- The user presses the "Open Wallet" button and the application Aaarto connects with the users' wallet
+- The user presses the "Open Wallet" button and the application Aaarto connects with the users' wallet. The "Open Wallet" button changes to display the icon of a wallet. The user can click on the wallet icon to open the users' wallet at any time.
+
+- Once the users' wallet is open they can mint an NFT. The user is presented with a button that is labeled "Mint NFT".
  
-- Once the user initiates the minting, they are prompted for the name of the artwork. When all required data is supplied, the user is presented with a button "Create" that will enable the creation of the artwork as an NFT.
+- Once the user initiates the minting, they are prompted for the name of the artwork. When all required data is supplied, the user is presented with a button "Create" that will create the artwork as an NFT.
 
 - The NFT will be saved to the users' wallet.
 
