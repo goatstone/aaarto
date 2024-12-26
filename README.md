@@ -45,6 +45,6 @@ The key concept of linking the creation program to the minting can be scaled to 
 ## Stack
 Hedera SDK, Pinata, Node, JavaScript, HTML, SVG, CSS
 
-This project is done in the context of the Hello Future Hackathon [https://hedera.com/](https://hedera.com/)
+This project was started in the context of the Hello Future Hackathon [https://hedera.com/](https://hedera.com/)
 
 Aaarto was designed and developed by Jose Collas. Jose has a long history of web development and has a deep interest in crypto.
