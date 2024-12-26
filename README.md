@@ -1,6 +1,6 @@
 # Aaarto
 
-<img src="art/aaarto_screen_4.png" width="300" />
+<img src="art/screen-shot.png" width="300" />
 
 Aaarto is online at:
 <a href="https://joseherminiocollas.github.io/aaarto/" target="new">https://joseherminiocollas.github.io/aaarto/<a>
@@ -25,7 +25,7 @@ With the Aaarto program, the process of creating the art and the characteristics
 ## User Journey
 
 - On initial view of Aaarto, the user is presented with a drawing application. This drawing application is simple. A button with the label "Open Wallet" is also present.
-<img src="art/aaarto_screen_4.png" width="200" />
+<img src="art/screen-shot.png" width="200" />
 
 - The user can draw images with the application and at any time select the "Open Wallet" button.
 
