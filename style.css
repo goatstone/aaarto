@@ -39,7 +39,7 @@ section {
   background-color: #222;
   border-radius: 0.5em;
   margin: 0;
-  padding: 0.25em;
+  padding: 0.5em;
 }
 section label {
   background: #333;
@@ -47,7 +47,7 @@ section label {
   padding: 0.5em;
 }
 section h3 {
-  margin: 0.5em;
+  margin: 0 0.25em;
 }
 section.panel {
   display: flex;
