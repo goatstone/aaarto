@@ -4,7 +4,7 @@
 
 Aaarto is online at:
 
-(https://goatstone.com/aaarto/)/](https://goatstone.com/aaarto/)
+[https://goatstone.com/aaarto/](https://goatstone.com/aaarto/)
 
 Aaarto is an online drawing program that enables the minting of art work as an NFT on the Hedera network. 
 
