@@ -1,8 +1,17 @@
 import React from 'react';
 import { HashConnect, HashConnectConnectionState, SessionData } from 'hashconnect';
-console.log('HashConnect', HashConnect);
+import makeCanvas from './aaarto';
 
+console.log('HashConnect', HashConnect);
+/**
+ * Initialize the application
+ */
+const init = () => {
+    makeCanvas();
+};
+window.addEventListener("load", init);
 const App: React.FC = () => {
+
     return (
         <div>
             <h1>
