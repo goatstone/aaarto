@@ -12,6 +12,10 @@ const init = () => {
 window.addEventListener("load", init);
 const App: React.FC = () => {
     const [size, setSize]: any = useState(70);
+    const [shape, setShape]: any = useState('circle');
+    const handleShapeChange = ({ target }: any) => {
+        setShape(target.value);
+    }
 
     return (
         <div>
@@ -34,18 +38,27 @@ const App: React.FC = () => {
                 <section id="shape">
                     <label>
                         Circle
-                        <input type="radio" name="shape" value="circle" checked />
+                        <input type="radio" name="shape" value="circle"
+                            checked={shape === 'circle'}
+                            onChange={handleShapeChange}
+                        />
                     </label>
                     <label>
-                        Square <input type="radio" name="shape" value="square" />
+                        Square <input type="radio" name="shape" value="square"
+                            checked={shape === 'square'}
+                            onChange={handleShapeChange}
+                        />
                     </label>
                     <label>
-                        Erase <input type="radio" name="shape" value="erase" />
+                        Erase <input type="radio" name="shape" value="erase"
+                            checked={shape === 'erase'}
+                            onChange={handleShapeChange}
+                        />
                     </label>
                 </section>
                 <section id="size">
                     <h3>Size</h3>
-                    <input type="range" value={size} onChange={({target})=>setSize(target.value)} min="1" max="300" />
+                    <input type="range" value={size} onChange={({ target }) => setSize(target.value)} min="1" max="300" />
                 </section>
                 <section id="color">
                     <h3>Color</h3>
