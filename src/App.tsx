@@ -6,16 +6,25 @@ console.log('HashConnect', HashConnect);
 /**
  * Initialize the application
  */
-const init = () => {
-    makeCanvas();
-};
-window.addEventListener("load", init);
+// const init = () => {
+//     makeCanvas();
+// };
+// window.addEventListener("load", init);
 const App: React.FC = () => {
     const [size, setSize]: any = useState(70);
     const [shape, setShape]: any = useState('circle');
     const handleShapeChange = ({ target }: any) => {
         setShape(target.value);
     }
+    const Canvas = () => {
+        return (<svg className='canvas'
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            id="art"
+        >
+            <rect id="canvas" width="100%" height="100%" fill="white" />
+        </svg>)
+    };
 
     return (
         <div>
@@ -25,7 +34,8 @@ const App: React.FC = () => {
                 </a>
                 <a href="http://goatstone.com" target="new">goatstone</a>
             </h1>
-            <svg
+            <Canvas />
+            {/* <svg
                 version="1.1"
                 width="500"
                 height="500"
@@ -33,7 +43,7 @@ const App: React.FC = () => {
                 id="art"
             >
                 <rect id="canvas" width="100%" height="100%" fill="white" />
-            </svg>
+            </svg> */}
             <section className="panel">
                 <section id="shape">
                     <label>
