@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HashConnect, HashConnectConnectionState, SessionData } from 'hashconnect';
 import makeCanvas from './aaarto';
 
@@ -11,6 +11,7 @@ const init = () => {
 };
 window.addEventListener("load", init);
 const App: React.FC = () => {
+    const [size, setSize]: any = useState(70);
 
     return (
         <div>
@@ -44,7 +45,7 @@ const App: React.FC = () => {
                 </section>
                 <section id="size">
                     <h3>Size</h3>
-                    <input type="range" min="1" max="300" value="50" />
+                    <input type="range" value={size} onChange={({target})=>setSize(target.value)} min="1" max="300" />
                 </section>
                 <section id="color">
                     <h3>Color</h3>
