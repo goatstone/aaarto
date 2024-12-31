@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
 import { HashConnect, HashConnectConnectionState, SessionData } from 'hashconnect';
-import makeCanvas from './aaarto';
 
-console.log('HashConnect', HashConnect);
-/**
- * Initialize the application
- */
-// const init = () => {
-//     makeCanvas();
-// };
-// window.addEventListener("load", init);
 const App: React.FC = () => {
     const [size, setSize]: any = useState(70);
     const [shape, setShape]: any = useState('circle');
+    const [SVGElements, setSVGElements] = useState<any[]>([]);
+    const handleCanvasClick = (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const el = <circle cx={x} cy={y} r={size / 2} fill="red" />
+        setSVGElements(previousElements => ([...previousElements, el]))
+    }
     const handleShapeChange = ({ target }: any) => {
         setShape(target.value);
-    }
-    const handleCanvasClick = () =>{
-        console.log('click')
     }
     const Canvas = () => {
         return (<svg className='canvas'
@@ -27,6 +23,7 @@ const App: React.FC = () => {
             onClick={handleCanvasClick}
         >
             <rect id="canvas" width="100%" height="100%" fill="white" />
+            {SVGElements.map((item: any) => (item))}
         </svg>)
     };
 
@@ -39,15 +36,6 @@ const App: React.FC = () => {
                 <a href="http://goatstone.com" target="new">goatstone</a>
             </h1>
             <Canvas />
-            {/* <svg
-                version="1.1"
-                width="500"
-                height="500"
-                xmlns="http://www.w3.org/2000/svg"
-                id="art"
-            >
-                <rect id="canvas" width="100%" height="100%" fill="white" />
-            </svg> */}
             <section className="panel">
                 <section id="shape">
                     <label>
@@ -72,7 +60,7 @@ const App: React.FC = () => {
                 </section>
                 <section id="size">
                     <h3>Size</h3>
-                    <input type="range" value={size} onChange={({ target }) => setSize(target.value)} min="1" max="300" />
+                    <input type="range" value={size} onChange={({ target }) => setSize(target.value)} min="10" max="300" />
                 </section>
                 <section id="color">
                     <h3>Color</h3>
