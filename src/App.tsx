@@ -37,9 +37,6 @@ const App: React.FC = () => {
             removeElement(event.target.id)
         }
     }
-    const handleShapeChange = ({ target }: any) => {
-        setShape(target.value);
-    }
     const Canvas = () => {
         return (<svg className='canvas'
             version="1.1"
@@ -55,7 +52,7 @@ const App: React.FC = () => {
         <div>
             <h1>
                 <a href="https://github.com/JoseHerminioCollas/aaarto/" target="new">
-                    Aaarto {shape}
+                    Aaarto 1
                 </a>
                 <a href="http://goatstone.com" target="new">goatstone</a>
             </h1>
@@ -66,19 +63,19 @@ const App: React.FC = () => {
                         Circle
                         <input type="radio" name="shape" value="circle"
                             checked={shape === 'circle'}
-                            onChange={handleShapeChange}
+                            onChange={({ target }) => setShape(target.value)}
                         />
                     </label>
                     <label>
                         Square <input type="radio" name="shape" value="square"
                             checked={shape === 'square'}
-                            onChange={handleShapeChange}
+                            onChange={({ target }) => setShape(target.value)}
                         />
                     </label>
                     <label>
                         Erase <input type="radio" name="shape" value="erase"
                             checked={shape === 'erase'}
-                            onChange={handleShapeChange}
+                            onChange={({ target }) => setShape(target.value)}
                         />
                     </label>
                 </section>
