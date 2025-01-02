@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Canvas from './Canvas';
+import Header from './Header';
 import { HashConnect, HashConnectConnectionState, SessionData } from 'hashconnect';
 
 const App: React.FC = () => {
@@ -10,12 +11,7 @@ const App: React.FC = () => {
 
     return (
         <div>
-            <h1>
-                <a href="https://github.com/JoseHerminioCollas/aaarto/" target="new">
-                    Aaarto
-                </a>
-                <a href="http://goatstone.com" target="new">goatstone</a>
-            </h1>
+            <Header />
             <Canvas size={size} shape={shape} color={color} />
             <section className="panel">
                 <section id="shape">
