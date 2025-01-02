@@ -32,7 +32,12 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color }) => {
         }
     };
 
-    return (<svg className='canvas'
+    return (<svg 
+        data-testid="canvas"
+        data-shape={shape}
+        data-size={size.toString()}
+        data-color={color}
+        className='canvas'
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         onClick={handleCanvasClick}
