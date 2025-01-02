@@ -8,27 +8,30 @@ const App: React.FC = () => {
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
 
     const removeElement = (id: string) => {
-        setSVGElements(prev => prev.filter((el: any) => { return el.props.id !== id }))
+        setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id }))
     }
-    const handleCanvasClick = (event: any) => {
+    // const handleCanvasClick = (event: any) => {
+    const handleCanvasClick = (event: React.MouseEvent<SVGRectElement, MouseEvent>) => {
         const generatedID = Date.now().toString();
         let newElement: JSX.Element | null = null;
-        const target = event.currentTarget as SVGRectElement;
-        const rect = target.getBoundingClientRect();
+        const rect = (event.currentTarget as SVGRectElement).getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         if (shape === 'erase') {
-            removeElement(event.target.id)
+            const target = event.target as SVGElement;
+            if (target.id) {
+                removeElement(target.id);
+            }
             return
         }
         else if (shape === 'circle') {
-            newElement = <circle cx={x} cy={y} r={size / 2} fill="red" id={generatedID} />
+            newElement = <circle cx={x} cy={y} r={size / 2} fill="red" id={generatedID} />;
         }
         else if (shape === 'square') {
-            newElement = <rect x={x - size / 2} y={y - size / 2} width={size} height={size} id={generatedID} />
+            newElement = <rect x={x - size / 2} y={y - size / 2} width={size} height={size} id={generatedID} />;
         }
         if (newElement !== null) {
-            setSVGElements(previousElements => ([...previousElements, newElement]))
+            setSVGElements(previousElements => ([...previousElements, newElement]));
         }
     }
     const Canvas = () => {
