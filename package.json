@@ -2,7 +2,8 @@
   "scripts": {
     "build-ts": "tsc",
     "build": "webpack",
-    "start": "webpack serve --open"
+    "start": "webpack serve --open",
+    "test": "echo 'no test'"
   },
   "dependencies": {
     "@types/react": "^19.0.2",
