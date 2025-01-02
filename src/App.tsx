@@ -13,8 +13,8 @@ const App: React.FC = () => {
         const generatedID = Date.now().toString();
         let newElement: JSX.Element | null = null;
         const rect = (event.currentTarget as SVGSVGElement).getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+        const x: number = event.clientX - rect.left;
+        const y: number = event.clientY - rect.top;
         if (shape === 'erase') {
             const target = event.target as SVGElement;
             if (target.id) {
