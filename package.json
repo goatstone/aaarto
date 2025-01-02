@@ -1,21 +1,21 @@
 {
-  "private": true,
-  "type": "module",
-  "imports": {
-    "#root/*.js": "./*.js"
-  },
   "scripts": {
-    "test": "echo no tests"
+    "build-ts": "tsc",
+    "build": "webpack",
+    "start": "webpack serve --open"
   },
   "dependencies": {
-    "@hashgraph/sdk": "^2.48.1",
-    "@helia/unixfs": "^3.0.7",
-    "axios": "^1.7.3",
-    "body-parser": "^1.20.2",
-    "dotenv": "^16.4.5",
-    "ejs": "^3.1.10",
-    "express": "^4.19.2",
-    "pinata": "^0.1.10",
-    "server-only": "^0.0.1"
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "hashconnect": "^3.0.13",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0"
   }
 }
