@@ -10,11 +10,10 @@ const App: React.FC = () => {
     const removeElement = (id: string) => {
         setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id }))
     }
-    // const handleCanvasClick = (event: any) => {
-    const handleCanvasClick = (event: React.MouseEvent<SVGRectElement, MouseEvent>) => {
+    const handleCanvasClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
         const generatedID = Date.now().toString();
         let newElement: JSX.Element | null = null;
-        const rect = (event.currentTarget as SVGRectElement).getBoundingClientRect();
+        const rect = (event.currentTarget as SVGSVGElement).getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
         if (shape === 'erase') {
