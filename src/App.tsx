@@ -1,40 +1,34 @@
 import React, { JSX, ReactElement, useEffect, useState } from 'react';
 import { HashConnect, HashConnectConnectionState, SessionData } from 'hashconnect';
 
-interface SVGElementProps {
-    shape: 'circle' | 'rect' | 'erase';
-    size: number;
-}
-
 const App: React.FC = () => {
 
-    const [size, setSize]: any = useState(70);
+    const [size, setSize]: any = useState<number>(70);
     const [shape, setShape] = useState<string>('circle');
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
 
     const removeElement = (id: string) => {
-        setSVGElements(prev => prev.filter((el: any) => {
-            return el.props.id !== id
-        }))
-
+        setSVGElements(prev => prev.filter((el: any) => { return el.props.id !== id }))
     }
     const handleCanvasClick = (event: any) => {
         const generatedID = Date.now().toString();
-        let newElement: any;
-        const target = event.currentTarget as any;
+        let newElement: JSX.Element | null = null;
+        const target = event.currentTarget as SVGRectElement;
         const rect = target.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
-        if (shape === 'circle') {
+        if (shape === 'erase') {
+            removeElement(event.target.id)
+            return
+        }
+        else if (shape === 'circle') {
             newElement = <circle cx={x} cy={y} r={size / 2} fill="red" id={generatedID} />
-            setSVGElements(previousElements => ([...previousElements, newElement]))
         }
         else if (shape === 'square') {
             newElement = <rect x={x - size / 2} y={y - size / 2} width={size} height={size} id={generatedID} />
-            setSVGElements(previousElements => ([...previousElements, newElement]))
         }
-        else {
-            removeElement(event.target.id)
+        if (newElement !== null) {
+            setSVGElements(previousElements => ([...previousElements, newElement]))
         }
     }
     const Canvas = () => {
