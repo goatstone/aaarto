@@ -3,12 +3,11 @@ import { HashConnect, HashConnectConnectionState, SessionData } from 'hashconnec
 
 const App: React.FC = () => {
 
-    const [size, setSize]: any = useState<number>(70);
+    const [size, setSize] = useState<number>(70);
     const [shape, setShape] = useState<string>('circle');
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
-
     const removeElement = (id: string) => {
-        setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id }))
+        setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id }));
     }
     const handleCanvasClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
         const generatedID = Date.now().toString();
@@ -21,7 +20,7 @@ const App: React.FC = () => {
             if (target.id) {
                 removeElement(target.id);
             }
-            return
+            return;
         }
         else if (shape === 'circle') {
             newElement = <circle cx={x} cy={y} r={size / 2} fill="red" id={generatedID} />;
@@ -33,7 +32,7 @@ const App: React.FC = () => {
             setSVGElements(previousElements => ([...previousElements, newElement]));
         }
     }
-    const Canvas = () => {
+    const Canvas: React.FC = () => {
         return (<svg className='canvas'
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -41,14 +40,14 @@ const App: React.FC = () => {
         >
             <rect id="canvas" width="100%" height="100%" fill="white" />
             {SVGElements.map(item => item)}
-        </svg>)
+        </svg>);
     };
 
     return (
         <div>
             <h1>
                 <a href="https://github.com/JoseHerminioCollas/aaarto/" target="new">
-                    Aaarto 1
+                    Aaarto
                 </a>
                 <a href="http://goatstone.com" target="new">goatstone</a>
             </h1>
@@ -77,7 +76,7 @@ const App: React.FC = () => {
                 </section>
                 <section id="size">
                     <h3>Size</h3>
-                    <input type="range" value={size} onChange={({ target }) => setSize(target.value)} min="10" max="300" />
+                    <input type="range" value={size} onChange={({ target }) => setSize(Number(target.value))} min="10" max="300" />
                 </section>
                 <section id="color">
                     <h3>Color</h3>
