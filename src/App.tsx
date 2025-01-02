@@ -5,6 +5,7 @@ const App: React.FC = () => {
 
     const [size, setSize] = useState<number>(70);
     const [shape, setShape] = useState<string>('circle');
+    const [color, setColor] = useState<string>('#cccccc')
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
     const removeElement = (id: string) => {
         setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id }));
@@ -23,10 +24,10 @@ const App: React.FC = () => {
             return;
         }
         else if (shape === 'circle') {
-            newElement = <circle cx={x} cy={y} r={size / 2} fill="red" id={generatedID} />;
+            newElement = <circle cx={x} cy={y} r={size / 2} fill={color} id={generatedID} />;
         }
         else if (shape === 'square') {
-            newElement = <rect x={x - size / 2} y={y - size / 2} width={size} height={size} id={generatedID} />;
+            newElement = <rect x={x - size / 2} y={y - size / 2} fill={color} width={size} height={size} id={generatedID} />;
         }
         if (newElement !== null) {
             setSVGElements(previousElements => ([...previousElements, newElement]));
@@ -80,7 +81,7 @@ const App: React.FC = () => {
                 </section>
                 <section id="color">
                     <h3>Color</h3>
-                    <input type="color" value="#cccccc" />
+                    <input onChange={({ target }) => setColor(target.value)} type="color" value={color} />
                 </section>
                 <section id="mint">
                     <button>
