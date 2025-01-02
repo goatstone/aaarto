@@ -6,8 +6,8 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color }) => {
 
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
     const removeElement = (id: string) => {
-        setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id }));
-    }
+        setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id; }));
+    };
     const handleCanvasClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
         const generatedID = Date.now().toString();
         let newElement: JSX.Element | null = null;
@@ -30,7 +30,7 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color }) => {
         if (newElement !== null) {
             setSVGElements(previousElements => ([...previousElements, newElement]));
         }
-    }
+    };
 
     return (<svg className='canvas'
         version="1.1"

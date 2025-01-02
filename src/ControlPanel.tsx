@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 type ControlPanelProps = {
     shape: string,
@@ -75,6 +75,6 @@ const ControlPanel: React.FC<ControlPanelProps> = ({ shape, setShape, size, setS
                 </button>
             </section>
         </section>
-    )
-}
+    );
+};
 export default ControlPanel;
