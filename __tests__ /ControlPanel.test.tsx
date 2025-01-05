@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ControlPanel from '../src/ControlPanel';
+import '@testing-library/jest-dom';
 
 // Mock props
 const mockSetShape = jest.fn();
