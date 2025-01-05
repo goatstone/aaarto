@@ -1,16 +1,7 @@
-# dependencies
 /node_modules
 
-# testing
 /coverage
 
-# production
-/build
-
-# debug
 npm-debug.log*
 
-# local env files
-.env*.local
-
-.env
+src/util/aaarto.config.json
