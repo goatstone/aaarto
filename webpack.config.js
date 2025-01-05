@@ -2,13 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: './src/index.tsx',
-  output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'docs'),
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-  },
+  mode: 'development',
   module: {
     rules: [
       {
@@ -18,8 +12,16 @@ module.exports = {
       },
     ],
   },
-  devServer: {
-    static: './docs',
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
   },
-  mode: 'development',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'docs'), // Output files will be in the 'docs' folder
+  },
+  devServer: {
+    static: path.join(__dirname, 'docs'), // Serve content from the 'docs' folder
+    compress: true,
+    port: 9000,
+  },
 };
