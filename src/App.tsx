@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Canvas from './Canvas';
 import Header from './Header';
 import ControlPanel from './ControlPanel';
-import { HashConnect, HashConnectConnectionState, SessionData } from 'hashconnect';
 
 const App: React.FC = () => {
 
