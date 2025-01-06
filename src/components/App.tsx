@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Canvas from './Canvas';
-import Header from './Header';
-import ControlPanel from './ControlPanel';
+import Canvas from '@components/Canvas';
+import Header from '@components/Header';
+import ControlPanel from '@components/ControlPanel';
 
 const App: React.FC = () => {
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import Canvas from '../src/Canvas';
+import Canvas from '@components/Canvas';
 import '@testing-library/jest-dom';
 
 describe('Canvas', () => {
