@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import App from '../src/App';
 import '@testing-library/jest-dom';
+import App from '@components/App';
 
 // Test suite for the App component
 describe('App', () => {

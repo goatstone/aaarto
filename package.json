@@ -4,7 +4,7 @@
     "build": "webpack",
     "test": "jest",
     "build-ts": "tsc",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'"
+    "lint": "eslint . --config eslintrc.js"
   },
   "dependencies": {
     "@types/react": "^19.0.2",
@@ -20,6 +20,8 @@
     "@typescript-eslint/eslint-plugin": "^8.19.0",
     "@typescript-eslint/parser": "^8.19.0",
     "eslint": "^9.17.0",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.14.0",
@@ -27,6 +29,8 @@
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.1",
+    "tsconfig-paths": "^4.2.0",
+    "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.19.0",
     "webpack": "^5.97.1",
