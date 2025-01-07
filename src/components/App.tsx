@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Canvas from '@components/Canvas';
 import Header from '@components/Header';
 import ControlPanel from '@components/ControlPanel';
-import useMetaMask from 'hooks/useMetaMask';
+import useMetaMask from '@hooks/useMetaMask';
 
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>('circle');
