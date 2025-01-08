@@ -7,6 +7,8 @@ import '@testing-library/jest-dom';
 const mockSetShape = jest.fn();
 const mockSetSize = jest.fn();
 const mockSetColor = jest.fn();
+const mockConnectWallet = jest.fn();
+const mockOpenMetaMask = jest.fn();
 
 const defaultProps = {
     shape: 'circle',
@@ -15,6 +17,9 @@ const defaultProps = {
     setSize: mockSetSize,
     color: '#cccccc',
     setColor: mockSetColor,
+    account: '',
+    connectWallet: mockConnectWallet,
+    openMetaMask: mockOpenMetaMask,
 };
 
 describe('ControlPanel', () => {
@@ -61,10 +66,10 @@ describe('ControlPanel', () => {
         expect(mockSetColor).toHaveBeenCalledWith('#ff0000');
     });
 
-    test('renders Open Wallet and disabled Create buttons', () => {
+    test('renders Open MetaMask Create buttons', () => {
         render(<ControlPanel {...defaultProps} />);
 
-        expect(screen.getByText('Open Wallet')).toBeInTheDocument();
+        expect(screen.getByText('Open MetaMask')).toBeInTheDocument();
         expect(screen.getByText('Create')).toBeDisabled();
     });
 });

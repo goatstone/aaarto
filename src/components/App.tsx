@@ -10,20 +10,14 @@ const App: React.FC = () => {
   const [color, setColor] = useState<string>('#cccccc');
   const { account, connectWallet, openMetaMask } = useMetaMask();
 
-  useEffect(() => { connectWallet() }, []);
-
   return (
     <div>
       <Header />
       <Canvas shape={shape} size={size} color={color} />
-      <p>Connected Account: {account}</p>
-      <button onClick={connectWallet}>
-        Connect to MetaMask
-      </button>
-      <button onClick={openMetaMask}>
-        Open MetaMask
-      </button>
       <ControlPanel
+        account={account}
+        connectWallet={connectWallet}
+        openMetaMask={openMetaMask}
         shape={shape}
         setShape={setShape}
         size={size}
