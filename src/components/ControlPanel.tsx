@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 type ControlPanelProps = {
     shape: string,
@@ -6,10 +6,25 @@ type ControlPanelProps = {
     size: number,
     setSize: React.Dispatch<React.SetStateAction<number>>,
     color: string,
-    setColor: React.Dispatch<React.SetStateAction<string>>
+    setColor: React.Dispatch<React.SetStateAction<string>>,
+    account: string | null,
+    connectWallet: () => Promise<void>,
+    openMetaMask: () => Promise<void>,
 };
 
-const ControlPanel: React.FC<ControlPanelProps> = ({ shape, setShape, size, setSize, color, setColor }) => {
+const ControlPanel: React.FC<ControlPanelProps> = ({
+    shape,
+    setShape,
+    size,
+    setSize,
+    color,
+    setColor,
+    account,
+    connectWallet,
+    openMetaMask
+}) => {
+
+    useEffect(() => { connectWallet() }, []);
 
     return (
         <section className="panel">
@@ -67,12 +82,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({ shape, setShape, size, setS
                 </label>
             </section>
             <section id="mint">
-                <button>
-                    Open Wallet
+                <button onClick={connectWallet}>
+                    Connect to MetaMask
+                </button>
+                <button onClick={openMetaMask}>
+                    Open MetaMask
                 </button>
                 <button disabled>
                     Create
                 </button>
+            </section>
+            <section id="information" >
+                <h4>Connected Account: {account}</h4>
             </section>
         </section>
     );
