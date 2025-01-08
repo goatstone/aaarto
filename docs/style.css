@@ -7,20 +7,23 @@ body {
   background-color: #111;
   margin: 0;
 }
+header {
+  width: 100%;
+}
 h1 {
   background-color: rgba(100, 100, 100, 0.5);
   width: 100%;
   text-align: center;
-  padding: 0.5em;
+  padding: 0.1em;
   margin: 0;
-  font-size: 1em;
+  font-size: 1.5em;
   color: #eee;
 }
 a{
     font-size: 0.75em;
     text-decoration: none;
     color: #ccc;
-    padding: 0.5em;
+    padding: 0.1em;
 }
 div {
   display: flex;
@@ -37,18 +40,10 @@ section {
   justify-content: center;
   align-items: center;
   color: #fff;
-  background-color: #222;
+  background-color: #555;
   border-radius: 0.5em;
-  margin: 0;
-  padding: 0.5em;
-}
-section label {
-  background: #333;
-  border-radius: 0.5em;
-  padding: 0.5em;
-}
-section h3 {
-  margin: 0 0.25em;
+  padding: 0.25em;
+  margin: 0.1em;
 }
 section.panel {
   display: flex;
@@ -57,4 +52,25 @@ section.panel {
   width: 100%;
   max-width: 700px;
   background-color: gray;
+  padding: 0;
+}
+section label {
+  background: #333;
+  border-radius: 0.5em;
+  padding: 0.25em;
+  margin: 0.1em;
+}
+section h3, h4 {
+  margin: 0 0.25em;
+}
+
+section button {
+  margin: 0.5em;  
+  padding: 0.5em;
+  color: #eee;
+  background-color: #333;
+  border-radius: 0.5em;
+}
+section input {
+  margin: 0.5em;  
 }
