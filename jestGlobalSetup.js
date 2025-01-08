@@ -6,6 +6,7 @@ module.exports = async () => {
     paths: {
       '@components/*': ['components/*'],
       '@utils/*': ['utils/*'],
+      '@hooks/*': ['hooks/*'],
     },
   });
 };
