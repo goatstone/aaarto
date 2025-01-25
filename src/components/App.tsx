@@ -21,7 +21,7 @@ const App: React.FC = () => {
   const { mintNFT, transactionHash, transactionReceipt, errorMessage, loading } = useMintNFT();
   
   const handleMint = async () => {
-    const ipfsTokenURI = 'ipfs://bafkreigdp2mbtobilxspcw34gl57e6zkd744k644wexo4rchs7zpfqrm7q';
+    const ipfsTokenURI = 'ipfs://bafkreiesuxfdkg7fz2zacjum5y37cjopavm5s3uwmtrwgsjjnufz46t7om';
     await mintNFT(ipfsTokenURI);
   };
 
@@ -42,7 +42,6 @@ const App: React.FC = () => {
       )}
       {transactionReceipt && <p>Transaction confirmed in block: {transactionReceipt.blockNumber}</p>}
       {errorMessage && <p>Error: {errorMessage}</p>}
-
       <ControlPanel
         account={account}
         connectWallet={connectWallet}
