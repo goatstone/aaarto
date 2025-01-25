@@ -43,7 +43,6 @@ const App: React.FC = () => {
       {transactionReceipt && <p>Transaction confirmed in block: {transactionReceipt.blockNumber}</p>}
       {errorMessage && <p>Error: {errorMessage}</p>}
 
-      <button onClick={mintNFT}>Mint NFT</button>
       <ControlPanel
         account={account}
         connectWallet={connectWallet}
