@@ -5,7 +5,7 @@ import Canvas from './Canvas';
 const App: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [svgString, setSvgString] = useState<string>('');
-  const { uploadToServer, uploading, error } = useUpload();
+  const { uploadToServer, uploading, uploadError } = useUpload();
 
   const handleUpload = async () => {
     if (!svgString || !name) {
@@ -32,7 +32,7 @@ const App: React.FC = () => {
       <button onClick={handleUpload} disabled={uploading}>
         {uploading ? 'Uploading...' : 'Upload and Mint'}
       </button>
-      {error && <p>{error}</p>}
+      {uploadError && <p>{uploadError}</p>}
     </div>
   );
 };
