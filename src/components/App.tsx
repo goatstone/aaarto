@@ -5,21 +5,15 @@ import ControlPanel from '@components/ControlPanel';
 import useMetaMask from '@hooks/useMetaMask';
 import useMintNFT from '@hooks/useMintNFT';
 
-const getSvgContent = () => {
-  const svgElement = document.getElementById('nft-svg');
-  if (svgElement) {
-    return new XMLSerializer().serializeToString(svgElement);
-  } else {
-    throw new Error('SVG element not found');
-  }
-};
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>('circle');
   const [size, setSize] = useState<number>(70);
   const [color, setColor] = useState<string>('#cccccc');
+  const [name, setName] = useState<string>('');
+  const [svgString, setSvgString] = useState<string>('');
   const { openMetaMask, connectWallet, account } = useMetaMask();
   const { mintNFT, transactionHash, transactionReceipt, errorMessage, loading } = useMintNFT();
-  
+
   const handleMint = async () => {
     const ipfsTokenURI = 'ipfs://bafkreiesuxfdkg7fz2zacjum5y37cjopavm5s3uwmtrwgsjjnufz46t7om';
     await mintNFT(ipfsTokenURI);
@@ -28,7 +22,14 @@ const App: React.FC = () => {
   return (
     <div>
       <Header />
-      <Canvas shape={shape} size={size} color={color} />
+      <Canvas shape={shape} size={size} color={color} setSvgString={setSvgString} />
+      <input
+        type="text"
+        value={name}
+        onChange={({ target }) => setName(target.value)}
+        placeholder="Name"
+        required
+      />
       <button onClick={handleMint} disabled={loading}>
         {loading ? 'Minting...' : 'Mint NFT'}
       </button>
