@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useUpload from './useUpload';
+import useUpload from '../hooks/useUpload';
 import Canvas from './Canvas';
 
 const App: React.FC = () => {
