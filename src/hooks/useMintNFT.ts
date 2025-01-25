@@ -62,7 +62,7 @@ const useMintNFT = () => {
             }
 
             // Define your contract
-            const contractAddress = '0x85DC05D8fCd6602d7e410A5687ff634D38726215';
+            const contractAddress = '0x3ee122AEB70e725b7eb99a863d46A9D839B0fdA3';
             const AaartoNFTContract = new ethers.Contract(contractAddress, contractArtifact.abi, signer);
 
             // Call the mint function
