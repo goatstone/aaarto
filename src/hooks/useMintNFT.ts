@@ -1,15 +1,15 @@
 // hooks/useMintNFT.js
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import contractArtifact from '../artifacts/contracts/AaartoNFT.sol/AaartoNFT.json';
+import contractArtifact from '../../artifacts/contracts/AaartoNFT.sol/AaartoNFT.json';
 
 const useMintNFT = () => {
     const [transactionHash, setTransactionHash] = useState(null);
-    const [transactionReceipt, setTransactionReceipt] = useState(null);
+    const [transactionReceipt, setTransactionReceipt] = <any>useState(null);
     const [errorMessage, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const mintNFT = async (ipfsTokenURI) => {
+    const mintNFT = async (ipfsTokenURI: any) => {
         try {
             setLoading(true);
 
@@ -36,7 +36,7 @@ const useMintNFT = () => {
                         method: 'wallet_switchEthereumChain',
                         params: [{ chainId: '0xaa36a7' }], // Hexadecimal chain ID of Sepolia
                     });
-                } catch (switchError) {
+                } catch (switchError: any) {
                     // This error code indicates that the chain has not been added to MetaMask
                     if (switchError.code === 4902) {
                         await window.ethereum.request({
