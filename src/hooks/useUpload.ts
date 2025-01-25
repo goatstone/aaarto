@@ -8,7 +8,7 @@ interface UploadResponse {
 
 const useUpload = () => {
   const [uploading, setUploading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const uploadToServer = async (svgString: string, name: string): Promise<string | null> => {
     setUploading(true);
@@ -22,7 +22,7 @@ const useUpload = () => {
       const response = await axios.post<UploadResponse>('http://localhost:5000/upload', data);
       return response.data.ipfsHash;
     } catch (err) {
-      setError('Error uploading SVG');
+      setUploadError('Error uploading SVG');
       console.error('Error uploading SVG:', err);
       return null;
     } finally {
@@ -30,7 +30,7 @@ const useUpload = () => {
     }
   };
 
-  return { uploadToServer, uploading, error };
+  return { uploadToServer, uploading, uploadError };
 };
 
 export default useUpload;

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Canvas from '@components/Canvas';
 import Header from '@components/Header';
 import ControlPanel from '@components/ControlPanel';
 import useMetaMask from '@hooks/useMetaMask';
 import useMintNFT from '@hooks/useMintNFT';
+import useUpload from '@hooks/useUpload';
 
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>('circle');
@@ -11,8 +12,22 @@ const App: React.FC = () => {
   const [color, setColor] = useState<string>('#cccccc');
   const [name, setName] = useState<string>('');
   const [svgString, setSvgString] = useState<string>('');
+  const { uploadToServer, uploading, uploadError } = useUpload();
   const { openMetaMask, connectWallet, account } = useMetaMask();
   const { mintNFT, transactionHash, transactionReceipt, errorMessage, loading } = useMintNFT();
+
+  const handleUpload = async () => {
+    if (!svgString) {
+      console.log('SVG or name is missing');
+      return;
+    }
+
+    const ipfsHash = await uploadToServer(svgString, name);
+    if (ipfsHash) {
+      console.log('mint call')
+      // await mintNFT(`ipfs://${ipfsHash}`);
+    }
+  };
 
   const handleMint = async () => {
     const ipfsTokenURI = 'ipfs://bafkreiesuxfdkg7fz2zacjum5y37cjopavm5s3uwmtrwgsjjnufz46t7om';
@@ -23,6 +38,10 @@ const App: React.FC = () => {
     <div>
       <Header />
       <Canvas shape={shape} size={size} color={color} setSvgString={setSvgString} />
+      <button onClick={handleUpload} disabled={uploading}>
+        {uploading ? 'Uploading...' : 'Upload and Mint'}
+      </button>
+      {uploadError && <p>{uploadError}</p>}
       <input
         type="text"
         value={name}
@@ -54,6 +73,7 @@ const App: React.FC = () => {
         color={color}
         setColor={setColor}
       />
+      {name} : {svgString}
     </div>
   );
 };
