@@ -11,8 +11,8 @@ const port = 5000;
 const PINATA_API_KEY = process.env.PINATA_API_KEY || '';
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY || '';
 
-app.get('/', (req, res) => {
-  res.send('xxx')
+app.get('/debug', (req, res) => {
+  res.send("xxx")
 })
 app.post('/upload', async (req, res) => {
   try {
@@ -24,22 +24,21 @@ app.post('/upload', async (req, res) => {
     };
     const form = new FormData();
     form.append('file', Buffer.from(svgString), 'image.svg');
-    form.append('pinataMetadata', JSON.stringify({ title }));
+    form.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${title}` }));
     form.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
-    // const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', form, {
-    //   headers: {
-    //     ...form.getHeaders(),
-    //     pinata_api_key: PINATA_API_KEY,
-    //     pinata_secret_api_key: PINATA_SECRET_API_KEY,
-    //   },
-    // });
-    // const ipfsHash = response.data.IpfsHash;
+    const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', form, {
+      headers: {
+        ...form.getHeaders(),
+        pinata_api_key: PINATA_API_KEY,
+        pinata_secret_api_key: PINATA_SECRET_API_KEY,
+      },
+    });
+    const ipfsHash = response.data.IpfsHash;
     // Update metadata image field with the retrieved IPFS hash
-    // metadata.image = `ipfs://${ipfsHash}`;
+    metadata.image = `ipfs://${ipfsHash}`;
+    // Upload metadata to Pintata
 
-    // TODO : restore following line when server is complete
-    // return res.status(200).json({ ipfsHash, metadata });
-    return res.status(200).json({ ipfsHash: "xxx", metadata })
+    return res.status(200).json({ ipfsHash, metadata })
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Failed to upload to Pinata' });
