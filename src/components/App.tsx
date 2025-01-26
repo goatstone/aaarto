@@ -24,7 +24,8 @@ const App: React.FC = () => {
 
     const ipfsHash = await uploadToServer(svgString, title);
     if (ipfsHash) {
-      console.log('mint call', ipfsHash)
+      console.log('uploadToServer', ipfsHash)
+      // TODO implement backend to return ipfsHash, supply proper data to mintNFT
       // await mintNFT(`ipfs://${ipfsHash}`);
     }
   };
