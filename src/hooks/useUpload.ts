@@ -24,9 +24,7 @@ const useUpload = () => {
 
     try {
       const response = await axios.post<UploadResponse>('http://localhost:5000/upload', data);
-      // DEBUG : return a string for debug : TODO build server to specification
-      // return response.data.ipfsHash;
-      return 'ipfsHash';
+      return response.data.ipfsHash;
     } catch (err) {
       setUploadError(`Error uploading SVG',${err}`);
       console.error('Error uploading SVG:', err);
