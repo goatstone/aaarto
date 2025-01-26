@@ -24,7 +24,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     openMetaMask
 }) => {
 
-    useEffect(() => { connectWallet() }, []);
+    // useEffect(() => { connectWallet() }, []);
 
     return (
         <section className="panel">
