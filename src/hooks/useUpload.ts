@@ -3,26 +3,32 @@ import axios from 'axios';
 
 interface UploadResponse {
   ipfsHash: string;
-  metadata: { name: string; description: string; image: string };
+  metadata: {
+    name: string;
+    title: string;
+    image: string
+  };
 }
 
 const useUpload = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const uploadToServer = async (svgString: string, name: string): Promise<string | null> => {
+  const uploadToServer = async (svgString: string, title: string): Promise<string | null> => {
     setUploading(true);
 
     const data = {
-      name,
+      title,
       svgString,
     };
 
     try {
       const response = await axios.post<UploadResponse>('http://localhost:5000/upload', data);
-      return response.data.ipfsHash;
+      // DEBUG : return a string for debug : TODO build server to specification
+      // return response.data.ipfsHash;
+      return 'ipfsHash';
     } catch (err) {
-      setUploadError('Error uploading SVG');
+      setUploadError(`Error uploading SVG',${err}`);
       console.error('Error uploading SVG:', err);
       return null;
     } finally {
