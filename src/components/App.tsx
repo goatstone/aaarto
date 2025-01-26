@@ -10,7 +10,7 @@ const App: React.FC = () => {
   const [shape, setShape] = useState<string>('circle');
   const [size, setSize] = useState<number>(70);
   const [color, setColor] = useState<string>('#cccccc');
-  const [name, setName] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
   const [svgString, setSvgString] = useState<string>('');
   const { uploadToServer, uploading, uploadError } = useUpload();
   const { openMetaMask, connectWallet, account } = useMetaMask();
@@ -18,13 +18,13 @@ const App: React.FC = () => {
 
   const handleUpload = async () => {
     if (!svgString) {
-      console.log('SVG or name is missing');
+      console.log('SVG or Title is missing');
       return;
     }
 
-    const ipfsHash = await uploadToServer(svgString, name);
+    const ipfsHash = await uploadToServer(svgString, title);
     if (ipfsHash) {
-      console.log('mint call')
+      console.log('mint call', ipfsHash)
       // await mintNFT(`ipfs://${ipfsHash}`);
     }
   };
@@ -39,16 +39,18 @@ const App: React.FC = () => {
       <Header />
       <Canvas shape={shape} size={size} color={color} setSvgString={setSvgString} />
       <button onClick={handleUpload} disabled={uploading}>
-        {uploading ? 'Uploading...' : 'Upload and Mint'}
+        {uploading ? 'Uploading...' : 'Upload'}
       </button>
       {uploadError && <p>{uploadError}</p>}
-      <input
-        type="text"
-        value={name}
-        onChange={({ target }) => setName(target.value)}
-        placeholder="Name"
-        required
-      />
+      <label>
+        Title
+        <input
+          type="text"
+          value={title}
+          onChange={({ target }) => setTitle(target.value)}
+          placeholder="Title"
+        />
+      </label>
       <button onClick={handleMint} disabled={loading}>
         {loading ? 'Minting...' : 'Mint NFT'}
       </button>
@@ -73,7 +75,7 @@ const App: React.FC = () => {
         color={color}
         setColor={setColor}
       />
-      {name} : {svgString}
+      {title} : {svgString}
     </div>
   );
 };
