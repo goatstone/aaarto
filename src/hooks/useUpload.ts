@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 interface UploadResponse {
-  ipfsHash: string;
+  ipfsHashMD: string;
   metadata: {
     name: string;
     title: string;
@@ -24,7 +24,8 @@ const useUpload = () => {
 
     try {
       const response = await axios.post<UploadResponse>('http://localhost:5000/upload', data);
-      return response.data.ipfsHash;
+      console.log('xxx', response)
+      return response.data.ipfsHashMD;
     } catch (err) {
       setUploadError(`Error uploading SVG',${err}`);
       console.error('Error uploading SVG:', err);
