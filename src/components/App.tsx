@@ -22,25 +22,26 @@ const App: React.FC = () => {
       return;
     }
 
-    const ipfsHash = await uploadToServer(svgString, title);
-    if (ipfsHash) {
-      console.log('uploadToServer', ipfsHash)
-      // TODO implement backend to return ipfsHash, supply proper data to mintNFT
-      // await mintNFT(`ipfs://${ipfsHash}`);
+    const ipfsHashMD = await uploadToServer(svgString, title);
+    console.log('uploadToServer', ipfsHashMD)
+
+    if (ipfsHashMD) {
+      console.log('uploadToServer', ipfsHashMD)
+      await mintNFT(`ipfs://${ipfsHashMD}`);
     }
   };
 
-  const handleMint = async () => {
-    const ipfsTokenURI = 'ipfs://bafkreiesuxfdkg7fz2zacjum5y37cjopavm5s3uwmtrwgsjjnufz46t7om';
-    await mintNFT(ipfsTokenURI);
-  };
+  // const handleMint = async () => {
+  //   const ipfsTokenURI = 'ipfs://bafkreiesuxfdkg7fz2zacjum5y37cjopavm5s3uwmtrwgsjjnufz46t7om';
+  //   await mintNFT(ipfsTokenURI);
+  // };
 
   return (
     <div>
       <Header />
       <Canvas shape={shape} size={size} color={color} setSvgString={setSvgString} />
       <button onClick={handleUpload} disabled={uploading}>
-        {uploading ? 'Uploading...' : 'Upload'}
+        {uploading || loading ? 'Minting....' : 'Mint The Aaarto...'}
       </button>
       {uploadError && <p>{uploadError}</p>}
       <label>
@@ -52,9 +53,9 @@ const App: React.FC = () => {
           placeholder="Title"
         />
       </label>
-      <button onClick={handleMint} disabled={loading}>
+      {/* <button onClick={handleMint} disabled={loading}>
         {loading ? 'Minting...' : 'Mint NFT'}
-      </button>
+      </button> */}
       {transactionHash && (
         <p>
           Transaction Hash:{' '}
@@ -76,7 +77,6 @@ const App: React.FC = () => {
         color={color}
         setColor={setColor}
       />
-      {title} : {svgString}
     </div>
   );
 };
