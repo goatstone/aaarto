@@ -1,5 +1,5 @@
-/**
-expressServer.j
+/*
+expressServer.js
 Upload a SVG file to Pinata, get a hash, 
 Update metaData, upload metaData to Pinata
 */

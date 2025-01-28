@@ -13,69 +13,47 @@ const App: React.FC = () => {
   const [title, setTitle] = useState<string>('');
   const [svgString, setSvgString] = useState<string>('');
   const { uploadToServer, uploading, uploadError } = useUpload();
-  const { openMetaMask, connectWallet, account } = useMetaMask();
-  const { mintNFT, transactionHash, transactionReceipt, errorMessage, loading } = useMintNFT();
+  const { mintNFT,
+    transactionHash,
+    transactionReceipt,
+    errorMessage,
+    loading,
+    account } = useMintNFT();
 
   const handleUpload = async () => {
     if (!svgString) {
       console.log('SVG or Title is missing');
-      return;
+      return false;
     }
-
-    const ipfsHashMD = await uploadToServer(svgString, title);
-    console.log('uploadToServer', ipfsHashMD)
-
-    if (ipfsHashMD) {
-      console.log('uploadToServer', ipfsHashMD)
-      await mintNFT(`ipfs://${ipfsHashMD}`);
-    }
+    const ipfsHashMD = ''
+    // const ipfsHashMD = await uploadToServer(svgString, title);
+    // if (ipfsHashMD) {
+    await mintNFT(`ipfs://${ipfsHashMD}`);
+    return true;
+    // }
   };
-
-  // const handleMint = async () => {
-  //   const ipfsTokenURI = 'ipfs://bafkreiesuxfdkg7fz2zacjum5y37cjopavm5s3uwmtrwgsjjnufz46t7om';
-  //   await mintNFT(ipfsTokenURI);
-  // };
 
   return (
     <div>
       <Header />
       <Canvas shape={shape} size={size} color={color} setSvgString={setSvgString} />
-      <button onClick={handleUpload} disabled={uploading}>
-        {uploading || loading ? 'Minting....' : 'Mint The Aaarto...'}
-      </button>
-      {uploadError && <p>{uploadError}</p>}
-      <label>
-        Title
-        <input
-          type="text"
-          value={title}
-          onChange={({ target }) => setTitle(target.value)}
-          placeholder="Title"
-        />
-      </label>
-      {/* <button onClick={handleMint} disabled={loading}>
-        {loading ? 'Minting...' : 'Mint NFT'}
-      </button> */}
-      {transactionHash && (
-        <p>
-          Transaction Hash:{' '}
-          <a href={`https://sepolia.etherscan.io/tx/${transactionHash}`} target="_blank" rel="noopener noreferrer">
-            {transactionHash}
-          </a>
-        </p>
-      )}
-      {transactionReceipt && <p>Transaction confirmed in block: {transactionReceipt.blockNumber}</p>}
-      {errorMessage && <p>Error: {errorMessage}</p>}
       <ControlPanel
         account={account}
-        connectWallet={connectWallet}
-        openMetaMask={openMetaMask}
+        handleUpload={handleUpload}
+        uploading={uploading}
+        loading={loading}
         shape={shape}
         setShape={setShape}
         size={size}
         setSize={setSize}
         color={color}
         setColor={setColor}
+        transactionHash={transactionHash}
+        transactionReceipt={transactionReceipt}
+        errorMessage={errorMessage}
+        uploadError={uploadError}
+        title={title}
+        setTitle={setTitle}
       />
     </div>
   );

@@ -18,8 +18,9 @@ const defaultProps = {
     color: '#cccccc',
     setColor: mockSetColor,
     account: '',
-    connectWallet: mockConnectWallet,
-    openMetaMask: mockOpenMetaMask,
+    handleUpload:()=>{return true},
+    uploading: true,
+    loading:true
 };
 
 describe('ControlPanel', () => {
