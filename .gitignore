@@ -4,6 +4,6 @@
 
 npm-debug.log*
 
-src/util/aaarto.config.json
-
 .env
+
+.vscode/
