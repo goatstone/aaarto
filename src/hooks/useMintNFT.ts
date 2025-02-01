@@ -1,6 +1,6 @@
 // hooks/useMintNFT.js
 import { useState } from 'react';
-import { ethers, getAccountPath } from 'ethers';
+import { ethers } from 'ethers';
 import contractArtifact from '../../artifacts/contracts/AaartoNFT.sol/AaartoNFT.json';
 
 const errorMessages = {
@@ -22,12 +22,12 @@ const useMintNFT = () => {
     const mintNFT = async (ipfsTokenURI: any) => {
         try {
             setLoading(true);
-            console.log('a', window.ethereum)
+            console.log('a', window.ethereum);
             // Check if MetaMask is available
             if (typeof window.ethereum === 'undefined') {
                 throw new Error(errorMessages.notInstalled);
             }
-            console.log('a', window.ethereum )
+            console.log('a', window.ethereum);
             // Request account access if needed
             // TODO check if account access exists before requesting, set error
             // window.ethereum._state.accounts;
@@ -44,7 +44,7 @@ const useMintNFT = () => {
             // Ensure the user is connected to Sepolia testnet (chainId 11155111)
             if (chainId !== 11155111n) {
                 try {
-                    setError(errorMessages.networkSwitch)
+                    setError(errorMessages.networkSwitch);
                     // Prompt the user to switch to Sepolia
                     await window.ethereum.request({
                         method: 'wallet_switchEthereumChain',
@@ -85,7 +85,7 @@ const useMintNFT = () => {
             setTransactionReceipt(receipt);
             console.log('Transaction confirmed in block:', receipt.blockNumber);
         } catch (error) {
-            setError(errorMessages.general);
+            setError(`${errorMessages.general} ${error}`);
         } finally {
             setLoading(false);
         }

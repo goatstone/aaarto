@@ -7,7 +7,7 @@ interface UploadResponse {
 const errorMessages = {
   network: "Error: Could not access network",
   general: "Error: An error occured whild trying to upload assest"
-}
+};
 const useUpload = () => {
   const [uploading, setUploading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -24,7 +24,7 @@ const useUpload = () => {
       const response = await axios.post<UploadResponse>('http://localhost:5000/upload', data);
       return response.data.ipfsHashMD;
     } catch (err: any) {
-      const errMsg= err.message as string
+      const errMsg= err.message as string;
       let userMessage = errorMessages.general;
       if(errMsg.includes('Network Error')){
         userMessage = errorMessages.network;
