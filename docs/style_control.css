@@ -2,27 +2,18 @@ section {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #fff;
-  background-color: #555;
-  border-radius: 0.5em;
-  padding: 0.25em;
-  margin: 0.1em;
-}
-
-section.panel {
-  display: flex;
-  justify-content: space-evenly;
   flex-wrap: wrap;
-  width: 100%;
-  max-width: 700px;
-  background-color: gray;
-  padding: 0;
+  color: #fff;
+  background-color: #666;
+  border-radius: 0.3em;
+  padding: 0.05em;
+  margin: 0.1em;
 }
 
 section label {
   background: #333;
   border-radius: 0.5em;
-  padding: 0.25em;
+  padding: 0.05em 0.5em;
   margin: 0.1em;
 }
 
@@ -38,10 +29,13 @@ section button {
   background-color: #333;
   border-radius: 0.5em;
 }
-
+section input {
+  margin: 1em 0.5em;
+  border-radius: 0.3em;
+}
 section input[type=text] {
-  font-size: 1.25em;
+  font-size: 1em;
   font-weight: 800;
   margin: 0.5em;
-  padding: 0.25em
+  padding: 0.25em;
 }
