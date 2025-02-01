@@ -1,3 +1,7 @@
+section.controls{
+  background-color: #333;
+  max-width: 95%;
+}
 section {
   display: flex;
   justify-content: center;
