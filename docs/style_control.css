@@ -56,3 +56,8 @@ section input[type=text] {
 .mint_control button:hover {
   cursor: pointer;
 }
+
+.success_message {
+  font-size: 1.1em;
+  font-weight: 900;
+}

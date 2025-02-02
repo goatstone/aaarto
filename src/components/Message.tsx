@@ -31,15 +31,14 @@ const Message: React.FC<MessageProps> = ({
         {uploading && <p>Status: Uploading</p>}
         {loading && <p>Status: Minting</p>}
         {transactionHash && (
-          <p>
-            Transaction Hash:
+          <p className="success_message">
+            Minting Success! Transaction Hash:
             <a href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
               target="_blank" rel="noopener noreferrer">
               {transactionHash}
             </a>
           </p>
         )}
-        {transactionReceipt && <p>Transaction confirmed in block: {transactionReceipt.blockNumber}</p>}
       </section>
       <section>
         {errorMessage && <p>{errorMessage}</p>}
