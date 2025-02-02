@@ -7,7 +7,8 @@ const errorMessages = {
     notInstalled: 'MetaMask is not installed. Please install it to use this app.',
     accountAccess: 'Connect MetaMask account with this site.',
     networkSwitch: 'Please switch to the Sepolia network.',
-    general: 'An error occured during minting.'
+    general: 'An error occured during minting.',
+    userCancel: 'The request has been cancelled.'
 };
 // Aaarto contract address
 const contractAddress = '0x3ee122AEB70e725b7eb99a863d46A9D839B0fdA3';
@@ -22,18 +23,14 @@ const useMintNFT = () => {
     const mintNFT = async (ipfsTokenURI: any) => {
         try {
             setLoading(true);
-            console.log('a', window.ethereum);
             // Check if MetaMask is available
             if (typeof window.ethereum === 'undefined') {
                 throw new Error(errorMessages.notInstalled);
             }
-            console.log('a', window.ethereum);
             // Request account access if needed
             // TODO check if account access exists before requesting, set error
-            // window.ethereum._state.accounts;
             setError(errorMessages.accountAccess);
             const userAccount = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            console.log('x', userAccount);
             setAccount(userAccount);
             setError('');
             // Create a provider and signer from MetaMask
@@ -83,9 +80,13 @@ const useMintNFT = () => {
             // Wait for the transaction to be mined
             const receipt = await txResponse.wait();
             setTransactionReceipt(receipt);
-            console.log('Transaction confirmed in block:', receipt.blockNumber);
-        } catch (error) {
-            setError(`${errorMessages.general} ${error}`);
+        } catch (error: any) {
+            if (error.message.includes('user rejected action')) {
+                setError(errorMessages.userCancel);
+            }
+            else {
+                setError(errorMessages.general);
+            }
         } finally {
             setLoading(false);
         }

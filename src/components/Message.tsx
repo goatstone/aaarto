@@ -23,7 +23,9 @@ const Message: React.FC<MessageProps> = ({
   return (
     <section>
       <section>
-        <h3>Connected Account: {account}</h3>
+        <h3>
+          {account ? `Connected Account : ${account}` : 'No account connected'}
+        </h3>
       </section>
       <section>
         {uploading && <p>Status: Uploading</p>}
@@ -40,8 +42,8 @@ const Message: React.FC<MessageProps> = ({
         {transactionReceipt && <p>Transaction confirmed in block: {transactionReceipt.blockNumber}</p>}
       </section>
       <section>
-        {errorMessage && <p>Mint error: {errorMessage}</p>}
-        {uploadError && <p>Upload error: {uploadError}</p>}
+        {errorMessage && <p>{errorMessage}</p>}
+        {uploadError && <p>{uploadError}</p>}
       </section>
     </section>
   );

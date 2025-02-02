@@ -47,8 +47,12 @@ section input[type=text] {
   padding: 0.25em;
 }
 
-.mint_control button{
+.mint_control button {
   font-size: 1.1em;
   font-weight: 900;
   background-color: blue;
+}
+
+.mint_control button:hover {
+  cursor: pointer;
 }
