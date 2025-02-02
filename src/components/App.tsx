@@ -24,15 +24,13 @@ const App: React.FC = () => {
 
   const handleUpload = async () => {
     if (!svgString) {
-      console.log('SVG or Title is missing');
       return false;
     }
-    const ipfsHashMD = '';
-    // const ipfsHashMD = await uploadToServer(svgString, title);
-    // if (ipfsHashMD) {
-    await mintNFT(`ipfs://${ipfsHashMD}`);
-    return true;
-    // }
+    const ipfsHashMD = await uploadToServer(svgString, title);
+    if (ipfsHashMD) {
+      await mintNFT(`ipfs://${ipfsHashMD}`);
+      return true;
+    }
   };
 
   return (
