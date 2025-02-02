@@ -1,15 +1,21 @@
-.canvas {
-  width: 500px;
-  height: 500px;
-}
 body {
   font-family: "Courier New", Courier, monospace;
   background-color: #111;
   margin: 0;
 }
+
+body>div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #444;
+}
+
 header {
   width: 100%;
 }
+
 h1 {
   background-color: rgba(100, 100, 100, 0.5);
   width: 100%;
@@ -19,58 +25,14 @@ h1 {
   font-size: 1.5em;
   color: #eee;
 }
-a{
-    font-size: 0.75em;
-    text-decoration: none;
-    color: #ccc;
-    padding: 0.1em;
-}
-div {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  background-color: gray;
-}
-svg {
-  cursor: crosshair;
-}
-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  background-color: #555;
-  border-radius: 0.5em;
-  padding: 0.25em;
-  margin: 0.1em;
-}
-section.panel {
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  width: 100%;
-  max-width: 700px;
-  background-color: gray;
-  padding: 0;
-}
-section label {
-  background: #333;
-  border-radius: 0.5em;
-  padding: 0.25em;
-  margin: 0.1em;
-}
-section h3, h4 {
-  margin: 0 0.25em;
+
+a {
+  font-size: 0.75em;
+  text-decoration: none;
+  color: #ccc;
+  padding: 0.1em;
 }
 
-section button {
-  margin: 0.5em;  
-  padding: 0.5em;
-  color: #eee;
-  background-color: #333;
-  border-radius: 0.5em;
-}
-section input {
-  margin: 0.5em;  
+svg {
+  cursor: crosshair;
 }

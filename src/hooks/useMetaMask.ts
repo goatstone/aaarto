@@ -5,13 +5,14 @@ const useMetaMask = () => {
     const [account, setAccount] = useState<string | null>(null);
 
     // Initialize MetaMask SDK with dapp metadata and Infura API key
-    const MMSDK = new MetaMaskSDK({
-        dappMetadata: {
-            name: "Example JavaScript Dapp",
-            url: window.location.href,
-        },
-        infuraAPIKey: 'INFURA_API_KEY',
-    });
+    // TODO is this needed?
+    // const MMSDK = new MetaMaskSDK({
+    //     dappMetadata: {
+    //         name: "Example JavaScript Dapp",
+    //         url: window.location.href,
+    //     },
+    //     infuraAPIKey: 'INFURA_API_KEY',
+    // });
 
     // Function to connect the user's MetaMask wallet
     const connectWallet = async () => {

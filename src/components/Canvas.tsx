@@ -1,8 +1,13 @@
-import React, { JSX, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 
-type CanvasProps = { shape: string, size: number, color: string }
+type CanvasProps = {
+    shape: string;
+    size: number;
+    color: string;
+    setSvgString: React.Dispatch<React.SetStateAction<string>>;
+};
 
-const Canvas: React.FC<CanvasProps> = ({ shape, size, color }) => {
+const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString }) => {
 
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
     const removeElement = (id: string) => {
@@ -32,17 +37,22 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color }) => {
         }
     };
 
-    return (<svg 
-        data-testid="canvas"
-        data-shape={shape}
-        data-size={size.toString()}
-        data-color={color}
-        className='canvas'
+    useEffect(() => {
+        const svgElement = document.getElementsByTagName('svg')[0];
+        const serializer = new XMLSerializer();
+        if (svgElement) {
+            setSvgString(serializer.serializeToString(svgElement));
+        }
+    }, [SVGElements, setSvgString]);
+
+    return (<svg
+        width="500"
+        height="500"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         onClick={handleCanvasClick}
     >
-        <rect id="canvas" width="100%" height="100%" fill="white" />
+        <rect width="100%" height="100%" fill="white" />
         {SVGElements.map(item => item)}
     </svg>);
 };

@@ -1,4 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
+
+const labels = {
+    mint: "Mint The Aaarto",
+    minting: "Minting"
+};
 
 type ControlPanelProps = {
     shape: string,
@@ -8,8 +13,15 @@ type ControlPanelProps = {
     color: string,
     setColor: React.Dispatch<React.SetStateAction<string>>,
     account: string | null,
-    connectWallet: () => Promise<void>,
-    openMetaMask: () => Promise<void>,
+    handleUpload: () => {},
+    uploading: boolean,
+    loading: boolean,
+    transactionHash: string | null,
+    transactionReceipt: any,
+    errorMessage: string | null,
+    uploadError: string | null
+    title: string,
+    setTitle: React.Dispatch<React.SetStateAction<string>>,
 };
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -20,14 +32,31 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     color,
     setColor,
     account,
-    connectWallet,
-    openMetaMask
+    handleUpload,
+    uploading,
+    loading,
+    transactionHash,
+    transactionReceipt,
+    errorMessage,
+    uploadError,
+    title,
+    setTitle
 }) => {
-
-    useEffect(() => { connectWallet() }, []);
 
     return (
         <section className="panel">
+            <label>
+                Title
+                <input
+                    type="text"
+                    value={title}
+                    onChange={({ target }) => setTitle(target.value)}
+                    placeholder="Title"
+                />
+            </label>
+            <button onClick={handleUpload} disabled={uploading || loading}>
+                {uploading || loading ? labels.minting : labels.mint}
+            </button>
             <section id="shape">
                 <label>
                     Circle
@@ -81,20 +110,20 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     />
                 </label>
             </section>
-            <section id="mint">
-                <button onClick={connectWallet}>
-                    Connect to MetaMask
-                </button>
-                <button onClick={openMetaMask}>
-                    Open MetaMask
-                </button>
-                <button disabled>
-                    Create
-                </button>
-            </section>
             <section id="information" >
                 <h4>Connected Account: {account}</h4>
             </section>
+            {transactionHash && (
+                <p>
+                    Transaction Hash:{' '}
+                    <a href={`https://sepolia.etherscan.io/tx/${transactionHash}`} target="_blank" rel="noopener noreferrer">
+                        {transactionHash}
+                    </a>
+                </p>
+            )}
+            {transactionReceipt && <p>Transaction confirmed in block: {transactionReceipt.blockNumber}</p>}
+            {errorMessage && <p>{errorMessage}</p>}
+            {uploadError && <p>{uploadError}</p>}
         </section>
     );
 };
