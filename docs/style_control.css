@@ -1,7 +1,8 @@
-section.controls{
+section.controls {
   background-color: #333;
   max-width: 95%;
 }
+
 section {
   display: flex;
   justify-content: center;
@@ -33,13 +34,21 @@ section button {
   background-color: #333;
   border-radius: 0.5em;
 }
+
 section input {
   margin: 1em 0.5em;
   border-radius: 0.3em;
 }
+
 section input[type=text] {
   font-size: 1em;
   font-weight: 800;
   margin: 0.5em;
   padding: 0.25em;
+}
+
+.mint_control button{
+  font-size: 1.1em;
+  font-weight: 900;
+  background-color: blue;
 }

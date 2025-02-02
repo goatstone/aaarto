@@ -36,11 +36,10 @@ const App: React.FC = () => {
   };
 
   return (
-    <div>
+    <>
       <Header />
       <Canvas shape={shape} size={size} color={color} setSvgString={setSvgString} />
       <section className='controls'>
-
         <CanvasControl
           shape={shape}
           setShape={setShape}
@@ -67,8 +66,7 @@ const App: React.FC = () => {
           uploadError={uploadError}
         />
       </section>
-
-    </div>
+    </>
   );
 };
 

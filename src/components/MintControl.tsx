@@ -18,7 +18,7 @@ const MintControl: React.FC<MintControlProps> = ({
 }) => {
 
   return (
-    <section>
+    <section className="mint_control">
       <section>
         <button onClick={handleUpload} disabled={uploading || loading}>
           {uploading || loading ? labels.minting : labels.mint}
