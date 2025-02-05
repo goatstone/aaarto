@@ -22,7 +22,7 @@ const metadata = {
   image: '',
   title: ''
 };
-app.post('/upload', async (req, res) => {
+app.post('/server', async (req, res) => {
   try {
     const { title, svgString } = req.body;
     metadata.title = title;
