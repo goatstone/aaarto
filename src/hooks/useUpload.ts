@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
+import config from 'config.json';
 
 interface UploadResponse {
   ipfsHashMD: string;
 }
 const errorMessages = {
   network: "Error: Could not access network",
-  general: "Error: An error occured whild trying to upload assest"
+  general: "Error: An error occured while trying to upload the assest"
 };
 const useUpload = () => {
   const [uploading, setUploading] = useState<boolean>(false);
@@ -21,12 +22,12 @@ const useUpload = () => {
     };
 
     try {
-      const response = await axios.post<UploadResponse>('http://localhost:5000/upload', data);
+      const response = await axios.post<UploadResponse>(`${config.serverHost}/server`, data);
       return response.data.ipfsHashMD;
     } catch (err: any) {
-      const errMsg= err.message as string;
+      const errMsg = err.message as string;
       let userMessage = errorMessages.general;
-      if(errMsg.includes('Network Error')){
+      if (errMsg.includes('Network Error')) {
         userMessage = errorMessages.network;
       }
       setUploadError(userMessage);
