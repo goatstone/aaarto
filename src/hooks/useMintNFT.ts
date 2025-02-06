@@ -12,6 +12,7 @@ const errorMessages = {
 };
 // Aaarto contract address
 const contractAddress = '0x3ee122AEB70e725b7eb99a863d46A9D839B0fdA3';
+const platformFee = ethers.parseEther("0.001"); // Set the platform fee in ether
 
 const useMintNFT = () => {
     const [account, setAccount] = useState<string | null>(null);
@@ -74,8 +75,11 @@ const useMintNFT = () => {
             }
             const AaartoNFTContract = new ethers.Contract(contractAddress, contractArtifact.abi, signer);
             const userAddress = await signer.getAddress();
-            // Call the contracts' preSafeMint function
+            // Call the contract's preSafeMint function with the platform fee
             const txResponse = await AaartoNFTContract.preSafeMint(userAddress, ipfsTokenURI);
+            // const txResponse = await AaartoNFTContract.preSafeMint(userAddress, ipfsTokenURI, {
+            //     value: platformFee // Set msg.value to the platform fee
+            // });
             setTransactionHash(txResponse.hash);
             // Wait for the transaction to be mined
             const receipt = await txResponse.wait();

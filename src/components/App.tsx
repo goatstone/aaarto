@@ -26,11 +26,12 @@ const App: React.FC = () => {
     if (!svgString) {
       return false;
     }
-    const ipfsHashMD = await uploadToServer(svgString, title);
-    if (ipfsHashMD) {
+    // const ipfsHashMD = await uploadToServer(svgString, title);
+    const ipfsHashMD = 'XXXX';
+    // if (ipfsHashMD) {
       await mintNFT(`ipfs://${ipfsHashMD}`);
-      return true;
-    }
+      // return true;
+    // }
   };
 
   return (
