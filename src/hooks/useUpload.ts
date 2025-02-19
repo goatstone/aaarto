@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import config from './config.json';
 
 interface UploadResponse {
   ipfsHashMD: string;
@@ -22,7 +21,7 @@ const useUpload = () => {
     };
 
     try {
-      const response = await axios.post<UploadResponse>(`${config.serverHost}/server`, data);
+      const response = await axios.post<UploadResponse>('/server', data);
       return response.data.ipfsHashMD;
     } catch (err: any) {
       const errMsg = err.message as string;
