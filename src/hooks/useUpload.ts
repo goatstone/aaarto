@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import config from 'config.json';
+import config from './config.json';
 
 interface UploadResponse {
   ipfsHashMD: string;
