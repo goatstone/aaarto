@@ -46,8 +46,8 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString }) => 
     }, [SVGElements, setSvgString]);
 
     return (<svg
-        width="500"
-        height="500"
+        width="400"
+        height="400"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         onClick={handleCanvasClick}
