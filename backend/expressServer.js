@@ -22,6 +22,16 @@ const metadata = {
   image: '',
   title: ''
 };
+
+app.get('/server_status', (req, res) => {
+  const uptime = process.uptime(); // Server uptime in seconds
+  const status = {
+    message: 'Server is running',
+    uptime: `${Math.floor(uptime / 60)} minutes ${Math.floor(uptime % 60)} seconds`
+  };
+  console.log('Server status check');
+  res.json(status);
+});
 app.post('/server', async (req, res) => {
   try {
     const { title, svgString } = req.body;
