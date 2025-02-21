@@ -18,11 +18,20 @@ app.use(express.json({ limit: '50mb' }));
 const port = 5000;
 
 const metadata = {
-  name: "Aaarto",
-  image: '',
-  title: ''
+  name: "",
+  image: "",
+  description: "",
+  attributes: [
+    {
+      trait_type: "Aaarto Art",
+      value: "NFT Art created at https://aaarto.art",
+    },
+    {
+      trait_type: "Artist Name",
+      value: "",
+    },
+  ],
 };
-
 app.get('/server_status', (req, res) => {
   const uptime = process.uptime(); // Server uptime in seconds
   const status = {
@@ -34,13 +43,15 @@ app.get('/server_status', (req, res) => {
 });
 app.post('/server', async (req, res) => {
   try {
-    const { title, svgString } = req.body;
-    metadata.title = title;
+    const { name, svgString, description, artistName } = req.body;
+    metadata.name = name;
+    metadata.description = description;
+    metadata.attributes[1].value = artistName;
 
     // SVG file, upload to Pinata, get a hash 
     const formDataSVG = new FormData();
     formDataSVG.append('file', Buffer.from(svgString), 'image.svg');
-    formDataSVG.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${title}` }));
+    formDataSVG.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${name}` }));
     formDataSVG.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
     const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formDataSVG, {
       headers: {
@@ -58,7 +69,7 @@ app.post('/server', async (req, res) => {
     const formDataMD = new FormData();
     const jsonBuffer = Buffer.from(JSON.stringify(metadata));
     formDataMD.append("file", jsonBuffer, "data.json");
-    formDataMD.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${title} metaData` }));
+    formDataMD.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${name} metaData` }));
     formDataMD.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
     const responseMD = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formDataMD, {
       headers: {
@@ -72,7 +83,7 @@ app.post('/server', async (req, res) => {
     return res.status(200).json({ ipfsHashMD })
   } catch (error) {
 
-    return res.status(500).json({ error: 'Failed to upload to Pinata' });
+    return res.status(500).json({ error: `${error}Failed to upload to Pinata` });
   }
 });
 

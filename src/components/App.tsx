@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [shape, setShape] = useState<string>("circle");
   const [size, setSize] = useState<number>(70);
   const [color, setColor] = useState<string>("#cccccc");
-  const [title, setTitle] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [artistName, setArtistName] = useState<string>("");
   const [svgString, setSvgString] = useState<string>("");
@@ -20,7 +20,12 @@ const App: React.FC = () => {
     useMintNFT();
 
   const handleUpload = async (): Promise<void> => {
-    const ipfsHashMD = await uploadToServer(svgString, title);
+    const ipfsHashMD = await uploadToServer(
+      svgString,
+      name,
+      description,
+      artistName
+    );
     if (ipfsHashMD) {
       await mintNFT(`ipfs://${ipfsHashMD}`);
     }
@@ -48,12 +53,12 @@ const App: React.FC = () => {
           color={color}
           setColor={setColor}
         />
-        <TitleControl title={title} setTitle={setTitle} />
+        <TitleControl title={name} setTitle={setName} />
         <section>
           <label>
             Description
             <textarea
-              value={description} // The value attribute is bound to the state variable 'text'
+              value={description}
               onChange={({ target }) => setDescription(target.value)}
               rows={2}
               cols={32}
