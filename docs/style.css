@@ -16,16 +16,6 @@ header {
   width: 100%;
 }
 
-/* h1 {
-  background-color: rgba(100, 100, 100, 0.5);
-  width: 100%;
-  text-align: center;
-  padding: 0.1em;
-  margin: 0;
-  font-size: 1.5em;
-  color: #eee;
-} */
-
 a {
   font-size: 0.75em;
   text-decoration: none;
@@ -36,12 +26,3 @@ a {
 svg {
   cursor: crosshair;
 }
-
-/* header button {
-  font-size: 0.9em;
-  font-weight: 900;
-  color: #fff;
-  background-color: darkgreen;
-  cursor: pointer;
-  border-radius: 0.25em;
-} */

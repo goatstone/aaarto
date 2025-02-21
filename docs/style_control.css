@@ -26,14 +26,6 @@ section h3,
 h4 {
   margin: 0 0.25em;
 }
-/* 
-section button {
-  margin: 0.5em;
-  padding: 0.5em;
-  color: #eee;
-  background-color: #333;
-  border-radius: 0.5em;
-} */
 
 section input {
   margin: 1em 0.5em;
@@ -46,16 +38,6 @@ section input[type=text] {
   margin: 0.5em;
   padding: 0.25em;
 }
-
-/* .mint_control button {
-  font-size: 1.1em;
-  font-weight: 900;
-  background-color: blue;
-} */
-
-/* .mint_control button:hover {
-  cursor: pointer;
-} */
 
 .success_message {
   font-size: 1.1em;
