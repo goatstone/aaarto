@@ -3,7 +3,6 @@ import Canvas from "@components/Canvas";
 import Header from "@components/Header";
 import CanvasControl from "@components/CanvasControl";
 import TitleControl from "@components/TitleControl";
-import MintControl from "./MintControl";
 import Message from "./Message";
 import useMintNFT from "@hooks/useMintNFT";
 import useUpload from "@hooks/useUpload";
@@ -27,7 +26,11 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <Header
+        handleUpload={handleUpload}
+        loading={loading}
+        uploading={uploading}
+      />
       <Canvas
         shape={shape}
         size={size}
@@ -44,11 +47,7 @@ const App: React.FC = () => {
           setColor={setColor}
         />
         <TitleControl title={title} setTitle={setTitle} />
-        <MintControl
-          handleUpload={handleUpload}
-          loading={loading}
-          uploading={uploading}
-        />
+
         <Message
           account={account}
           uploading={uploading}
