@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { getTheme, mergeStyleSets, FontWeights, Modal } from "@fluentui/react";
+import { getTheme, mergeStyleSets, FontWeights } from "@fluentui/react";
 import MintControl, { MintControlProps } from "./MintControl";
+import AaartoModal from "@components/AaartoModal";
 
 const theme = getTheme();
 const headerStyles = mergeStyleSets({
@@ -25,8 +26,7 @@ const headerStyles = mergeStyleSets({
     cursor: "pointer",
   },
 });
-
-const modalStyles = mergeStyleSets({
+const modalContentStyles = mergeStyleSets({
   container: {
     display: "flex",
     flexFlow: "column nowrap",
@@ -71,13 +71,12 @@ const modalStyles = mergeStyleSets({
     },
   },
 });
-
 const Header: React.FC<MintControlProps> = ({
   handleUpload,
   uploading,
   loading,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState<any>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -95,20 +94,15 @@ const Header: React.FC<MintControlProps> = ({
           About
         </button>
       </header>
-      <Modal
-        isOpen={isModalOpen}
-        onDismiss={() => setIsModalOpen(false)}
-        isBlocking={false}
-        containerClassName={modalStyles.container}
-      >
-        <div className={modalStyles.header}>
-          <h2 className={modalStyles.heading}>Aaarto</h2>
+      <AaartoModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+        <div className={modalContentStyles.header}>
+          <h2 className={modalContentStyles.heading}>Aaarto</h2>
           <button onClick={() => setIsModalOpen(false)}>X</button>
         </div>
-        <div className={modalStyles.body}>
+        <div className={modalContentStyles.body}>
           <p>
-            Aaarto is an online drawing program that enables the minting of the
-            artwork as a Non-fungible token, an NFT.
+            Aaarto is an online drawing program that enables the minting of
+            the artwork as a Non-fungible token, an NFT.
           </p>
           <p>
             The drawing application aspect of Aaarto enables the creation of art
@@ -132,7 +126,7 @@ const Header: React.FC<MintControlProps> = ({
             Click Here To Find Out More About Aaarto...
           </a>
         </div>
-      </Modal>
+      </AaartoModal>
     </>
   );
 };
