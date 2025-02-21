@@ -12,6 +12,8 @@ const App: React.FC = () => {
   const [size, setSize] = useState<number>(70);
   const [color, setColor] = useState<string>("#cccccc");
   const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [artistName, setArtistName] = useState<string>("");
   const [svgString, setSvgString] = useState<string>("");
   const { uploadToServer, uploading, uploadError } = useUpload();
   const { mintNFT, transactionHash, errorMessage, loading, account } =
@@ -47,7 +49,34 @@ const App: React.FC = () => {
           setColor={setColor}
         />
         <TitleControl title={title} setTitle={setTitle} />
-
+        <section>
+          <label>
+            Description
+            <textarea
+              value={description} // The value attribute is bound to the state variable 'text'
+              onChange={({ target }) => setDescription(target.value)}
+              rows={2}
+              cols={32}
+              placeholder="Description"
+              maxLength={256}
+            >
+              {description}
+            </textarea>
+          </label>
+        </section>
+        <section>
+          <label>
+            Artist Name
+            <input
+              type="text"
+              value={artistName}
+              onChange={({ target }) => setArtistName(target.value)}
+              placeholder="Artist Name"
+              maxLength={256}
+              size={16}
+            />
+          </label>
+        </section>
         <Message
           account={account}
           uploading={uploading}
