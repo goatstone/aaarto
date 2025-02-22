@@ -1,8 +1,32 @@
 import React, { useState } from "react";
-import { getTheme, mergeStyleSets, FontWeights, Modal } from "@fluentui/react";
+import { getTheme, mergeStyleSets, FontWeights } from "@fluentui/react";
+import MintControl, { MintControlProps } from "./MintControl";
+import AaartoModal from "@components/AaartoModal";
 
 const theme = getTheme();
-const contentStyles = mergeStyleSets({
+const headerStyles = mergeStyleSets({
+  container: {
+    display: "flex",
+    flexFlow: "row nowrap",
+    alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor: "#ccc",
+    selectors: {
+      h1: {
+        color: "#111",
+        margin: "0.25em",
+      },
+    },
+  },
+  button: {
+    backgroundColor: "darkgreen",
+    color: "#eee",
+    borderRadius: "10%",
+    fontSize: "1.25em",
+    cursor: "pointer",
+  },
+});
+const modalContentStyles = mergeStyleSets({
   container: {
     display: "flex",
     flexFlow: "column nowrap",
@@ -47,30 +71,38 @@ const contentStyles = mergeStyleSets({
     },
   },
 });
-const Header = () => {
-  const [isModalOpen, setIsModalOpen] = useState<any>(false);
+const Header: React.FC<MintControlProps> = ({
+  handleUpload,
+  uploading,
+  loading,
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
     <>
-      <header>
-        <h1>
-          Aaarto <button onClick={() => setIsModalOpen(true)}>About</button>
-        </h1>
+      <header className={headerStyles.container}>
+        <h1>Aaarto</h1>
+        <MintControl
+          handleUpload={handleUpload}
+          loading={loading}
+          uploading={uploading}
+        />
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className={headerStyles.button}
+        >
+          About
+        </button>
       </header>
-      <Modal
-        isOpen={isModalOpen}
-        onDismiss={() => setIsModalOpen(false)}
-        isBlocking={false}
-        containerClassName={contentStyles.container}
-      >
-        <div className={contentStyles.header}>
-          <h2 className={contentStyles.heading}>Aaarto</h2>
+      <AaartoModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+        <div className={modalContentStyles.header}>
+          <h2 className={modalContentStyles.heading}>Aaarto</h2>
           <button onClick={() => setIsModalOpen(false)}>X</button>
         </div>
-        <div className={contentStyles.body}>
+        <div className={modalContentStyles.body}>
           <p>
-            Aaarto is an online drawing program that enables the minting of the
-            artwork as a Non-fungible token, an NFT.
+            Aaarto is an online drawing program that enables the minting of
+            the artwork as a Non-fungible token, an NFT.
           </p>
           <p>
             The drawing application aspect of Aaarto enables the creation of art
@@ -94,7 +126,7 @@ const Header = () => {
             Click Here To Find Out More About Aaarto...
           </a>
         </div>
-      </Modal>
+      </AaartoModal>
     </>
   );
 };

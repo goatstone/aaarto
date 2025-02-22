@@ -14,13 +14,17 @@ const useUpload = () => {
 
   const uploadToServer = async (
     svgString: string,
-    title: string
+    name: string,
+    description: string,
+    artistName: string
   ): Promise<string | null> => {
     setUploading(true);
 
     const data = {
-      title,
+      name,
       svgString,
+      description,
+      artistName,
     };
 
     try {

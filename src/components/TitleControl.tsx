@@ -24,8 +24,8 @@ const TitleControl: React.FC<TitleControlProps> = ({
             value={title}
             onChange={({ target }) => setTitle(target.value)}
             placeholder="Title"
-            maxLength={32}
-            size={32}
+            maxLength={128}
+            size={16}
           />
         </label>
       </section>
