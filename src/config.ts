@@ -13,12 +13,15 @@ window.env = windowEnv;
 // set default values
 let platformFee = "0.001";
 let network = "sepolia";
+let chainName = "Sepolia Ether";
 if (window.env) {
   platformFee = window.env.platformFee;
   network = window.env.network;
+  chainName = network === "sepolia" ? "Sepolia Ether" : "Polygon";
 }
 if (network === "sepolia") {
   config = {
+    chainNameDisplay: chainName,
     contractArtifact: contractArtifactSepolia,
     platformFee,
     contractAddress: "0x92128cD1BCA8cc406d2223Dcf1558E4d926Dd68f",
@@ -27,10 +30,10 @@ if (network === "sepolia") {
     ethRequestParams: [
       {
         chainId: "0xaa36a7",
-        chainName: "Sepolia Testnet",
+        chainName,
         rpcUrls: ["https://rpc.sepolia.org"],
         nativeCurrency: {
-          name: "Sepolia Ether",
+          name: chainName,
           symbol: "SEP",
           decimals: 18,
         },

@@ -6,13 +6,15 @@ import config from "config";
 const errorMessages = {
   notInstalled: "MetaMask is not installed. Please install it to use this app.",
   accountAccess: "Connect MetaMask account with this site.",
-  networkSwitch: "Please switch to the Sepolia network.",
+  attemptAdd: `Attempting to add the ${config.chainNameDisplay} chain.`,
+  attemptSwitch: `Attempting to switch to the ${config.chainNameDisplay} chain.`,
   general: "An error occurred during minting.",
   userCancel: "The request has been cancelled.",
 };
 // Aaarto contract address
 const contractAddress = config.contractAddress;
-const platformFee = ethers.parseEther(config.platformFee); // Set the platform fee in ether
+// Set the platform fee in ether
+const platformFee = ethers.parseEther(config.platformFee);
 
 const useMintNFT = () => {
   const [account, setAccount] = useState<string | null>(null);
@@ -45,26 +47,27 @@ const useMintNFT = () => {
       // Ensure the user is connected to correct chain
       if (chainId !== config.chainIDBigInt) {
         try {
-          setError(errorMessages.networkSwitch);
-          // Prompt the user to switch to correct chain
+          setError(errorMessages.attemptSwitch);
+          // attempt switch to correct chain
           await window.ethereum.request({
             method: "wallet_switchEthereumChain",
             params: [{ chainId: config.chainIDHex }],
           });
           setError("");
         } catch (e: unknown) {
-          // This error code indicates that the chain has not been added to MetaMask
+          setError(errorMessages.attemptAdd);
+          // This error code 4902 indicates that the requested chain
+          // has not been switched in MetaMask therefore call wallet_addEthereumChain
           if (e instanceof Error && "code" in e && e.code === 4902) {
             await window.ethereum.request({
               method: "wallet_addEthereumChain",
               params: config.ethRequestParams,
             });
-          } else {
-            throw e;
+            setError("");
           }
         }
       }
-      // Create and instance of the contract
+      // Create an instance of the contract
       const AaartoNFTContract = new ethers.Contract(
         contractAddress,
         config.contractArtifact.abi,
@@ -72,7 +75,7 @@ const useMintNFT = () => {
       );
       // Get the signers' address
       const userAddress = await signer.getAddress();
-      // Call the contract's preSafeMint function
+      // Call the contracts' preSafeMint function
       const txResponse: TransactionResponse =
         await AaartoNFTContract.preSafeMint(userAddress, ipfsTokenURI, {
           value: platformFee, // Set msg.value(in contract) to the platform fee
