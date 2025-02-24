@@ -8,8 +8,8 @@ export type WindowEnv = { platformFee: string; network: string };
 
 let config: any;
 // TODO test only, remove the next line for production
-const windowEnv: WindowEnv = { network: "sepolia", platformFee: "0.002" };
-window.env = windowEnv;
+// const windowEnv: WindowEnv = { network: "sepolia", platformFee: "0.002" };
+// window.env = windowEnv;
 // set default values
 let platformFee = "0.001";
 let network = "sepolia";
