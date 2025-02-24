@@ -18,20 +18,25 @@ if (window.env) {
   network = window.env.network;
 }
 if (network === "sepolia") {
-  console.log(window.env.network);
   config = {
     contractArtifact: contractArtifactSepolia,
     platformFee,
     contractAddress: "0x92128cD1BCA8cc406d2223Dcf1558E4d926Dd68f",
+    chainIDBigInt: 1155111n,
     chainIDHex: "0xaa36a7",
-    chainName: "Sepolia Testnet",
-    rpcUrls: ["https://rpc.sepolia.org"],
-    nativeCurrency: {
-      name: "Sepolia Ether",
-      symbol: "SEP",
-      decimals: 18,
-    },
-    blockExplorerUrls: ["https://sepolia.etherscan.io"],
+    ethRequestParams: [
+      {
+        chainId: "0xaa36a7",
+        chainName: "Sepolia Testnet",
+        rpcUrls: ["https://rpc.sepolia.org"],
+        nativeCurrency: {
+          name: "Sepolia Ether",
+          symbol: "SEP",
+          decimals: 18,
+        },
+        blockExplorerUrls: ["https://sepolia.etherscan.io"],
+      },
+    ],
   };
 }
 
