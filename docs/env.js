@@ -1,5 +1,5 @@
 // public/env.js
 window.env = {
   network: "sepolia",
-  platformFee: "0.0011",
+  platformFee: "0.0012",
 };
