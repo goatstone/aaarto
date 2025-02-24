@@ -1,8 +1,14 @@
 // global.d.ts
-interface Ethereum {
+import { WindowEnv } from "config";
+
+declare global {
+  interface Ethereum {
     request: (args: { method: string; params?: any[] }) => Promise<any>;
+  }
+  interface Window {
+    env: WindowEnv;
+    ethereum: Ethereum;
+  }
 }
 
-interface Window {
-    ethereum: Ethereum;
-}
+export {};

@@ -1,19 +1,20 @@
 // hooks/useMintNFT.js
 import { useState } from "react";
 import { ethers, TransactionReceipt, TransactionResponse } from "ethers";
-import contractArtifact from "../../artifacts/contracts/AaartoNFTV4.sol/AaartoNFTV4.json";
+import config from "../config";
 
 const errorMessages = {
   notInstalled: "MetaMask is not installed. Please install it to use this app.",
   accountAccess: "Connect MetaMask account with this site.",
-  networkSwitch: "Please switch to the Sepolia network.",
+  attemptAdd: `Attempting to add the ${config.chainNameDisplay} chain.`,
+  attemptSwitch: `Attempting to switch to the ${config.chainNameDisplay} chain.`,
   general: "An error occurred during minting.",
   userCancel: "The request has been cancelled.",
 };
 // Aaarto contract address
-// payable contract
-const contractAddress = "0x92128cD1BCA8cc406d2223Dcf1558E4d926Dd68f";
-const platformFee = ethers.parseEther("0.001"); // Set the platform fee in ether
+const contractAddress = config.contractAddress;
+// Set the platform fee in ether
+const platformFee = ethers.parseEther(config.platformFee);
 
 const useMintNFT = () => {
   const [account, setAccount] = useState<string | null>(null);
@@ -43,51 +44,41 @@ const useMintNFT = () => {
       const signer = await provider.getSigner();
       // Get the network the user is connected to
       const { chainId } = await provider.getNetwork();
-      // Ensure the user is connected to Sepolia testnet (chainId 11155111)
-      if (chainId !== 11155111n) {
+      // Ensure the user is connected to correct chain
+      if (chainId !== config.chainIDBigInt) {
         try {
-          setError(errorMessages.networkSwitch);
-          // Prompt the user to switch to Sepolia
+          setError(errorMessages.attemptSwitch);
+          // attempt switch to correct chain
           await window.ethereum.request({
             method: "wallet_switchEthereumChain",
-            params: [{ chainId: "0xaa36a7" }], // Hexadecimal chain ID of Sepolia
+            params: [{ chainId: config.chainIDHex }],
           });
           setError("");
         } catch (e: unknown) {
-          // This error code indicates that the chain has not been added to MetaMask
+          setError(errorMessages.attemptAdd);
+          // This error code 4902 indicates that the requested chain
+          // has not been switched in MetaMask therefore call wallet_addEthereumChain
           if (e instanceof Error && "code" in e && e.code === 4902) {
             await window.ethereum.request({
               method: "wallet_addEthereumChain",
-              params: [
-                {
-                  chainId: "0xaa36a7",
-                  chainName: "Sepolia Testnet",
-                  rpcUrls: ["https://rpc.sepolia.org"],
-                  nativeCurrency: {
-                    name: "Sepolia Ether",
-                    symbol: "SEP",
-                    decimals: 18,
-                  },
-                  blockExplorerUrls: ["https://sepolia.etherscan.io"],
-                },
-              ],
+              params: config.ethRequestParams,
             });
-          } else {
-            throw e;
+            setError("");
           }
         }
       }
+      // Create an instance of the contract
       const AaartoNFTContract = new ethers.Contract(
         contractAddress,
-        contractArtifact.abi,
+        config.contractArtifact.abi,
         signer
       );
+      // Get the signers' address
       const userAddress = await signer.getAddress();
-      // Call the contract's preSafeMint function with the platform fee
-      // const txResponse = await AaartoNFTContract.preSafeMint(userAddress, ipfsTokenURI);
+      // Call the contracts' preSafeMint function
       const txResponse: TransactionResponse =
         await AaartoNFTContract.preSafeMint(userAddress, ipfsTokenURI, {
-          value: platformFee, // Set msg.value to the platform fee
+          value: platformFee, // Set msg.value(in contract) to the platform fee
         });
       setTransactionHash(txResponse.hash);
       // Wait for the transaction to be mined
