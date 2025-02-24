@@ -6,6 +6,7 @@ import TitleControl from "@components/TitleControl";
 import Message from "./Message";
 import useMintNFT from "@hooks/useMintNFT";
 import useUpload from "@hooks/useUpload";
+console.log('xxxx');
 
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>("circle");

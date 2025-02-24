@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { ethers, TransactionReceipt, TransactionResponse } from "ethers";
 import contractArtifact from "../../artifacts/contracts/AaartoNFTV4.sol/AaartoNFTV4.json";
+import config from "config";
 
 const errorMessages = {
   notInstalled: "MetaMask is not installed. Please install it to use this app.",
@@ -13,7 +14,7 @@ const errorMessages = {
 // Aaarto contract address
 // payable contract
 const contractAddress = "0x92128cD1BCA8cc406d2223Dcf1558E4d926Dd68f";
-const platformFee = ethers.parseEther("0.001"); // Set the platform fee in ether
+const platformFee = ethers.parseEther("0.002"); // Set the platform fee in ether
 
 const useMintNFT = () => {
   const [account, setAccount] = useState<string | null>(null);
