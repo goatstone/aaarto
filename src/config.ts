@@ -8,8 +8,8 @@ export type WindowEnv = { platformFee: string; network: string };
 
 let config: any;
 // TODO test only, remove the next line for production
-// const windowEnv: WindowEnv = { network: "sepolia", platformFee: "0.002" };
-// window.env = windowEnv;
+const windowEnv: WindowEnv = { network: "polygon", platformFee: "0.0013" };
+window.env = windowEnv;
 // set default values
 let platformFee = "0.001";
 let network = "sepolia";
@@ -17,7 +17,7 @@ let chainName = "Sepolia Ether";
 if (window.env) {
   platformFee = window.env.platformFee;
   network = window.env.network;
-  chainName = network === "sepolia" ? "Sepolia Ether" : "Polygon";
+  chainName = network === "sepolia" ? "Sepolia Ether" : "Polygon Mainnet";
 }
 if (network === "sepolia") {
   config = {
@@ -33,7 +33,7 @@ if (network === "sepolia") {
         chainName,
         rpcUrls: ["https://rpc.sepolia.org"],
         nativeCurrency: {
-          name: chainName,
+          name: "SEP",
           symbol: "SEP",
           decimals: 18,
         },
@@ -41,6 +41,29 @@ if (network === "sepolia") {
       },
     ],
   };
+} else if (network === "polygon") {
+  config = {
+    chainNameDisplay: chainName,
+    contractArtifact: contractArtifactSepolia,
+    platformFee,
+    contractAddress: "0xXXX",
+    chainIDBigInt: 137n,
+    chainIDHex: "0x89",
+    ethRequestParams: [
+      {
+        chainId: "0x89",
+        chainName,
+        rpcUrls: ["https://polygon-rpc.com/"],
+        nativeCurrency: {
+          name: "MATIC",
+          symbol: "MATIC",
+          decimals: 18,
+        },
+        blockExplorerUrls: ["https://polygonscan.com/"],
+      },
+    ],
+  };
+} else {
+  throw "Chain config does not exist";
 }
-
 export default config;
