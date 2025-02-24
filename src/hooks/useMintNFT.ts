@@ -1,7 +1,7 @@
 // hooks/useMintNFT.js
 import { useState } from "react";
 import { ethers, TransactionReceipt, TransactionResponse } from "ethers";
-import config from "config";
+import config from "../config";
 
 const errorMessages = {
   notInstalled: "MetaMask is not installed. Please install it to use this app.",
