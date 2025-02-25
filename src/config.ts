@@ -9,8 +9,8 @@ type Network = "sepolia" | "polygon" | "amoy";
 
 let config: any;
 // TODO test only, remove the next line for production
-const windowEnv: WindowEnv = { network: "polygon", platformFee: "0.0013" };
-window.env = windowEnv;
+// const windowEnv: WindowEnv = { network: "polygon", platformFee: "3.0" };
+// window.env = windowEnv;
 // set default values
 let platformFee = "0.001";
 let network: Network = "sepolia";
@@ -52,7 +52,7 @@ if (network === "sepolia") {
     chainNameDisplay: chainName,
     contractArtifact: contractArtifactSepolia,
     platformFee,
-    contractAddress: "0xXXX",
+    contractAddress: "0x03a9423E9Aac42E9F991D292F8e074808D9ABE7f",
     chainIDBigInt: 137n,
     chainIDHex: "0x89",
     ethRequestParams: [
