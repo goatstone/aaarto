@@ -4,7 +4,7 @@ import Header from "@components/Header";
 import CanvasControl from "@components/CanvasControl";
 import TitleControl from "@components/TitleControl";
 import Message from "./Message";
-import MintControl, { MintControlProps } from "./MintControl";
+import MintControl from "./MintControl";
 import { mergeStyleSets } from "@fluentui/react";
 import AaartoModal from "@components/AaartoModal";
 import AboutInfo from "./AboutInfo";
@@ -45,50 +45,43 @@ const App: React.FC = () => {
   const [artistName, setArtistName] = useState<string>("");
   const [svgString, setSvgString] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [minting, setMinting] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
   const [mintingError, setMintingError] = useState<string | null>(null);
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState<null | string>(null);
+  const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
   type ModalContent = "about" | "minting";
   const modalContents = {
     about: <AboutInfo />,
-    minting: <MintingInfo mintingError={mintingError} />,
+    minting: (
+      <MintingInfo
+        account={account}
+        transactionHash={transactionHash}
+        mintingError={mintingError}
+      />
+    ),
   };
   const [modalContent, setModalContent] = useState<ModalContent>("about");
-  // const handleUpload = async (): Promise<void> => {
-  //   const ipfsHashMD = await uploadToServer(
-  //     svgString,
-  //     name,
-  //     description,
-  //     artistName
-  //   );
-  //   if (ipfsHashMD) {
-  //     await mintNFT(`ipfs://${ipfsHashMD}`);
-  //   }
-  // };
-  // useEffect(() => {
-  //   const a = async () => {
-  //     // Check it MetaMask is installed
-  //     if (typeof window.ethereum === "undefined") {
-  //       throw new Error(errorMessages.notInstalled);
-  //       setM("not installed");
-  //     }
-  //     // Request account access
-  //     setM(errorMessages.accountAccess);
-  //     const userAccount = await window.ethereum.request({
-  //       method: "eth_requestAccounts",
-  //     });
-  //     setM("userAccount: " + userAccount);
-  //   };
-  //   a();
-  // }, []);
+  useEffect(() => {
+    (async () => {
+      // Check if MetaMask is installed, if not throw error
+      checkMetaMaskInstall();
+      // Get the users account
+      const account = await requestAccounts();
+      setAccount(account);
+    })();
+  }, []);
 
-  const useUploadMintV2 = async (
+  const useUploadMint = async (
     svgString: string,
     name: string,
     description: string,
     artistName: string
   ) => {
+    setIsMinting(true);
+    setAccount(null);
+    setTransactionHash(null);
+    setMintingError(null);
     try {
       const ipfsHashMD = await uploadData(
         svgString,
@@ -96,17 +89,26 @@ const App: React.FC = () => {
         description,
         artistName
       );
-      console.log("xx", ipfsHashMD);
       // Check if MetaMask is installed, if not throw error
       checkMetaMaskInstall();
       // Get the users account
       const account = await requestAccounts();
       setAccount(account);
-      await mintNFT(`ipfs://${ipfsHashMD}`);
+      const transactionHash = await mintNFT(`ipfs://${ipfsHashMD}`);
+      if (transactionHash) {
+        setTransactionHash(transactionHash);
+      }
+      setIsMinting(false);
     } catch (error: any) {
-      setMintingError(`Error Minting: ${error.message}`);
+      setMintingError(`Minting Error: ${error.message}`);
     }
   };
+  useEffect(() => {
+    if (!isModalOpen) {
+      setIsMinting(false);
+      setMintingError(null);
+    }
+  }, [isModalOpen]);
   return (
     <>
       <AaartoModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
@@ -114,7 +116,10 @@ const App: React.FC = () => {
       </AaartoModal>
       <Header>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setModalContent("about");
+            setIsModalOpen(true);
+          }}
           className={aboutStyles.button}
         >
           About
@@ -123,9 +128,9 @@ const App: React.FC = () => {
           handleMint={() => {
             setModalContent("minting");
             setIsModalOpen(true);
-            useUploadMintV2(svgString, name, description, artistName);
+            useUploadMint(svgString, name, description, artistName);
           }}
-          isMinting={minting}
+          isMinting={isMinting}
         />
       </Header>
       <Canvas
@@ -172,14 +177,7 @@ const App: React.FC = () => {
             />
           </label>
         </section>
-        <Message
-          account={account}
-          uploading={false}
-          loading={false}
-          transactionHash={"x"}
-          errorMessage={"x"}
-          uploadError={"x"}
-        />
+        <Message account={account} transactionHash={transactionHash} />
       </section>
     </>
   );

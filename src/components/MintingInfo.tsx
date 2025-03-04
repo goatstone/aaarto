@@ -1,5 +1,6 @@
 import React from "react";
 import { FontWeights, getTheme, mergeStyleSets } from "@fluentui/react";
+import MintSuccess from "@components/MintSuccess";
 
 const theme = getTheme();
 const modalContentStyles = mergeStyleSets({
@@ -18,6 +19,7 @@ const modalContentStyles = mergeStyleSets({
       borderTop: `4px solid ${theme.palette.themePrimary}`,
       color: theme.palette.neutralPrimary,
       display: "flex",
+      flexDirection: "column",
       alignItems: "center",
       justifyContent: "space-between",
       fontWeight: FontWeights.semibold,
@@ -52,14 +54,28 @@ const modalContentStyles = mergeStyleSets({
   },
 });
 
-type MintingInfoProps = { mintingError: string | null };
+type MintingInfoProps = {
+  mintingError: string | null;
+  account: string | null;
+  transactionHash: string | null;
+};
 
-const MintingInfo: React.FC<MintingInfoProps> = ({ mintingError }) => {
+const MintingInfo: React.FC<MintingInfoProps> = ({
+  mintingError,
+  account,
+  transactionHash,
+}) => {
   return (
     <>
       <div className={modalContentStyles.header}>
         {!mintingError && (
-          <h2 className={modalContentStyles.heading}>Minting An Aaarto...</h2>
+          <>
+            <h2 className={modalContentStyles.heading}>Minting An Aaarto...</h2>
+            {account && <p>Connected Account: {account}</p>}
+            {transactionHash && (
+              <MintSuccess transactionHash={transactionHash} />
+            )}
+          </>
         )}
       </div>
       {mintingError && (

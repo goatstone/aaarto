@@ -32,8 +32,8 @@ const Header: React.FC<{ children: React.JSX.Element[] }> = ({ children }) => {
     <>
       <header className={headerStyles.container}>
         <h1>Aaarto</h1>
-        {aboutControl}
         {mintControl}
+        {aboutControl}
       </header>
     </>
   );
