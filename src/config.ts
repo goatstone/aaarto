@@ -9,8 +9,8 @@ type Network = "sepolia" | "polygon" | "amoy";
 
 let config: any;
 // TODO test only, remove the next line for production
-// const windowEnv: WindowEnv = { network: "polygon", platformFee: "3.0" };
-// window.env = windowEnv;
+const windowEnv: WindowEnv = { network: "sepolia", platformFee: "0.001" };
+window.env = windowEnv;
 // set default values
 let platformFee = "0.001";
 let network: Network = "sepolia";

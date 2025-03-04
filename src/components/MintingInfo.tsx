@@ -1,5 +1,5 @@
 import React from "react";
-import { mergeStyleSets, FontWeights, getTheme, Modal } from "@fluentui/react";
+import { FontWeights, getTheme, mergeStyleSets } from "@fluentui/react";
 
 const theme = getTheme();
 const modalContentStyles = mergeStyleSets({
@@ -7,6 +7,10 @@ const modalContentStyles = mergeStyleSets({
     display: "flex",
     flexFlow: "column nowrap",
     alignItems: "stretch",
+  },
+  error: {
+    backgroundColor: "red",
+    padding: "1em",
   },
   header: [
     {
@@ -47,37 +51,22 @@ const modalContentStyles = mergeStyleSets({
     },
   },
 });
-export type AaartoModalProps = {
-  isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  children: React.ReactNode;
-};
 
-const modalStyles = mergeStyleSets({
-  container: {
-    display: "flex",
-    flexFlow: "column nowrap",
-    alignItems: "stretch",
-  },
-});
+type MintingInfoProps = { mintingError: string | null };
 
-const AaartoModal: React.FC<AaartoModalProps> = ({
-  isModalOpen,
-  setIsModalOpen,
-  children,
-}) => {
+const MintingInfo: React.FC<MintingInfoProps> = ({ mintingError }) => {
   return (
-    <Modal
-      isOpen={isModalOpen}
-      onDismiss={() => setIsModalOpen(false)}
-      isBlocking={false}
-      containerClassName={modalStyles.container}
-    >
-      <button onClick={() => setIsModalOpen(false)}>X</button>
-      {children}
-    </Modal>
+    <>
+      <div className={modalContentStyles.header}>
+        {!mintingError && (
+          <h2 className={modalContentStyles.heading}>Minting An Aaarto...</h2>
+        )}
+      </div>
+      {mintingError && (
+        <h2 className={modalContentStyles.error}>{mintingError} </h2>
+      )}
+    </>
   );
 };
 
-
-export default AaartoModal;
+export default MintingInfo;

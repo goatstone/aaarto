@@ -23,20 +23,15 @@ const labels = {
 };
 
 export type MintControlProps = {
-  handleUpload: () => Promise<void>;
-  uploading: boolean;
-  loading: boolean;
+  handleMint: () => void;
+  isMinting: boolean;
 };
 
-const MintControl: React.FC<MintControlProps> = ({
-  handleUpload,
-  uploading,
-  loading,
-}) => {
+const MintControl: React.FC<MintControlProps> = ({ handleMint, isMinting }) => {
   return (
     <section className={mintControlStyles.container}>
-      <button onClick={handleUpload} disabled={uploading || loading}>
-        {uploading || loading ? labels.minting : labels.mint}
+      <button onClick={handleMint} disabled={isMinting}>
+        {isMinting ? labels.minting : labels.mint}
       </button>
     </section>
   );

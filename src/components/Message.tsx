@@ -16,7 +16,7 @@ const Message: React.FC<MessageProps> = ({
   transactionHash,
   errorMessage,
   uploadError,
-}) => {
+}) => {                   
   return (
     <section>
       <section>
@@ -29,9 +29,9 @@ const Message: React.FC<MessageProps> = ({
         {loading && <p>Status: Minting</p>}
         {transactionHash && (
           <p className="success_message">
-            Minting Success! Transaction Hash:
+            {/* Minting Success! Transaction Hash: */}
             <a
-              href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
+              href={`https://polygonscan.com/tx/${transactionHash}`}
               target="_blank"
               rel="noopener noreferrer"
             >

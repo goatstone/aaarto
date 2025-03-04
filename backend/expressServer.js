@@ -43,44 +43,44 @@ app.get('/server_status', (req, res) => {
 });
 app.post('/server', async (req, res) => {
   try {
-    const { name, svgString, description, artistName } = req.body;
-    metadata.name = name;
-    metadata.description = description;
-    metadata.attributes[1].value = artistName;
+    // const { name, svgString, description, artistName } = req.body;
+    // metadata.name = name;
+    // metadata.description = description;
+    // metadata.attributes[1].value = artistName;
 
-    // SVG file, upload to Pinata, get a hash 
-    const formDataSVG = new FormData();
-    formDataSVG.append('file', Buffer.from(svgString), 'image.svg');
-    formDataSVG.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${name}` }));
-    formDataSVG.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
-    const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formDataSVG, {
-      headers: {
-        ...formDataSVG.getHeaders(),
-        pinata_api_key: PINATA_API_KEY,
-        pinata_secret_api_key: PINATA_SECRET_API_KEY,
-      },
-    });
-    const ipfsHash = response.data.IpfsHash;
+    // // SVG file, upload to Pinata, get a hash 
+    // const formDataSVG = new FormData();
+    // formDataSVG.append('file', Buffer.from(svgString), 'image.svg');
+    // formDataSVG.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${name}` }));
+    // formDataSVG.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
+    // const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formDataSVG, {
+    //   headers: {
+    //     ...formDataSVG.getHeaders(),
+    //     pinata_api_key: PINATA_API_KEY,
+    //     pinata_secret_api_key: PINATA_SECRET_API_KEY,
+    //   },
+    // });
+    // const ipfsHash = response.data.IpfsHash;
 
-    // Update metadata image field with the retrieved IPFS hash
-    metadata.image = `ipfs://${ipfsHash}`;
+    // // Update metadata image field with the retrieved IPFS hash
+    // metadata.image = `ipfs://${ipfsHash}`;
 
-    // MetaData MD, upload to Pintata
-    const formDataMD = new FormData();
-    const jsonBuffer = Buffer.from(JSON.stringify(metadata));
-    formDataMD.append("file", jsonBuffer, "data.json");
-    formDataMD.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${name} metaData` }));
-    formDataMD.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
-    const responseMD = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formDataMD, {
-      headers: {
-        ...formDataMD.getHeaders(),
-        pinata_api_key: PINATA_API_KEY,
-        pinata_secret_api_key: PINATA_SECRET_API_KEY,
-      },
-    });
-    const ipfsHashMD = responseMD.data.IpfsHash;
+    // // MetaData MD, upload to Pintata
+    // const formDataMD = new FormData();
+    // const jsonBuffer = Buffer.from(JSON.stringify(metadata));
+    // formDataMD.append("file", jsonBuffer, "data.json");
+    // formDataMD.append('pinataMetadata', JSON.stringify({ name: `Aaarto: ${name} metaData` }));
+    // formDataMD.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
+    // const responseMD = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formDataMD, {
+    //   headers: {
+    //     ...formDataMD.getHeaders(),
+    //     pinata_api_key: PINATA_API_KEY,
+    //     pinata_secret_api_key: PINATA_SECRET_API_KEY,
+    //   },
+    // });
+    // const ipfsHashMD = responseMD.data.IpfsHash;
 
-    return res.status(200).json({ ipfsHashMD })
+    return res.status(200).json({ ipfsHashMD:"XXX" })
   } catch (error) {
 
     return res.status(500).json({ error: `${error}Failed to upload to Pinata` });
