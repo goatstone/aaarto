@@ -18,7 +18,7 @@ const uploadData = async (
   };
 
   try {
-    const address = "https://aaarto.art/server";
+    const address = "/server";
     const response = await axios.post(address, data);
     const ipfsHashMD = response.data.ipfsHashMD;
     return ipfsHashMD;
