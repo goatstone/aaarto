@@ -48,16 +48,26 @@ const modalContentStyles = mergeStyleSets({
   },
 });
 
-const AboutInfo:React.FC = () => {
+const AboutInfo: React.FC = () => {
   return (
     <>
       <div className={modalContentStyles.header}>
         <h2 className={modalContentStyles.heading}>Aaarto</h2>
       </div>
       <div className={modalContentStyles.body}>
+        <h3>
+          The Aaarto collection can be seen on OpenSea at:
+          <a href="https://opensea.io/collection/aaarto" target="_blank">
+            https://opensea.io/collection/aaarto
+          </a>
+        </h3>
         <p>
           Aaarto is an online drawing program that enables the minting of the
-          artwork as a Non-fungible token, an NFT.
+          artwork as a Non-fungible token, an NFT. Aaartos are minted on the
+          <a href="https://polygon.technology/" target="_blank">
+            Polygon
+          </a>{" "}
+          network.
         </p>
         <p>
           The drawing application aspect of Aaarto enables the creation of art

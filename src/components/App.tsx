@@ -23,18 +23,6 @@ const aboutStyles = mergeStyleSets({
     cursor: "pointer",
   },
 });
-const errorMessages = {
-  notInstalled: "MetaMask is not installed. Please install it to use this app.",
-  accountAccess: "Connect MetaMask account with this site.",
-  // attemptAdd: `Attempting to add the ${config.chainNameDisplay} chain.`,
-  // attemptSwitch: `Attempting to switch to the ${config.chainNameDisplay} chain.`,
-  general: "An error occurred during minting.",
-  userCancel: "The request has been cancelled.",
-};
-const errorMessages2 = {
-  network: "Error: Could not access network",
-  general: "Error: An error occurred while trying to upload the assets",
-};
 
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>("circle");
@@ -62,15 +50,6 @@ const App: React.FC = () => {
     ),
   };
   const [modalContent, setModalContent] = useState<ModalContent>("about");
-  useEffect(() => {
-    (async () => {
-      // Check if MetaMask is installed, if not throw error
-      checkMetaMaskInstall();
-      // Get the users account
-      const account = await requestAccounts();
-      setAccount(account);
-    })();
-  }, []);
 
   const useUploadMint = async (
     svgString: string,
