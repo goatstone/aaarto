@@ -1,4 +1,4 @@
-import config from "config";
+import config from "./config";
 import { ethers, TransactionReceipt, TransactionResponse } from "ethers";
 const errorMessages = {
   notInstalled: "MetaMask is not installed. Please install it to use this app.",

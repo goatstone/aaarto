@@ -10,9 +10,9 @@ import AaartoModal from "@components/AaartoModal";
 import AboutInfo from "./AboutInfo";
 import MintingInfo from "./MintingInfo";
 import uploadData from "../uploadData";
-import mintNFT from "mintNFT";
-import checkMetaMaskInstall from "checkMetaMaskInstall";
-import requestAccounts from "requestAccounts";
+import mintNFT from "../mintNFT";
+import checkMetaMaskInstall from "../checkMetaMaskInstall";
+import requestAccounts from "../requestAccounts";
 
 const aboutStyles = mergeStyleSets({
   button: {
