@@ -1,5 +1,6 @@
 import React from "react";
-import { mergeStyleSets, FontWeights, getTheme, Modal } from "@fluentui/react";
+import { FontWeights, getTheme, mergeStyleSets } from "@fluentui/react";
+import MintSuccess from "@components/MintSuccess";
 
 const theme = getTheme();
 const modalContentStyles = mergeStyleSets({
@@ -8,12 +9,17 @@ const modalContentStyles = mergeStyleSets({
     flexFlow: "column nowrap",
     alignItems: "stretch",
   },
+  error: {
+    backgroundColor: "red",
+    padding: "1em",
+  },
   header: [
     {
       flex: "1 1 auto",
       borderTop: `4px solid ${theme.palette.themePrimary}`,
       color: theme.palette.neutralPrimary,
       display: "flex",
+      flexDirection: "column",
       alignItems: "center",
       justifyContent: "space-between",
       fontWeight: FontWeights.semibold,
@@ -47,37 +53,36 @@ const modalContentStyles = mergeStyleSets({
     },
   },
 });
-export type AaartoModalProps = {
-  isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  children: React.ReactNode;
+
+type MintingInfoProps = {
+  mintingError: string | null;
+  account: string | null;
+  transactionHash: string | null;
 };
 
-const modalStyles = mergeStyleSets({
-  container: {
-    display: "flex",
-    flexFlow: "column nowrap",
-    alignItems: "stretch",
-  },
-});
-
-const AaartoModal: React.FC<AaartoModalProps> = ({
-  isModalOpen,
-  setIsModalOpen,
-  children,
+const MintingInfo: React.FC<MintingInfoProps> = ({
+  mintingError,
+  account,
+  transactionHash,
 }) => {
   return (
-    <Modal
-      isOpen={isModalOpen}
-      onDismiss={() => setIsModalOpen(false)}
-      isBlocking={false}
-      containerClassName={modalStyles.container}
-    >
-      <button onClick={() => setIsModalOpen(false)}>X</button>
-      {children}
-    </Modal>
+    <>
+      <div className={modalContentStyles.header}>
+        {!mintingError && (
+          <>
+            <h2 className={modalContentStyles.heading}>Minting An Aaarto...</h2>
+            {account && <p>Connected Account: {account}</p>}
+            {transactionHash && (
+              <MintSuccess transactionHash={transactionHash} />
+            )}
+          </>
+        )}
+      </div>
+      {mintingError && (
+        <h2 className={modalContentStyles.error}>{mintingError} </h2>
+      )}
+    </>
   );
 };
 
-
-export default AaartoModal;
+export default MintingInfo;

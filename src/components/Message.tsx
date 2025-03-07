@@ -1,22 +1,12 @@
 import React from "react";
+import MintSuccess from "@components/MintSuccess";
 
 type MessageProps = {
   account: string | null;
-  uploading: boolean;
-  loading: boolean;
   transactionHash: string | null;
-  errorMessage: string | null;
-  uploadError: string | null;
 };
 
-const Message: React.FC<MessageProps> = ({
-  account,
-  uploading,
-  loading,
-  transactionHash,
-  errorMessage,
-  uploadError,
-}) => {
+const Message: React.FC<MessageProps> = ({ account, transactionHash }) => {
   return (
     <section>
       <section>
@@ -25,24 +15,7 @@ const Message: React.FC<MessageProps> = ({
         </h3>
       </section>
       <section>
-        {uploading && <p>Status: Uploading</p>}
-        {loading && <p>Status: Minting</p>}
-        {transactionHash && (
-          <p className="success_message">
-            Minting Success! Transaction Hash:
-            <a
-              href={`https://sepolia.etherscan.io/tx/${transactionHash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {transactionHash}
-            </a>
-          </p>
-        )}
-      </section>
-      <section>
-        {errorMessage && <p>{errorMessage}</p>}
-        {uploadError && <p>{uploadError}</p>}
+        {transactionHash && <MintSuccess transactionHash={transactionHash} />}
       </section>
     </section>
   );

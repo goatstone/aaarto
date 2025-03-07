@@ -1,11 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Canvas from "@components/Canvas";
 import Header from "@components/Header";
 import CanvasControl from "@components/CanvasControl";
 import TitleControl from "@components/TitleControl";
 import Message from "./Message";
-import useMintNFT from "@hooks/useMintNFT";
-import useUpload from "@hooks/useUpload";
+import MintControl from "./MintControl";
+import { mergeStyleSets } from "@fluentui/react";
+import AaartoModal from "@components/AaartoModal";
+import AboutInfo from "./AboutInfo";
+import MintingInfo from "./MintingInfo";
+import uploadData from "../uploadData";
+import mintNFT from "../mintNFT";
+import checkMetaMaskInstall from "../checkMetaMaskInstall";
+import requestAccounts from "../requestAccounts";
+
+const aboutStyles = mergeStyleSets({
+  button: {
+    backgroundColor: "darkgreen",
+    color: "#eee",
+    borderRadius: "10%",
+    fontSize: "1.25em",
+    cursor: "pointer",
+  },
+});
 
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>("circle");
@@ -15,29 +32,86 @@ const App: React.FC = () => {
   const [description, setDescription] = useState<string>("");
   const [artistName, setArtistName] = useState<string>("");
   const [svgString, setSvgString] = useState<string>("");
-  const { uploadToServer, uploading, uploadError } = useUpload();
-  const { mintNFT, transactionHash, errorMessage, loading, account } =
-    useMintNFT();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
+  const [mintingError, setMintingError] = useState<string | null>(null);
+  const [account, setAccount] = useState<null | string>(null);
+  const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
-  const handleUpload = async (): Promise<void> => {
-    const ipfsHashMD = await uploadToServer(
-      svgString,
-      name,
-      description,
-      artistName
-    );
-    if (ipfsHashMD) {
-      await mintNFT(`ipfs://${ipfsHashMD}`);
+  type ModalContent = "about" | "minting";
+  const modalContents = {
+    about: <AboutInfo />,
+    minting: (
+      <MintingInfo
+        account={account}
+        transactionHash={transactionHash}
+        mintingError={mintingError}
+      />
+    ),
+  };
+  const [modalContent, setModalContent] = useState<ModalContent>("about");
+
+  const useUploadMint = async (
+    svgString: string,
+    name: string,
+    description: string,
+    artistName: string
+  ) => {
+    setIsMinting(true);
+    setAccount(null);
+    setTransactionHash(null);
+    setMintingError(null);
+    try {
+      const ipfsHashMD = await uploadData(
+        svgString,
+        name,
+        description,
+        artistName
+      );
+      // Check if MetaMask is installed, if not throw error
+      checkMetaMaskInstall();
+      // Get the users account
+      const account = await requestAccounts();
+      setAccount(account);
+      const transactionHash = await mintNFT(`ipfs://${ipfsHashMD}`);
+      if (transactionHash) {
+        setTransactionHash(transactionHash);
+      }
+      setIsMinting(false);
+    } catch (error: any) {
+      setMintingError(`Minting Error: ${error.message}`);
     }
   };
-
+  useEffect(() => {
+    if (!isModalOpen) {
+      setIsMinting(false);
+      setMintingError(null);
+    }
+  }, [isModalOpen]);
   return (
     <>
-      <Header
-        handleUpload={handleUpload}
-        loading={loading}
-        uploading={uploading}
-      />
+      <AaartoModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+        {modalContents[modalContent]}
+      </AaartoModal>
+      <Header>
+        <button
+          onClick={() => {
+            setModalContent("about");
+            setIsModalOpen(true);
+          }}
+          className={aboutStyles.button}
+        >
+          About
+        </button>
+        <MintControl
+          handleMint={() => {
+            setModalContent("minting");
+            setIsModalOpen(true);
+            useUploadMint(svgString, name, description, artistName);
+          }}
+          isMinting={isMinting}
+        />
+      </Header>
       <Canvas
         shape={shape}
         size={size}
@@ -82,14 +156,7 @@ const App: React.FC = () => {
             />
           </label>
         </section>
-        <Message
-          account={account}
-          uploading={uploading}
-          loading={loading}
-          transactionHash={transactionHash}
-          errorMessage={errorMessage}
-          uploadError={uploadError}
-        />
+        <Message account={account} transactionHash={transactionHash} />
       </section>
     </>
   );
