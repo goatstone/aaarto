@@ -10,9 +10,8 @@ import AaartoModal from "@components/AaartoModal";
 import AboutInfo from "./AboutInfo";
 import MintingInfo from "./MintingInfo";
 import uploadData from "../uploadData";
+import { checkCoinbaseInstall, requestAccounts } from "../coinbaseHelpers";
 import mintNFT from "../mintNFT";
-import checkMetaMaskInstall from "../checkMetaMaskInstall";
-import requestAccounts from "../requestAccounts";
 
 const aboutStyles = mergeStyleSets({
   button: {
@@ -55,23 +54,24 @@ const App: React.FC = () => {
     svgString: string,
     name: string,
     description: string,
-    artistName: string
+    artistName: string,
   ) => {
     setIsMinting(true);
     setAccount(null);
     setTransactionHash(null);
     setMintingError(null);
+    const ipfsHashMD = "x";
     try {
-      const ipfsHashMD = await uploadData(
-        svgString,
-        name,
-        description,
-        artistName
-      );
-      // Check if MetaMask is installed, if not throw error
-      checkMetaMaskInstall();
-      // Get the users account
+      // const ipfsHashMD = await uploadData(
+      //   svgString,
+      //   name,
+      //   description,
+      //   artistName
+      // );
+      checkCoinbaseInstall();
+      console.log("Coinbase Wallet is installed.");
       const account = await requestAccounts();
+      console.log("Coinbase Wallet is installed.", account);
       setAccount(account);
       const transactionHash = await mintNFT(`ipfs://${ipfsHashMD}`);
       if (transactionHash) {
