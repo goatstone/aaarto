@@ -1,41 +1,75 @@
-// src/coinbaseHelpers.ts
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import config from "./config";
 
-const errorMessages = {
-  notInstalled: "Coinbase Wallet is not installed or not detected.",
-  alreadyProcessing:
-    "Coinbase Wallet is already processing a request, try opening the Coinbase Wallet application.",
-};
+interface CoinbaseEthereumProvider {
+  request: (args: { method: string; params?: any[] }) => Promise<any>;
+  isCoinbaseWallet?: boolean;
+}
 
-// Create a Coinbase Wallet SDK instance
-const coinbaseWallet = new CoinbaseWalletSDK({
-  appName: "Aaarto NFT Minting",
-  appLogoUrl: "https://aaarto.art/logo.png",
-});
-
-// Create the provider once
-const ethereum = coinbaseWallet.makeWeb3Provider(config.rpcUrl);
-
-// Function 1: check installation
-export const checkCoinbaseInstall = () => {
-  if (!ethereum || !ethereum.request) {
-    throw new Error(errorMessages.notInstalled);
+function getCoinbaseProvider(
+  openNoWalletModal: () => void,
+): CoinbaseEthereumProvider | null {
+  const { ethereum } = window as any;
+  if (!ethereum) {
+    console.log("No Ethereum provider injected at all");
+    openNoWalletModal();
+    return null;
   }
-};
 
-// Function 2: request accounts
-export const requestAccounts = async (): Promise<string> => {
-  try {
-    const accounts = (await ethereum.request({
-      method: "eth_requestAccounts",
-    })) as string[];
-
-    return accounts.join(" | ");
-  } catch (error: any) {
-    if (error.message?.includes("Already processing eth_requestAccounts")) {
-      throw new Error(errorMessages.alreadyProcessing);
+  // Case: multiple providers injected
+  if (Array.isArray(ethereum.providers)) {
+    const coinbase = ethereum.providers.find((p: any) => p.isCoinbaseWallet);
+    if (!coinbase) {
+      console.log("Coinbase Wallet not found among multiple providers");
+      openNoWalletModal();
     }
-    throw error;
+    return coinbase || null;
   }
-};
+
+  // Case: providerMap (some environments expose this instead of providers[])
+  if (ethereum.providerMap && typeof ethereum.providerMap.get === "function") {
+    const coinbase = ethereum.providerMap.get("CoinbaseWallet");
+    if (!coinbase) {
+      console.log("Coinbase Wallet not found in providerMap");
+      openNoWalletModal();
+    }
+    return coinbase || null;
+  }
+
+  // Case: single provider injected
+  if (!ethereum.isCoinbaseWallet) {
+    console.log("Single provider injected, but it is not Coinbase Wallet");
+    openNoWalletModal();
+    return null;
+  }
+
+  return ethereum as CoinbaseEthereumProvider;
+}
+
+export async function connectCoinbaseWallet(openNoWalletModal: {
+  (): void;
+  (): void;
+}) {
+  const coinbaseWallet = new CoinbaseWalletSDK({
+    appName: "Aaarto NFT Minting",
+    appLogoUrl: "https://aaarto.art/logo.png",
+  });
+
+  const ethereum =
+    getCoinbaseProvider(openNoWalletModal) ??
+    (coinbaseWallet.makeWeb3Provider(
+      config.rpcUrl,
+    ) as CoinbaseEthereumProvider);
+
+  console.log("Connecting with Coinbase provider:", ethereum);
+
+  const accounts = (await ethereum.request({
+    method: "eth_requestAccounts",
+  })) as string[];
+
+  if (!accounts || accounts.length === 0) {
+    throw new Error("no_accounts");
+  }
+
+  return { ethereum, account: accounts[0] };
+}

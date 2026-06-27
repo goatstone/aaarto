@@ -9,9 +9,11 @@ import { mergeStyleSets } from "@fluentui/react";
 import AaartoModal from "@components/AaartoModal";
 import AboutInfo from "./AboutInfo";
 import MintingInfo from "./MintingInfo";
+import NoWallet from "./NoWalletModal";
 import uploadData from "../uploadData";
-import { checkCoinbaseInstall, requestAccounts } from "../coinbaseHelpers";
-import mintNFT from "../mintNFT";
+import { connectCoinbaseWallet } from "../coinbaseHelpers";
+import { mintNFT } from "../mintNFT";
+import config from "../config";
 
 const aboutStyles = mergeStyleSets({
   button: {
@@ -22,6 +24,26 @@ const aboutStyles = mergeStyleSets({
     cursor: "pointer",
   },
 });
+const errorMessages = {
+  notInstalled: "Coinbase Wallet is not available. Please install or open it.",
+  accountAccess: "Connect Coinbase Wallet account with this site.",
+  attemptAdd: `Attempting to add the ${config.chainNameDisplay} chain.`,
+  attemptSwitch: `Attempting to switch to the ${config.chainNameDisplay} chain.`,
+  general: "An error occurred during minting.",
+  userCancel: "The request has been cancelled.",
+  alreadyProcessing:
+    "Coinbase Wallet is processing a request, try opening Coinbase Wallet",
+  InsufficientFunds:
+    "Insufficient funds, please add more funds to your wallet.",
+};
+const normalizeMintError = (error: any, errorMessages: any): string => {
+  if (error.message?.includes("insufficient funds"))
+    return errorMessages.InsufficientFunds;
+  if (error.message?.includes("user rejected")) return errorMessages.userCancel;
+  if (error.message?.includes("not_installed"))
+    return errorMessages.notInstalled;
+  return `errorMessages.general ${error}`;
+};
 
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>("circle");
@@ -37,7 +59,7 @@ const App: React.FC = () => {
   const [account, setAccount] = useState<null | string>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
-  type ModalContent = "about" | "minting";
+  type ModalContent = "about" | "minting" | "no_wallet";
   const modalContents = {
     about: <AboutInfo />,
     minting: (
@@ -47,9 +69,26 @@ const App: React.FC = () => {
         mintingError={mintingError}
       />
     ),
+    no_wallet: (
+      <NoWallet
+        show={true}
+        onClose={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onScanMobile={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onInstallExtension={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+    ),
   };
   const [modalContent, setModalContent] = useState<ModalContent>("about");
-
+  const openNoWalletModal = () => {
+    setModalContent("no_wallet");
+    setIsModalOpen(true);
+  };
   const useUploadMint = async (
     svgString: string,
     name: string,
@@ -68,18 +107,20 @@ const App: React.FC = () => {
       //   description,
       //   artistName
       // );
-      checkCoinbaseInstall();
-      console.log("Coinbase Wallet is installed.");
-      const account = await requestAccounts();
-      console.log("Coinbase Wallet is installed.", account);
-      setAccount(account);
-      const transactionHash = await mintNFT(`ipfs://${ipfsHashMD}`);
-      if (transactionHash) {
-        setTransactionHash(transactionHash);
-      }
+
+      const result = await connectCoinbaseWallet(openNoWalletModal);
+      // Only runs if connected
+      const txHash = await mintNFT(
+        result.ethereum,
+        result.account,
+        `ipfs://${ipfsHashMD}`,
+      );
+      setTransactionHash(txHash);
+
       setIsMinting(false);
     } catch (error: any) {
-      setMintingError(`Minting Error: ${error.message}`);
+      setMintingError(normalizeMintError(error, errorMessages));
+      setIsMinting(false);
     }
   };
   useEffect(() => {
