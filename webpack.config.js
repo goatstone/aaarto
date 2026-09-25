@@ -1,6 +1,7 @@
 const path = require("path");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
-const webpack = require("webpack"); // <-- this line is missing
+const webpack = require("webpack");
+require("dotenv").config();
 
 module.exports = {
   performance: {
@@ -26,6 +27,10 @@ module.exports = {
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
+      process: "process/browser",
+    }),
+    new webpack.DefinePlugin({
+      "process.env.network": JSON.stringify(process.env.network),
     }),
   ],
   module: {
