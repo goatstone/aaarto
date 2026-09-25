@@ -150,6 +150,76 @@ nginx serves `docs/` straight from disk, so a frontend-only change is live as so
 - The site loads, and a test upload returns an IPFS hash (watch `pm2 logs aaarto-api`).
 - For changes that touch the mint flow, test on Sepolia locally first (`network=sepolia`) before making the `polygon` release build.
 
+## Data returned from an upload (IPFS)
+
+When the user clicks Mint, `App.tsx` first uploads the art and its metadata:
+
+```ts
+const ipfsHashMD = await uploadData(
+  svgString,
+  name,
+  description,
+  artistName,
+);
+```
+
+`uploadData` posts `{ name, svgString, description, artistName }` to `/server`. The backend (`backend/expressServer.js`) makes two uploads to Pinata, and both are pinned to IPFS as CIDv1:
+
+1. **The SVG** is pinned as `image.svg`. This gives the image CID.
+2. **The metadata JSON** is pinned as `data.json`, with `image` pointing at the CID from step 1. This gives the metadata CID.
+
+Only the metadata CID is returned to the browser. That is `ipfsHashMD` (MD = metaData), a string like `bafybeigdyrzt5...`. It is also what gets written on-chain: `mintNFT` is called with `ipfs://${ipfsHashMD}` as the token URI. The image CID is not returned separately; it is inside the metadata.
+
+The metadata JSON that `ipfsHashMD` points to looks like this (the standard ERC-721 metadata shape):
+
+```json
+{
+  "name": "<title>",
+  "image": "ipfs://<image CID>",
+  "description": "<description>",
+  "attributes": [
+    { "trait_type": "Aaarto Art", "value": "NFT Art created at https://aaarto.art" },
+    { "trait_type": "Artist Name", "value": "<artist name>" }
+  ]
+}
+```
+
+### Checking the data on IPFS
+
+Browsers can't open `ipfs://` links directly; use an HTTP gateway and put the CID after `/ipfs/`.
+
+**Metadata** (`ipfsHashMD`):
+
+```
+https://ipfs.io/ipfs/<ipfsHashMD>
+```
+
+```bash
+curl -s https://ipfs.io/ipfs/<ipfsHashMD> | jq
+```
+
+**The image:** copy the CID from the `image` field (drop the `ipfs://` prefix) and open it the same way. The SVG renders in the browser:
+
+```
+https://ipfs.io/ipfs/<image CID>
+```
+
+```bash
+curl -s https://ipfs.io/ipfs/<ipfsHashMD> | jq -r .image | sed 's#ipfs://#https://ipfs.io/ipfs/#'
+```
+
+Other checks:
+
+- **Other gateways:** `https://gateway.pinata.cloud/ipfs/<CID>` and `https://dweb.link/ipfs/<CID>` serve the same content. Pinata's gateway is usually the fastest for files pinned by this account.
+- **Pinata dashboard:** files appear in the Files list, named `Aaarto: <title>` (the image) and `Aaarto: <title> metaData` (the metadata JSON).
+- **On-chain:** the token URI stored by the contract should be `ipfs://<ipfsHashMD>`. Call `tokenURI(tokenId)` on the contract from the network's block explorer (Read Contract tab), and compare it with the CID that was uploaded.
+
+Notes:
+
+- A CID is derived from the content, so the same content always gives the same CID and it can never change. If the metadata is wrong, the fix is a new upload with a new CID, not an edit.
+- The first request to a public gateway for new content can be slow or time out. Retry, or use the Pinata gateway.
+- Uploads happen **before** the wallet transaction, so a CID can exist for a mint that was cancelled or failed. Those files remain pinned but are not attached to any token.
+
 ## Troubleshooting
 
 | Symptom | Likely cause |
