@@ -20,18 +20,28 @@ const mintControlStyles = mergeStyleSets({
 const labels = {
   mint: "Mint The Aaarto",
   minting: "Minting, Please Wait...",
+  unavailable: "Minting is not available yet",
 };
 
 export type MintControlProps = {
   handleMint: () => void;
   isMinting: boolean;
+  mintEnabled?: boolean;
 };
 
-const MintControl: React.FC<MintControlProps> = ({ handleMint, isMinting }) => {
+const MintControl: React.FC<MintControlProps> = ({
+  handleMint,
+  isMinting,
+  mintEnabled = true,
+}) => {
   return (
     <section className={mintControlStyles.container}>
-      <button onClick={handleMint} disabled={isMinting}>
-        {isMinting ? labels.minting : labels.mint}
+      <button onClick={handleMint} disabled={isMinting || !mintEnabled}>
+        {!mintEnabled
+          ? labels.unavailable
+          : isMinting
+            ? labels.minting
+            : labels.mint}
       </button>
     </section>
   );

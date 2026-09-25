@@ -14,6 +14,7 @@ import uploadData from "../uploadData";
 import { connectCoinbaseWallet } from "../coinbaseHelpers";
 import { mintNFT } from "../mintNFT";
 import config from "../config";
+import { getFeatureFlags, DEBUG_IPFS_CID } from "../featureFlags";
 console.log("config", config);
 
 const aboutStyles = mergeStyleSets({
@@ -93,6 +94,8 @@ const App: React.FC = () => {
     ),
   };
   const [modalContent, setModalContent] = useState<ModalContent>("about");
+  // Read once, from the query string at page load (see DEBUG.md)
+  const [{ mintEnabled, ipfsUploadEnabled }] = useState(getFeatureFlags);
   const openNoWalletModal = () => {
     setModalContent("no_wallet");
     setIsModalOpen(true);
@@ -109,12 +112,9 @@ const App: React.FC = () => {
     setMintingError(null);
 
     try {
-      const ipfsHashMD = await uploadData(
-        svgString,
-        name,
-        description,
-        artistName
-      );
+      const ipfsHashMD = ipfsUploadEnabled
+        ? await uploadData(svgString, name, description, artistName)
+        : DEBUG_IPFS_CID;
 
       const result = await connectCoinbaseWallet(openNoWalletModal);
       // show state in modal or in header
@@ -158,7 +158,9 @@ const App: React.FC = () => {
           About
         </button>
         <MintControl
+          mintEnabled={mintEnabled}
           handleMint={() => {
+            if (!mintEnabled) return;
             setModalContent("minting");
             setIsModalOpen(true);
             useUploadMint(svgString, name, description, artistName);
