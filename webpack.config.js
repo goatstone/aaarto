@@ -48,5 +48,8 @@ module.exports = {
     },
     compress: true,
     port: 9000,
+    // The frontend posts to the relative URL "/server". In production nginx
+    // forwards it to the backend; in dev the dev server does the same.
+    proxy: [{ context: ["/server"], target: "http://localhost:5000" }],
   },
 };
