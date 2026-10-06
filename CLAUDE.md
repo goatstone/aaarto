@@ -74,7 +74,21 @@ gh project item-list 4 --owner goatstone --format json
 
 Writing items (`item-edit` / `item-create`) needs the project id (`PVT_kwDOAA4JWM4AvrSS`) and field ids from `field-list` (e.g. Status = `PVTSSF_lADOAA4JWM4AvrSSzgmETLw`, Priority = `PVTSSF_lADOAA4JWM4AvrSSzgmETN8`).
 
-The project spans two repos — `goatstone/aaarto` (frontend) and `goatstone/aaarto_backend` — and mixes linked `Issue` items with standalone `DraftIssue` items (e.g. unfixed security issues kept private until patched); check `content.type` when listing.
+The project spans three repos — `goatstone/aaarto` (frontend, public), `goatstone/aaarto_backend` (public) and **`goatstone/aaarto_project` (private)** — and mixes linked `Issue` items with standalone `DraftIssue` items; check `content.type` when listing.
+
+### Terminology
+
+- **Issue** — lives in a repo's issue list (`goatstone/aaarto`, `aaarto_backend`, `aaarto_project`). Labels, milestone, parent and sub-issues belong to the issue.
+- **Project item** — a row displayed in Project #4. Usually linked to an issue, but can also be a PR or a `DraftIssue` with no issue behind it. Status, Priority and the other project fields belong to the item. Transferring an issue re-creates its item.
+- **Task** — the user's word for an issue and its project item together; GitHub has no such object. Use "issue" or "project item" when only one is meant.
+
+### Private issues (`goatstone/aaarto_project`)
+
+Sensitive issues live in the private repo, never in the public ones: unfixed security findings, contract/key-custody/redeploy work, and anything describing an exploitable weakness. Don't put details of unfixed weaknesses in public issue bodies *or comments* (edit history stays visible).
+
+- **#5 "Contract issues/tasks"** — the single parent for all contract work (incl. #4 redeploy fix list, Safe/owner-admin move, fee recipient, monitoring, live-state checks, the contract security review archive #13). It is *not* in a phase. There is no public contract parent; the old public #137 was closed as a duplicate.
+- **#6 "Security issues (unfixed)"** — parent for unfixed non-contract security issues (S1–S3 upload endpoint/SVG/metadata race, S8 raw errors, CSP). It is a sub-issue of public Phase 1 (#131), so these are fixed in Phase 1. A private repo can't share the public phase milestone, so the milestone rollup doesn't count them; sub-issue progress does.
+- To make an issue private, `gh issue transfer <N> goatstone/aaarto_project -R goatstone/<repo>` — it gets a **new number** (public one redirects for members only) and keeps its old parent unless reparented. Reparent with `addSubIssue(... replaceParent: true)`; an issue may have only one parent.
 
 ### Phase structure (parent issues + native sub-issues)
 
@@ -82,7 +96,8 @@ Active work (currently the wallet-integration roadmap) is organized the same way
 
 - Each phase is a **parent issue** (e.g. #131 "Phase 1: default wallet opens automatically") using GitHub's native sub-issues feature, *not* just a milestone grouping.
 - A **matching milestone** exists per phase, same name as the parent issue (e.g. milestone "Phase 1: default wallet opens automatically"). Dual structure: milestone for the project-field rollups, parent issue for the live sub-issue checklist and `sub_issues_summary` (completed/total) progress.
-- Current phases: #131 (Phase 1), #132 (Phase 2, currently empty), #133 (Phase 3), #134 (Phase 4) — plus **#135 "Ongoing tasks"** and **#136 "Performance, Tuning"**, both explicitly *no milestone* (recurring/deferred work that shouldn't hold up a phase).
+- Current phases: #131 (Phase 1), #132 (Phase 2), #141 (Phase 3: enhancements; the old #133 "Phase 3: TBD" is closed and superseded), #134 (Phase 4, closed).
+- Non-phase parents (don't hold up a phase): **#135 "Ongoing tasks"**, **#136 "Performance, Tuning"** and **#138 "Refactor"** (parent of all `refactor`-labeled issues; the label exists in `goatstone/aaarto`, new refactor issues should get it and be added as sub-issues) have *no milestone*. **#139 "Growth"** has the milestone "Growth: analytics, SEO, marketing" and is the parent of the analytics/SEO items and of **#140 "Marketing"** (OpenSea #50, audience, content, community).
 - `gh issue edit` has **no flag for sub-issues** — managed via raw GraphQL:
   ```bash
   gh api graphql -f query='mutation($p:ID!,$u:String!){addSubIssue(input:{issueId:$p,subIssueUrl:$u}){subIssue{number}}}' \
@@ -90,7 +105,22 @@ Active work (currently the wallet-integration roadmap) is organized the same way
   # remove: mutation($p:ID!,$c:ID!){removeSubIssue(input:{issueId:$p,subIssueId:$c}){issue{number}}}
   ```
   Get a node id via `gh api repos/goatstone/aaarto/issues/<N> --jq .node_id`. When moving an issue between phases, update both the sub-issue link *and* its milestone to match the new parent.
-- Phase 1's actual scope (clarified, not just "the first task"): a working default wallet, a query-string way to test other wallets on the live site, and any serious bug in the live wallet/mint flow — explicitly **not** anything needing a contract rewrite (those stay out of the phased rollout, e.g. tracked as private drafts instead).
+- Phase 1's actual scope (clarified, not just "the first task"): a working default wallet, a query-string way to test other wallets on the live site, and any serious bug in the live wallet/mint flow — explicitly **not** anything needing a contract rewrite (those stay out of the phased rollout, tracked under private #5 instead). Unfixed security issues are the exception: private parent #6 sits inside Phase 1.
+
+### Backend repo issues (`goatstone/aaarto_backend`)
+
+Public repo for the Hardhat project and `AaartoNFTV4` contract (local clone: `/home/goat/projects/aaarto_backend`, which has its own `CLAUDE.md`). Its issues are repo hygiene only; contract, key-custody and security work is in the private repo (parent #5 / #6).
+
+- **#23 "Backend repo hygiene"** is the parent for general repo work (CI #21, dependencies #22). It has no milestone and is not part of a phase.
+- **#9 "Write the README"** is a Phase 1 sub-issue (#131); one checkbox is still open (commit tags per network, tracked with private #23). **#6** (Hardhat config fix, `.vscode` files) is closed.
+- **Merging:** branches are rebased and merged with `--ff-only`, so the remote branches keep the old pre-rebase commits and GitHub shows them "ahead" of `main` even though the changes are in `main` (verify with `git cherry origin/main origin/<branch>`). Delete the branch after merging; there is no PR link, so issues don't auto-close; close them by hand and set the project item to Done.
+- The project board's "Parent issue" grouping can lag after a reparent (cross-repo links especially); verify with `gh api repos/<owner>/<repo>/issues/<N> --jq .parent_issue_url` before assuming a parent is missing.
+
+### Project field conventions
+
+- **Issue numbers:** the `#N` after a title is the issue's number *within its repo* (the row number in the table is just position). A transfer to another repo assigns a new number.
+- **Priority** (every item must have one; set via `item-edit` with the Priority field id above, options P0=`79628723`, P1=`0a877460`, P2=`da944a9c`): P0 = security and the live wallet/mint flow, P1 = hardening, launch needs, phase 2 work, P2 = polish and recurring work. A parent's priority is a judgment call, not a rollup of its children.
+- **Status:** when an issue is closed, set its project item's Status to **Done**. Do **not** archive items.
 
 ### Work summary comments
 
