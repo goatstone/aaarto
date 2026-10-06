@@ -76,6 +76,22 @@ Writing items (`item-edit` / `item-create`) needs the project id (`PVT_kwDOAA4JW
 
 The project spans two repos — `goatstone/aaarto` (frontend) and `goatstone/aaarto_backend` — and mixes linked `Issue` items with standalone `DraftIssue` items (e.g. unfixed security issues kept private until patched); check `content.type` when listing.
 
+### Phase structure (parent issues + native sub-issues)
+
+Active work (currently the wallet-integration roadmap) is organized the same way as the `umina-achala` project (org `umina-achala`, project #1) — study that project's Phase issues (e.g. its #64) as the reference pattern before restructuring anything here:
+
+- Each phase is a **parent issue** (e.g. #131 "Phase 1: default wallet opens automatically") using GitHub's native sub-issues feature, *not* just a milestone grouping.
+- A **matching milestone** exists per phase, same name as the parent issue (e.g. milestone "Phase 1: default wallet opens automatically"). Dual structure: milestone for the project-field rollups, parent issue for the live sub-issue checklist and `sub_issues_summary` (completed/total) progress.
+- Current phases: #131 (Phase 1), #132 (Phase 2, currently empty), #133 (Phase 3), #134 (Phase 4) — plus **#135 "Ongoing tasks"** and **#136 "Performance, Tuning"**, both explicitly *no milestone* (recurring/deferred work that shouldn't hold up a phase).
+- `gh issue edit` has **no flag for sub-issues** — managed via raw GraphQL:
+  ```bash
+  gh api graphql -f query='mutation($p:ID!,$u:String!){addSubIssue(input:{issueId:$p,subIssueUrl:$u}){subIssue{number}}}' \
+    -f p=<parent_node_id> -f u=https://github.com/goatstone/aaarto/issues/<N>
+  # remove: mutation($p:ID!,$c:ID!){removeSubIssue(input:{issueId:$p,subIssueId:$c}){issue{number}}}
+  ```
+  Get a node id via `gh api repos/goatstone/aaarto/issues/<N> --jq .node_id`. When moving an issue between phases, update both the sub-issue link *and* its milestone to match the new parent.
+- Phase 1's actual scope (clarified, not just "the first task"): a working default wallet, a query-string way to test other wallets on the live site, and any serious bug in the live wallet/mint flow — explicitly **not** anything needing a contract rewrite (those stay out of the phased rollout, e.g. tracked as private drafts instead).
+
 ### Work summary comments
 
 When posting a work-summary comment (e.g. on an issue/PR in Project #4), include these two tags so a downstream parser can extract it:
