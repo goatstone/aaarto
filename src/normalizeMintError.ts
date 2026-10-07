@@ -19,5 +19,6 @@ export const normalizeMintError = (error: any, errorMessages: any): string => {
     return errorMessages.notInstalled;
   }
 
-  return `${errorMessages.general} ${error}`;
+  // Don't append the raw error: it can include RPC payloads. The caller logs it.
+  return errorMessages.general;
 };

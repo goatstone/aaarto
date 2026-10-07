@@ -28,13 +28,15 @@ describe("normalizeMintError", () => {
   test("does not rely on message text for rejection or funds", () => {
     expect(
       normalizeMintError({ message: "user rejected the request" }, messages),
-    ).toMatch(/^general/);
+    ).toBe("general");
     expect(
       normalizeMintError({ message: "insufficient funds" }, messages),
-    ).toMatch(/^general/);
+    ).toBe("general");
   });
 
-  test("falls back to the general message", () => {
-    expect(normalizeMintError(new Error("boom"), messages)).toMatch(/^general/);
+  test("falls back to the general message without the raw error text", () => {
+    expect(normalizeMintError(new Error("rpc payload boom"), messages)).toBe(
+      "general",
+    );
   });
 });
