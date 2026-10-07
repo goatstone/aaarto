@@ -36,34 +36,48 @@ describe('App', () => {
       fireEvent.change(screen.getByPlaceholderText('Title'), { target: { value } });
     const mintButton = () => screen.getByRole('button', { name: /mint the aaarto/i });
 
-    test('should disable the mint button with an empty canvas and no title', () => {
+    test('should mark the mint button aria-disabled with an empty canvas and no title', () => {
       render(<App />);
-      expect(mintButton()).toBeDisabled();
+      expect(mintButton()).toHaveAttribute('aria-disabled', 'true');
     });
 
-    test('should disable the mint button with a title but nothing drawn', () => {
+    test('should mark the mint button aria-disabled with a title but nothing drawn', () => {
       render(<App />);
       setTitle('My art');
-      expect(mintButton()).toBeDisabled();
+      expect(mintButton()).toHaveAttribute('aria-disabled', 'true');
     });
 
-    test('should disable the mint button with a drawing but no title', () => {
+    test('should mark the mint button aria-disabled with a drawing but no title', () => {
       const { container } = render(<App />);
       draw(container);
-      expect(mintButton()).toBeDisabled();
+      expect(mintButton()).toHaveAttribute('aria-disabled', 'true');
     });
 
-    test('should disable the mint button with a whitespace-only title', () => {
+    test('should mark the mint button aria-disabled with a whitespace-only title', () => {
       const { container } = render(<App />);
       draw(container);
       setTitle('   ');
-      expect(mintButton()).toBeDisabled();
+      expect(mintButton()).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    test('should explain what is missing when clicking an incomplete mint button', () => {
+      render(<App />);
+      fireEvent.click(mintButton());
+      expect(screen.getByText(/please draw something and enter a title/i)).toBeInTheDocument();
+    });
+
+    test('should only ask for a title when something is drawn', () => {
+      const { container } = render(<App />);
+      draw(container);
+      fireEvent.click(mintButton());
+      expect(screen.getByText(/please enter a title before/i)).toBeInTheDocument();
     });
 
     test('should enable the mint button with a drawing and a title', () => {
       const { container } = render(<App />);
       draw(container);
       setTitle('My art');
+      expect(mintButton()).not.toHaveAttribute('aria-disabled');
       expect(mintButton()).toBeEnabled();
     });
   });

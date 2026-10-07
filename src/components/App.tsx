@@ -69,9 +69,22 @@ const App: React.FC = () => {
   const [account, setAccount] = useState<null | string>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
-  type ModalContent = "about" | "minting" | "no_wallet";
+  const missingForMint = [
+    ...(shapeCount > 0 ? [] : ["draw something"]),
+    ...(name.trim().length > 0 ? [] : ["enter a title"]),
+  ];
+  const canMint = missingForMint.length === 0;
+  const missingText = missingForMint.join(" and ");
+
+  type ModalContent = "about" | "minting" | "no_wallet" | "incomplete";
   const modalContents = {
     about: <AboutInfo />,
+    incomplete: (
+      <div style={{ padding: "1em 2em", textAlign: "center" }}>
+        <h2>Almost there</h2>
+        <p>Please {missingText} before you mint your Aaarto.</p>
+      </div>
+    ),
     minting: (
       <MintingInfo
         account={account}
@@ -97,7 +110,6 @@ const App: React.FC = () => {
   const [modalContent, setModalContent] = useState<ModalContent>("about");
   // Read once, from the query string at page load (see DEBUG.md)
   const [{ mintEnabled, ipfsUploadEnabled }] = useState(getFeatureFlags);
-  const canMint = shapeCount > 0 && name.trim().length > 0;
   const openNoWalletModal = () => {
     setModalContent("no_wallet");
     setIsModalOpen(true);
@@ -161,7 +173,12 @@ const App: React.FC = () => {
         <MintControl
           mintEnabled={mintEnabled}
           handleMint={() => {
-            if (!mintEnabled || !canMint) return;
+            if (!mintEnabled) return;
+            if (!canMint) {
+              setModalContent("incomplete");
+              setIsModalOpen(true);
+              return;
+            }
             setModalContent("minting");
             setIsModalOpen(true);
             useUploadMint(svgString, name, description, artistName);
