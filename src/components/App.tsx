@@ -3,12 +3,12 @@ import Canvas from "@components/Canvas";
 import Header from "@components/Header";
 import CanvasControl from "@components/CanvasControl";
 import TitleControl from "@components/TitleControl";
-import Message from "./Message";
 import MintControl from "./MintControl";
 import { mergeStyleSets } from "@fluentui/react";
 import AaartoModal from "@components/AaartoModal";
 import AboutInfo from "./AboutInfo";
 import MintingInfo from "./MintingInfo";
+import Message from "./Message";
 import NoWallet from "./NoWalletModal";
 import uploadData from "../uploadData";
 import { connectCoinbaseWallet } from "../coinbaseHelpers";
@@ -107,7 +107,6 @@ const App: React.FC = () => {
     artistName: string,
   ) => {
     setIsMinting(true);
-    setAccount(null);
     setTransactionHash(null);
     setMintingError(null);
 
@@ -117,7 +116,7 @@ const App: React.FC = () => {
         : DEBUG_IPFS_CID;
 
       const result = await connectCoinbaseWallet(openNoWalletModal);
-      // show state in modal or in header
+      setAccount(result.account);
       console.log("result", result);
       // Only runs if connected
       const txHash = await mintNFT(
@@ -212,7 +211,7 @@ const App: React.FC = () => {
             />
           </label>
         </section>
-        <Message account={account} transactionHash={transactionHash} />
+        <Message account={account} />
       </section>
     </>
   );
