@@ -16,7 +16,6 @@ import { mintNFT } from "../mintNFT";
 import { normalizeMintError } from "../normalizeMintError";
 import config from "../config";
 import { getFeatureFlags, DEBUG_IPFS_CID } from "../featureFlags";
-console.log("config", config);
 
 const aboutStyles = mergeStyleSets({
   button: {
@@ -116,7 +115,6 @@ const App: React.FC = () => {
 
       const result = await connectCoinbaseWallet(openNoWalletModal);
       setAccount(result.account);
-      console.log("result", result);
       // Only runs if connected
       const txHash = await mintNFT(
         result.ethereum,

@@ -1,4 +1,5 @@
 import { normalizeMintError } from "../src/normalizeMintError";
+import { UploadError } from "../src/uploadData";
 
 const messages = {
   general: "general",
@@ -32,6 +33,15 @@ describe("normalizeMintError", () => {
     expect(
       normalizeMintError({ message: "insufficient funds" }, messages),
     ).toBe("general");
+  });
+
+  test("shows the message of an UploadError", () => {
+    expect(
+      normalizeMintError(
+        new UploadError("There was an error uploading data."),
+        messages,
+      ),
+    ).toBe("There was an error uploading data.");
   });
 
   test("falls back to the general message without the raw error text", () => {

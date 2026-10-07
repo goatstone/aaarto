@@ -1,3 +1,5 @@
+import { UploadError } from "./uploadData";
+
 // EIP-1193 provider error code for "user rejected the request"
 const USER_REJECTED_REQUEST = 4001;
 
@@ -9,6 +11,10 @@ const hasCode = (error: any, codes: Array<string | number>): boolean =>
   );
 
 export const normalizeMintError = (error: any, errorMessages: any): string => {
+  // Upload failures already carry a safe, user-facing message.
+  if (error instanceof UploadError) {
+    return error.message;
+  }
   if (hasCode(error, ["INSUFFICIENT_FUNDS"])) {
     return errorMessages.InsufficientFunds;
   }
