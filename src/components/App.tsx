@@ -62,6 +62,7 @@ const App: React.FC = () => {
   const [description, setDescription] = useState<string>("");
   const [artistName, setArtistName] = useState<string>("");
   const [svgString, setSvgString] = useState<string>("");
+  const [shapeCount, setShapeCount] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
   const [mintingError, setMintingError] = useState<string | null>(null);
@@ -96,6 +97,7 @@ const App: React.FC = () => {
   const [modalContent, setModalContent] = useState<ModalContent>("about");
   // Read once, from the query string at page load (see DEBUG.md)
   const [{ mintEnabled, ipfsUploadEnabled }] = useState(getFeatureFlags);
+  const canMint = shapeCount > 0 && name.trim().length > 0;
   const openNoWalletModal = () => {
     setModalContent("no_wallet");
     setIsModalOpen(true);
@@ -159,12 +161,13 @@ const App: React.FC = () => {
         <MintControl
           mintEnabled={mintEnabled}
           handleMint={() => {
-            if (!mintEnabled) return;
+            if (!mintEnabled || !canMint) return;
             setModalContent("minting");
             setIsModalOpen(true);
             useUploadMint(svgString, name, description, artistName);
           }}
           isMinting={isMinting}
+          canMint={canMint}
         />
       </Header>
       <Canvas
@@ -172,6 +175,7 @@ const App: React.FC = () => {
         size={size}
         color={color}
         setSvgString={setSvgString}
+        setShapeCount={setShapeCount}
       />
       <section className="controls">
         <CanvasControl
