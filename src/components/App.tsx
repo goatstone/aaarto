@@ -121,7 +121,6 @@ const App: React.FC = () => {
         result.account,
         `ipfs://${ipfsHashMD}`,
       );
-      console.log("txHash", txHash);
       setTransactionHash(txHash);
 
       setIsMinting(false);

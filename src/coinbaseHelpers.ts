@@ -60,8 +60,6 @@ export async function connectCoinbaseWallet(openNoWalletModal: () => void) {
       config.rpcUrl,
     ) as CoinbaseEthereumProvider);
 
-  console.log("Connecting with Coinbase provider:", ethereum);
-
   const accounts = (await ethereum.request({
     method: "eth_requestAccounts",
   })) as string[];
@@ -69,8 +67,6 @@ export async function connectCoinbaseWallet(openNoWalletModal: () => void) {
   if (!accounts || accounts.length === 0) {
     throw new Error("no_accounts");
   }
-
-  console.log("Connected account:", accounts[0]);
 
   // Event listeners for future UI integration
   if (ethereum.on) {

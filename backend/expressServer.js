@@ -40,7 +40,6 @@ app.get("/server_status", (req, res) => {
       uptime % 60
     )} seconds`,
   };
-  console.log("Server status check");
   res.json(status);
 });
 app.post("/server", async (req, res) => {
