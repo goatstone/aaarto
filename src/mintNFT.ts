@@ -9,11 +9,8 @@ export const mintNFT = async (
   account: string,
   ipfsTokenURI: string
 ): Promise<string> => {
-  const provider = new ethers.BrowserProvider(ethereum);
-  const signer = await provider.getSigner();
-
-  const { chainId } = await provider.getNetwork();
-  if (chainId !== config.chainIDBigInt) {
+  const currentChainId = BigInt(await ethereum.request({ method: "eth_chainId" }));
+  if (currentChainId !== config.chainIDBigInt) {
     try {
       await ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -28,6 +25,11 @@ export const mintNFT = async (
       }
     }
   }
+
+  // Build the provider only after the chain switch: ethers pins the network
+  // at construction, so a provider made before the switch throws NETWORK_ERROR.
+  const provider = new ethers.BrowserProvider(ethereum);
+  const signer = await provider.getSigner();
 
   const AaartoNFTContract = new ethers.Contract(
     contractAddress,
