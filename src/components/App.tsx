@@ -13,6 +13,7 @@ import NoWallet from "./NoWalletModal";
 import uploadData from "../uploadData";
 import { connectCoinbaseWallet } from "../coinbaseHelpers";
 import { mintNFT } from "../mintNFT";
+import { normalizeMintError } from "../normalizeMintError";
 import config from "../config";
 import { getFeatureFlags, DEBUG_IPFS_CID } from "../featureFlags";
 console.log("config", config);
@@ -38,22 +39,6 @@ const errorMessages = {
   InsufficientFunds:
     "Insufficient funds, please add more funds to your wallet.",
 };
-const normalizeMintError = (error: any, errorMessages: any): string => {
-  const msg = (error.message || "").toLowerCase();
-
-  if (msg.includes("insufficient funds")) {
-    return errorMessages.InsufficientFunds;
-  }
-  if (msg.includes("user rejected")) {
-    return errorMessages.userCancel;
-  }
-  if (msg.includes("not_installed")) {
-    return errorMessages.notInstalled;
-  }
-
-  return `${errorMessages.general} ${error}`;
-};
-
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>("circle");
   const [size, setSize] = useState<number>(70);
