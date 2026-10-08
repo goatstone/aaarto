@@ -5,9 +5,10 @@ type CanvasProps = {
     size: number;
     color: string;
     setSvgString: React.Dispatch<React.SetStateAction<string>>;
+    setShapeCount?: (count: number) => void;
 };
 
-const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString }) => {
+const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString, setShapeCount }) => {
 
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
     const removeElement = (id: string) => {
@@ -44,6 +45,10 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString }) => 
             setSvgString(serializer.serializeToString(svgElement));
         }
     }, [SVGElements, setSvgString]);
+
+    useEffect(() => {
+        setShapeCount?.(SVGElements.length);
+    }, [SVGElements, setShapeCount]);
 
     return (<svg
         width="400"

@@ -70,8 +70,14 @@ const MintingInfo: React.FC<MintingInfoProps> = ({
       <div className={modalContentStyles.header}>
         {!mintingError && (
           <>
-            <h2 className={modalContentStyles.heading}>Minting An Aaarto...</h2>
-            {account && <p>Connected Account: {account}</p>}
+            <h2 className={modalContentStyles.heading}>
+              {transactionHash ? "Mint Success!" : "Minting An Aaarto..."}
+            </h2>
+            {account && (
+              <p style={{ overflowWrap: "anywhere", textAlign: "center" }}>
+                Connected Account: {account}
+              </p>
+            )}
             {transactionHash && (
               <MintSuccess transactionHash={transactionHash} />
             )}

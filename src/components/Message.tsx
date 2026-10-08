@@ -1,22 +1,15 @@
 import React from "react";
-import MintSuccess from "@components/MintSuccess";
 
 type MessageProps = {
   account: string | null;
-  transactionHash: string | null;
 };
 
-const Message: React.FC<MessageProps> = ({ account, transactionHash }) => {
+const Message: React.FC<MessageProps> = ({ account }) => {
   return (
     <section>
-      <section>
-        <h3>
-          {account ? `Connected Account : ${account}` : "No account connected"}
-        </h3>
-      </section>
-      <section>
-        {transactionHash && <MintSuccess transactionHash={transactionHash} />}
-      </section>
+      <h3 style={{ overflowWrap: "anywhere" }}>
+        {account ? `Connected Account: ${account}` : "No account connected"}
+      </h3>
     </section>
   );
 };

@@ -13,6 +13,12 @@ const mintControlStyles = mergeStyleSets({
         cursor: "pointer",
         borderRadius: "5%",
       },
+      // aria-disabled (not disabled) in the incomplete case so a click can still
+      // open the explanatory modal; style both the same way.
+      "button:disabled, button[aria-disabled='true']": {
+        opacity: 0.5,
+        cursor: "not-allowed",
+      },
     },
   },
 });
@@ -27,16 +33,22 @@ export type MintControlProps = {
   handleMint: () => void;
   isMinting: boolean;
   mintEnabled?: boolean;
+  canMint?: boolean;
 };
 
 const MintControl: React.FC<MintControlProps> = ({
   handleMint,
   isMinting,
   mintEnabled = true,
+  canMint = true,
 }) => {
   return (
     <section className={mintControlStyles.container}>
-      <button onClick={handleMint} disabled={isMinting || !mintEnabled}>
+      <button
+        onClick={handleMint}
+        disabled={isMinting || !mintEnabled}
+        aria-disabled={mintEnabled && !canMint ? true : undefined}
+      >
         {!mintEnabled
           ? labels.unavailable
           : isMinting

@@ -40,7 +40,6 @@ app.get("/server_status", (req, res) => {
       uptime % 60
     )} seconds`,
   };
-  console.log("Server status check");
   res.json(status);
 });
 app.post("/server", async (req, res) => {
@@ -98,9 +97,15 @@ app.post("/server", async (req, res) => {
 
     return res.status(200).json({ ipfsHashMD });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: `${error}Failed to upload to Pinata` });
+    // Log details server-side only. Avoid logging the whole axios error: its
+    // request config includes the Pinata auth headers.
+    console.error(
+      "Pinata upload failed:",
+      error.message,
+      error.response?.status,
+      error.response?.data
+    );
+    return res.status(500).json({ error: "Failed to upload to Pinata." });
   }
 });
 

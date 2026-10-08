@@ -3,19 +3,19 @@ import Canvas from "@components/Canvas";
 import Header from "@components/Header";
 import CanvasControl from "@components/CanvasControl";
 import TitleControl from "@components/TitleControl";
-import Message from "./Message";
 import MintControl from "./MintControl";
 import { mergeStyleSets } from "@fluentui/react";
 import AaartoModal from "@components/AaartoModal";
 import AboutInfo from "./AboutInfo";
 import MintingInfo from "./MintingInfo";
+import Message from "./Message";
 import NoWallet from "./NoWalletModal";
 import uploadData from "../uploadData";
 import { connectCoinbaseWallet } from "../coinbaseHelpers";
 import { mintNFT } from "../mintNFT";
+import { normalizeMintError } from "../normalizeMintError";
 import config from "../config";
 import { getFeatureFlags, DEBUG_IPFS_CID } from "../featureFlags";
-console.log("config", config);
 
 const aboutStyles = mergeStyleSets({
   button: {
@@ -38,22 +38,6 @@ const errorMessages = {
   InsufficientFunds:
     "Insufficient funds, please add more funds to your wallet.",
 };
-const normalizeMintError = (error: any, errorMessages: any): string => {
-  const msg = (error.message || "").toLowerCase();
-
-  if (msg.includes("insufficient funds")) {
-    return errorMessages.InsufficientFunds;
-  }
-  if (msg.includes("user rejected")) {
-    return errorMessages.userCancel;
-  }
-  if (msg.includes("not_installed")) {
-    return errorMessages.notInstalled;
-  }
-
-  return `${errorMessages.general} ${error}`;
-};
-
 const App: React.FC = () => {
   const [shape, setShape] = useState<string>("circle");
   const [size, setSize] = useState<number>(70);
@@ -62,15 +46,29 @@ const App: React.FC = () => {
   const [description, setDescription] = useState<string>("");
   const [artistName, setArtistName] = useState<string>("");
   const [svgString, setSvgString] = useState<string>("");
+  const [shapeCount, setShapeCount] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
   const [mintingError, setMintingError] = useState<string | null>(null);
   const [account, setAccount] = useState<null | string>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
 
-  type ModalContent = "about" | "minting" | "no_wallet";
+  const missingForMint = [
+    ...(shapeCount > 0 ? [] : ["draw something"]),
+    ...(name.trim().length > 0 ? [] : ["enter a title"]),
+  ];
+  const canMint = missingForMint.length === 0;
+  const missingText = missingForMint.join(" and ");
+
+  type ModalContent = "about" | "minting" | "no_wallet" | "incomplete";
   const modalContents = {
     about: <AboutInfo />,
+    incomplete: (
+      <div style={{ padding: "1em 2em", textAlign: "center" }}>
+        <h2>Almost there</h2>
+        <p>Please {missingText} before you mint your Aaarto.</p>
+      </div>
+    ),
     minting: (
       <MintingInfo
         account={account}
@@ -107,7 +105,6 @@ const App: React.FC = () => {
     artistName: string,
   ) => {
     setIsMinting(true);
-    setAccount(null);
     setTransactionHash(null);
     setMintingError(null);
 
@@ -117,15 +114,13 @@ const App: React.FC = () => {
         : DEBUG_IPFS_CID;
 
       const result = await connectCoinbaseWallet(openNoWalletModal);
-      // show state in modal or in header
-      console.log("result", result);
+      setAccount(result.account);
       // Only runs if connected
       const txHash = await mintNFT(
         result.ethereum,
         result.account,
         `ipfs://${ipfsHashMD}`,
       );
-      console.log("txHash", txHash);
       setTransactionHash(txHash);
 
       setIsMinting(false);
@@ -161,11 +156,17 @@ const App: React.FC = () => {
           mintEnabled={mintEnabled}
           handleMint={() => {
             if (!mintEnabled) return;
+            if (!canMint) {
+              setModalContent("incomplete");
+              setIsModalOpen(true);
+              return;
+            }
             setModalContent("minting");
             setIsModalOpen(true);
             useUploadMint(svgString, name, description, artistName);
           }}
           isMinting={isMinting}
+          canMint={canMint}
         />
       </Header>
       <Canvas
@@ -173,6 +174,7 @@ const App: React.FC = () => {
         size={size}
         color={color}
         setSvgString={setSvgString}
+        setShapeCount={setShapeCount}
       />
       <section className="controls">
         <CanvasControl
@@ -212,7 +214,7 @@ const App: React.FC = () => {
             />
           </label>
         </section>
-        <Message account={account} transactionHash={transactionHash} />
+        <Message account={account} />
       </section>
     </>
   );

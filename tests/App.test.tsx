@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from '@components/App';
 
@@ -26,11 +26,60 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: /minting is not available yet/i })).toBeDisabled();
   });
 
-  test('should enable the mint button with ?env=dev', () => {
-    window.history.pushState({}, '', '/?env=dev');
-    render(<App />);
-    expect(screen.getByRole('button', { name: /mint the aaarto/i })).toBeEnabled();
-    window.history.pushState({}, '', '/');
+  describe('with ?env=dev', () => {
+    beforeEach(() => window.history.pushState({}, '', '/?env=dev'));
+    afterEach(() => window.history.pushState({}, '', '/'));
+
+    const draw = (container: HTMLElement) =>
+      fireEvent.click(container.getElementsByTagName('svg')[0]);
+    const setTitle = (value: string) =>
+      fireEvent.change(screen.getByPlaceholderText('Title'), { target: { value } });
+    const mintButton = () => screen.getByRole('button', { name: /mint the aaarto/i });
+
+    test('should mark the mint button aria-disabled with an empty canvas and no title', () => {
+      render(<App />);
+      expect(mintButton()).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    test('should mark the mint button aria-disabled with a title but nothing drawn', () => {
+      render(<App />);
+      setTitle('My art');
+      expect(mintButton()).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    test('should mark the mint button aria-disabled with a drawing but no title', () => {
+      const { container } = render(<App />);
+      draw(container);
+      expect(mintButton()).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    test('should mark the mint button aria-disabled with a whitespace-only title', () => {
+      const { container } = render(<App />);
+      draw(container);
+      setTitle('   ');
+      expect(mintButton()).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    test('should explain what is missing when clicking an incomplete mint button', () => {
+      render(<App />);
+      fireEvent.click(mintButton());
+      expect(screen.getByText(/please draw something and enter a title/i)).toBeInTheDocument();
+    });
+
+    test('should only ask for a title when something is drawn', () => {
+      const { container } = render(<App />);
+      draw(container);
+      fireEvent.click(mintButton());
+      expect(screen.getByText(/please enter a title before/i)).toBeInTheDocument();
+    });
+
+    test('should enable the mint button with a drawing and a title', () => {
+      const { container } = render(<App />);
+      draw(container);
+      setTitle('My art');
+      expect(mintButton()).not.toHaveAttribute('aria-disabled');
+      expect(mintButton()).toBeEnabled();
+    });
   });
 
   test('should render ControlPanel component with initial props', () => {
