@@ -17,12 +17,17 @@ export const mintNFT = async (
         params: [{ chainId: config.chainIDHex }],
       });
     } catch (e: any) {
-      if (e.code === 4902) {
-        await ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: config.ethRequestParams,
-        });
-      }
+      // Only an unknown chain is recoverable by adding it; anything else, such
+      // as a rejected prompt, must stop the mint instead of sending the
+      // transaction on the wrong chain. Rabby reports an unknown chain as
+      // -32603 "Unrecognized chain ID" rather than the standard 4902.
+      const unknownChain =
+        e.code === 4902 || /unrecognized chain/i.test(e.message ?? "");
+      if (!unknownChain) throw e;
+      await ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: config.ethRequestParams,
+      });
     }
   }
 
