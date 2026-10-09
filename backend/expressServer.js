@@ -95,7 +95,7 @@ app.post("/server", async (req, res) => {
     );
     const ipfsHashMD = responseMD.data.IpfsHash;
 
-    return res.status(200).json({ ipfsHashMD });
+    return res.status(200).json({ ipfsHashMD, ipfsHash });
   } catch (error) {
     // Log details server-side only. Avoid logging the whole axios error: its
     // request config includes the Pinata auth headers.
