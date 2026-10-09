@@ -4,11 +4,39 @@ import config from "./config";
 const contractAddress = config.contractAddress;
 const platformFee = ethers.parseEther(config.platformFee);
 
+export type MintResult = {
+  hash: string;
+  // null if the receipt had no readable Mint/Transfer log
+  tokenId: string | null;
+};
+
+// The contract emits Mint(to, tokenID, tokenURI) and an ERC-721 Transfer from
+// the zero address; either carries the new token's ID.
+export const getMintedTokenId = (
+  logs: ReadonlyArray<{ address: string; topics: ReadonlyArray<string>; data: string }>,
+  iface: ethers.Interface,
+): string | null => {
+  for (const log of logs) {
+    if (log.address.toLowerCase() !== contractAddress.toLowerCase()) continue;
+    let parsed: ethers.LogDescription | null = null;
+    try {
+      parsed = iface.parseLog({ topics: [...log.topics], data: log.data });
+    } catch {
+      continue;
+    }
+    if (parsed?.name === "Mint") return parsed.args.tokenID.toString();
+    if (parsed?.name === "Transfer" && parsed.args.from === ethers.ZeroAddress) {
+      return parsed.args.tokenId.toString();
+    }
+  }
+  return null;
+};
+
 export const mintNFT = async (
   ethereum: any,
   account: string,
   ipfsTokenURI: string
-): Promise<string> => {
+): Promise<MintResult> => {
   const currentChainId = BigInt(await ethereum.request({ method: "eth_chainId" }));
   if (currentChainId !== config.chainIDBigInt) {
     try {
@@ -56,5 +84,8 @@ export const mintNFT = async (
 
   const receipt = await txResponse.wait();
   if (!receipt?.hash) throw new Error("Transaction failed");
-  return receipt.hash;
+  return {
+    hash: receipt.hash,
+    tokenId: getMintedTokenId(receipt.logs, AaartoNFTContract.interface),
+  };
 };

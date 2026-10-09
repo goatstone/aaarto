@@ -52,6 +52,9 @@ const App: React.FC = () => {
   const [mintingError, setMintingError] = useState<string | null>(null);
   const [account, setAccount] = useState<null | string>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
+  const [tokenId, setTokenId] = useState<string | null>(null);
+  const [ipfsHash, setIpfsHash] = useState<string | null>(null);
+  const [ipfsHashMD, setIpfsHashMD] = useState<string | null>(null);
 
   const missingForMint = [
     ...(shapeCount > 0 ? [] : ["draw something"]),
@@ -73,6 +76,9 @@ const App: React.FC = () => {
       <MintingInfo
         account={account}
         transactionHash={transactionHash}
+        tokenId={tokenId}
+        ipfsHash={ipfsHash}
+        ipfsHashMD={ipfsHashMD}
         mintingError={mintingError}
       />
     ),
@@ -106,29 +112,36 @@ const App: React.FC = () => {
   ) => {
     setIsMinting(true);
     setTransactionHash(null);
+    setTokenId(null);
+    setIpfsHash(null);
+    setIpfsHashMD(null);
     setMintingError(null);
 
     try {
-      const ipfsHashMD = ipfsUploadEnabled
+      // ?env=dev skips the upload: no CIDs of the drawing to show
+      const uploaded = ipfsUploadEnabled
         ? await uploadData(svgString, name, description, artistName)
-        : DEBUG_IPFS_CID;
+        : { ipfsHashMD: DEBUG_IPFS_CID, ipfsHash: null };
       // Logged on purpose while Rabby is tested on the live site (#154, #155):
       // the metadata URL to check the upload by hand. Its "image" field holds
       // the ipfs:// link to the SVG.
       console.log(
         "Metadata URL:",
-        `https://gateway.pinata.cloud/ipfs/${ipfsHashMD}`,
+        `https://gateway.pinata.cloud/ipfs/${uploaded.ipfsHashMD}`,
       );
 
       const result = await connectRabbyWallet();
       setAccount(result.account);
       // Only runs if connected
-      const txHash = await mintNFT(
+      const minted = await mintNFT(
         result.ethereum,
         result.account,
-        `ipfs://${ipfsHashMD}`,
+        `ipfs://${uploaded.ipfsHashMD}`,
       );
-      setTransactionHash(txHash);
+      setTokenId(minted.tokenId);
+      setIpfsHash(uploaded.ipfsHash);
+      setIpfsHashMD(ipfsUploadEnabled ? uploaded.ipfsHashMD : null);
+      setTransactionHash(minted.hash);
 
       setIsMinting(false);
     } catch (error: any) {

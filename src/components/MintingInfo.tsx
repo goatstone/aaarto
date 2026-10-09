@@ -58,12 +58,18 @@ type MintingInfoProps = {
   mintingError: string | null;
   account: string | null;
   transactionHash: string | null;
+  tokenId?: string | null;
+  ipfsHash?: string | null;
+  ipfsHashMD?: string | null;
 };
 
 const MintingInfo: React.FC<MintingInfoProps> = ({
   mintingError,
   account,
   transactionHash,
+  tokenId,
+  ipfsHash,
+  ipfsHashMD,
 }) => {
   return (
     <>
@@ -79,7 +85,12 @@ const MintingInfo: React.FC<MintingInfoProps> = ({
               </p>
             )}
             {transactionHash && (
-              <MintSuccess transactionHash={transactionHash} />
+              <MintSuccess
+                transactionHash={transactionHash}
+                tokenId={tokenId}
+                ipfsHash={ipfsHash}
+                ipfsHashMD={ipfsHashMD}
+              />
             )}
           </>
         )}
