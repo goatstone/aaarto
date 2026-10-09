@@ -11,7 +11,7 @@ import MintingInfo from "./MintingInfo";
 import Message from "./Message";
 import NoWallet from "./NoWalletModal";
 import uploadData from "../uploadData";
-import { connectCoinbaseWallet } from "../coinbaseHelpers";
+import { connectRabbyWallet } from "../rabbyHelpers";
 import { mintNFT } from "../mintNFT";
 import { normalizeMintError } from "../normalizeMintError";
 import config from "../config";
@@ -27,7 +27,7 @@ const aboutStyles = mergeStyleSets({
   },
 });
 const errorMessages = {
-  notInstalled: "Coinbase Wallet is not available. Please install or open it.",
+  notInstalled: "Rabby Wallet is not available. Please install or open it.",
   accountAccess: "Connect Coinbase Wallet account with this site.",
   attemptAdd: `Attempting to add the ${config.chainNameDisplay} chain.`,
   attemptSwitch: `Attempting to switch to the ${config.chainNameDisplay} chain.`,
@@ -113,7 +113,7 @@ const App: React.FC = () => {
         ? await uploadData(svgString, name, description, artistName)
         : DEBUG_IPFS_CID;
 
-      const result = await connectCoinbaseWallet(openNoWalletModal);
+      const result = await connectRabbyWallet();
       setAccount(result.account);
       // Only runs if connected
       const txHash = await mintNFT(
