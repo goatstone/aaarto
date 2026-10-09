@@ -112,6 +112,13 @@ const App: React.FC = () => {
       const ipfsHashMD = ipfsUploadEnabled
         ? await uploadData(svgString, name, description, artistName)
         : DEBUG_IPFS_CID;
+      // Logged on purpose while Rabby is tested on the live site (#154, #155):
+      // the metadata URL to check the upload by hand. Its "image" field holds
+      // the ipfs:// link to the SVG.
+      console.log(
+        "Metadata URL:",
+        `https://gateway.pinata.cloud/ipfs/${ipfsHashMD}`,
+      );
 
       const result = await connectRabbyWallet();
       setAccount(result.account);
