@@ -1,5 +1,4 @@
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
-import config from "./config";
 
 interface CoinbaseEthereumProvider {
   request: (args: { method: string; params?: any[] }) => Promise<any>;
@@ -56,9 +55,9 @@ export async function connectCoinbaseWallet(openNoWalletModal: () => void) {
 
   const ethereum =
     getCoinbaseProvider(openNoWalletModal) ??
-    (coinbaseWallet.makeWeb3Provider(
-      config.rpcUrl,
-    ) as CoinbaseEthereumProvider);
+    (coinbaseWallet.makeWeb3Provider({
+      options: "all",
+    }) as unknown as CoinbaseEthereumProvider);
 
   const accounts = (await ethereum.request({
     method: "eth_requestAccounts",
