@@ -62,6 +62,16 @@ export const mintNFT = async (
   // Build the provider only after the chain switch: ethers pins the network
   // at construction, so a provider made before the switch throws NETWORK_ERROR.
   const provider = new ethers.BrowserProvider(ethereum);
+
+  // A wallet can resolve the switch request without actually moving chains,
+  // so confirm before sending a transaction that pays the fee.
+  const { chainId } = await provider.getNetwork();
+  if (chainId !== config.chainIDBigInt) {
+    throw new Error(
+      `Wallet is on chain ${chainId}, expected ${config.chainIDBigInt}. Switch networks and try again.`
+    );
+  }
+
   const signer = await provider.getSigner();
 
   const AaartoNFTContract = new ethers.Contract(

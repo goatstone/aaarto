@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import config from "../src/config";
-import { getMintedTokenId } from "../src/mintNFT";
+import { getMintedTokenId, mintNFT } from "../src/mintNFT";
 
 const iface = new ethers.Interface(config.contractArtifact.abi);
 const contract = config.contractAddress;
@@ -35,5 +35,21 @@ describe("getMintedTokenId", () => {
 
   test("returns null when there are no logs", () => {
     expect(getMintedTokenId([], iface)).toBeNull();
+  });
+});
+
+describe("mintNFT chain check", () => {
+  test("stops before sending when the wallet stays on the wrong chain", async () => {
+    const request = jest.fn(async ({ method }: { method: string }) => {
+      if (method === "eth_chainId") return "0x1";
+      if (method === "wallet_switchEthereumChain") return null;
+      throw new Error(`unexpected request: ${method}`);
+    });
+    await expect(mintNFT({ request }, to, "ipfs://x")).rejects.toThrow(
+      /Wallet is on chain 1, expected/
+    );
+    const methods = request.mock.calls.map(([a]) => a.method);
+    expect(methods).not.toContain("eth_sendTransaction");
+    expect(methods).not.toContain("eth_estimateGas");
   });
 });
