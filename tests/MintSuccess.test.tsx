@@ -43,4 +43,9 @@ describe("MintSuccess", () => {
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /artwork|metadata/i })).toBeNull();
   });
+
+  test("shows no marketplace link on Sepolia, which has none", () => {
+    render(<MintSuccess transactionHash="0xabc123" tokenId="62" />);
+    expect(screen.queryByRole("link", { name: /rarible/i })).toBeNull();
+  });
 });

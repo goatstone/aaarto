@@ -1,5 +1,6 @@
 import React = require("react");
 import config from "../config";
+import { getMarketplaceLink } from "../marketplace";
 
 type MintSuccessProps = {
   transactionHash: string;
@@ -24,6 +25,11 @@ const MintSuccess: React.FC<MintSuccessProps> = ({
       : transactionHash;
   const imageUrl = ipfsHash ? `${config.ipfsGateway}${ipfsHash}` : null;
   const metadataUrl = ipfsHashMD ? `${config.ipfsGateway}${ipfsHashMD}` : null;
+  const marketplaceLink = getMarketplaceLink(
+    config.marketplace,
+    config.contractAddress,
+    tokenId,
+  );
   const [imageFailed, setImageFailed] = React.useState(false);
   return (
     <section
@@ -44,6 +50,13 @@ const MintSuccess: React.FC<MintSuccessProps> = ({
         />
       )}
       {tokenId && <p style={{ margin: 0 }}>Token ID: {tokenId}</p>}
+      {marketplaceLink && (
+        <p style={{ margin: 0 }}>
+          <a href={marketplaceLink.url} target="_blank" rel="noopener noreferrer">
+            View on {marketplaceLink.name}
+          </a>
+        </p>
+      )}
       {(imageUrl || metadataUrl) && (
         <p style={{ margin: 0 }}>
           {imageUrl && (

@@ -47,6 +47,12 @@ if (network === "sepolia") {
         blockExplorerUrls: ["https://polygonscan.com/"],
       },
     ],
+    // Item page is <itemUrlBase><lowercase contract>:<tokenId>; Rarible 404s a
+    // checksummed address. Sepolia has no marketplace, so it has no entry.
+    marketplace: {
+      name: "Rarible",
+      itemUrlBase: "https://rarible.com/token/polygon/",
+    },
   };
 } else {
   throw "Chain config does not exist";
