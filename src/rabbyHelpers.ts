@@ -6,6 +6,15 @@ interface RabbyProvider {
   isRabby?: boolean;
 }
 
+// Where to send a user who has no Rabby. Kept here so there is one place to
+// update; rabby.io/download does not exist, the extension page is the download.
+export const RABBY_WEBSITE_URL = "https://rabby.io";
+export const RABBY_DOWNLOAD_URL =
+  "https://chromewebstore.google.com/detail/rabby-wallet/acmacodkjbdgmoleebolmdjonilkdbch";
+
+// The error connectRabbyWallet throws when no Rabby provider is found.
+export const RABBY_NOT_INSTALLED = "not_installed";
+
 const RABBY_RDNS = "io.rabby";
 const WAIT_MS = 500;
 
@@ -42,7 +51,7 @@ async function getRabbyProvider(): Promise<RabbyProvider | null> {
 export async function connectRabbyWallet() {
   const ethereum = await getRabbyProvider();
   // "not_installed" becomes a user-facing message in normalizeMintError.
-  if (!ethereum) throw new Error("not_installed");
+  if (!ethereum) throw new Error(RABBY_NOT_INSTALLED);
 
   const accounts = (await ethereum.request({
     method: "eth_requestAccounts",

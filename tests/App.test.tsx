@@ -2,9 +2,16 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from '@components/App';
+import { RABBY_DOWNLOAD_URL } from '../src/rabbyHelpers';
 
 // The Coinbase SDK ships ES modules, which Jest can't load without extra config
 jest.mock('../src/coinbaseHelpers', () => ({ connectCoinbaseWallet: jest.fn() }));
+
+// Rabby is "not installed" unless a test says otherwise
+jest.mock('../src/rabbyHelpers', () => ({
+  ...jest.requireActual('../src/rabbyHelpers'),
+  connectRabbyWallet: jest.fn(() => Promise.reject(new Error('not_installed'))),
+}));
 
 describe('App', () => {
 
@@ -79,6 +86,31 @@ describe('App', () => {
       setTitle('My art');
       expect(mintButton()).not.toHaveAttribute('aria-disabled');
       expect(mintButton()).toBeEnabled();
+    });
+  });
+
+  describe('when Rabby is not installed', () => {
+    beforeEach(() => window.history.pushState({}, '', '/?env=dev'));
+    afterEach(() => window.history.pushState({}, '', '/'));
+
+    test('should show what Rabby is, links to it and a reload hint', async () => {
+      const { container } = render(<App />);
+      fireEvent.click(container.getElementsByTagName('svg')[0]);
+      fireEvent.change(screen.getByPlaceholderText('Title'), { target: { value: 'My art' } });
+      fireEvent.click(screen.getByRole('button', { name: /mint the aaarto/i }));
+
+      expect(await screen.findByText(/rabby wallet is not available/i)).toBeInTheDocument();
+      expect(screen.getByText(/free browser-extension wallet/i)).toBeInTheDocument();
+      expect(screen.getByText(/reload this page/i)).toBeInTheDocument();
+      for (const [name, href] of [
+        [/learn about rabby/i, 'https://rabby.io'],
+        [/download the rabby extension/i, RABBY_DOWNLOAD_URL],
+      ] as const) {
+        const link = screen.getByRole('link', { name });
+        expect(link).toHaveAttribute('href', href);
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+      }
     });
   });
 

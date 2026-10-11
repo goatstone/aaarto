@@ -10,8 +10,9 @@ import AboutInfo from "./AboutInfo";
 import MintingInfo from "./MintingInfo";
 import Message from "./Message";
 import NoWallet from "./NoWalletModal";
+import RabbyMissing from "./RabbyMissing";
 import uploadData from "../uploadData";
-import { connectRabbyWallet } from "../rabbyHelpers";
+import { connectRabbyWallet, RABBY_NOT_INSTALLED } from "../rabbyHelpers";
 import { mintNFT } from "../mintNFT";
 import { normalizeMintError } from "../normalizeMintError";
 import config from "../config";
@@ -63,7 +64,7 @@ const App: React.FC = () => {
   const canMint = missingForMint.length === 0;
   const missingText = missingForMint.join(" and ");
 
-  type ModalContent = "about" | "minting" | "no_wallet" | "incomplete";
+  type ModalContent = "about" | "minting" | "no_wallet" | "rabby_missing" | "incomplete";
   const modalContents = {
     about: <AboutInfo />,
     incomplete: (
@@ -82,6 +83,7 @@ const App: React.FC = () => {
         mintingError={mintingError}
       />
     ),
+    rabby_missing: <RabbyMissing />,
     no_wallet: (
       <NoWallet
         show={true}
@@ -146,6 +148,12 @@ const App: React.FC = () => {
       setIsMinting(false);
     } catch (error: any) {
       console.log("error", error);
+      if (error?.message === RABBY_NOT_INSTALLED) {
+        // Its own modal, so it can carry links the error bar cannot
+        setModalContent("rabby_missing");
+        setIsMinting(false);
+        return;
+      }
       setMintingError(normalizeMintError(error, errorMessages));
       setModalContent("minting");
       setIsMinting(false);
