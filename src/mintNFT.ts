@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import config from "./config";
 
 const contractAddress = config.contractAddress;
+// The fee from .env, sent as-is. It must be >= the contract's platformFee().
 const platformFee = ethers.parseEther(config.platformFee);
 
 export type MintResult = {
@@ -80,16 +81,11 @@ export const mintNFT = async (
     signer
   );
 
-  const gasLimit = await AaartoNFTContract.preSafeMint.estimateGas(
-    account,
-    ipfsTokenURI,
-    { value: platformFee }
-  );
-
+  // No explicit gasLimit: ethers estimates it when sending.
   const txResponse = await AaartoNFTContract.preSafeMint(
     account,
     ipfsTokenURI,
-    { value: platformFee, gasLimit }
+    { value: platformFee }
   );
 
   const receipt = await txResponse.wait();

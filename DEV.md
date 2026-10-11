@@ -6,13 +6,14 @@ There are two git-ignored env files, one per piece of the system (see [Architect
 
 | File | Used by | Contents |
 |---|---|---|
-| `.env` (project root) | webpack, at build time | `network=sepolia` or `polygon` |
+| `.env` (project root) | webpack, at build time | `network=sepolia` or `polygon`, and `platformFee=<ETH>` |
 | `backend/.env` | `backend/expressServer.js`, at runtime | `PINATA_API_KEY=...` and `PINATA_SECRET_API_KEY=...` |
 
 Copy `env.example` to `.env` at the project root and fill in real values before running the project.
 
 ```
 network=sepolia   # or "polygon" for mainnet
+platformFee=0.001 # ETH/MATIC sent with each mint; must be >= the contract's platformFee()
 
 ```
 
@@ -21,6 +22,10 @@ network=sepolia   # or "polygon" for mainnet
 - `dotenv` loads `.env` in `webpack.config.js` (Node context, runs at build time).
 - `DefinePlugin` inlines each `process.env.X` reference as a literal string in the bundle — every key used in app code must be listed explicitly in `webpack.config.js`, since it's doing string substitution per key, not exposing all of `process.env`.
 - **Never** `require('dotenv')` or reference raw `process.env.X` outside `webpack.config.js` and `src/config.ts`. `dotenv` depends on Node's `path` module, which isn't available in the browser — importing it into app code breaks the bundle. App code should only ever import from `src/config.ts`.
+
+## Platform fee
+
+`platformFee=` in `.env` is the exact amount sent with each mint, so the fee can be raised from the client without changing the contract. It must be **at or above** the contract's `platformFee()` (read it under Read Contract on the block explorer): a lower value reverts with "Insufficient platform fee". The app never sends more than this value. Like `network=`, it is baked in at build start, so restart `webpack serve` after editing and, for production, rebuild and commit `docs/bundle.js`. A missing or invalid value throws at startup.
 
 ## Switching networks
 

@@ -1,11 +1,15 @@
-const loadConfig = (network: string) => {
+const loadConfig = (network: string, platformFee = "0.001") => {
   const previous = process.env.network;
+  const previousFee = process.env.platformFee;
   process.env.network = network;
+  if (platformFee === undefined) delete process.env.platformFee;
+  else process.env.platformFee = platformFee;
   let config: any;
   jest.isolateModules(() => {
     config = require("../src/config").default;
   });
   process.env.network = previous;
+  process.env.platformFee = previousFee;
   return config;
 };
 
@@ -32,3 +36,14 @@ describe.each([
 test("an unknown network is rejected", () => {
   expect(() => loadConfig("amoy")).toThrow();
 });
+
+test("platformFee comes from the env", () => {
+  expect(loadConfig("sepolia", "0.25").platformFee).toBe("0.25");
+});
+
+test.each(["", "abc", "0", "-1", "0.0000000000000000001", "1e3"])(
+  "an invalid platformFee (%p) is rejected",
+  (fee) => {
+    expect(() => loadConfig("sepolia", fee)).toThrow();
+  },
+);

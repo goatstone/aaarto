@@ -31,6 +31,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env.network": JSON.stringify(process.env.network),
+      "process.env.platformFee": JSON.stringify(process.env.platformFee),
     }),
   ],
   module: {
