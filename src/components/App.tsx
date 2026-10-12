@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Canvas from "@components/Canvas";
 import Header from "@components/Header";
 import CanvasControl from "@components/CanvasControl";
@@ -50,6 +50,7 @@ const App: React.FC = () => {
   const [shapeCount, setShapeCount] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
+  const mintInFlight = useRef(false);
   const [mintingError, setMintingError] = useState<string | null>(null);
   const [account, setAccount] = useState<null | string>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
@@ -112,6 +113,10 @@ const App: React.FC = () => {
     description: string,
     artistName: string,
   ) => {
+    // Tracked apart from the modal: closing the modal must not re-enable the
+    // button while a transaction may still be pending (#78)
+    if (mintInFlight.current) return;
+    mintInFlight.current = true;
     setIsMinting(true);
     setTransactionHash(null);
     setTokenId(null);
@@ -120,21 +125,16 @@ const App: React.FC = () => {
     setMintingError(null);
 
     try {
+      // Connect before the upload, so cancelling the wallet prompt leaves no
+      // paid-for pins behind (#79)
+      const result = await connectRabbyWallet();
+      setAccount(result.account);
+
       // ?env=dev skips the upload: no CIDs of the drawing to show
       const uploaded = ipfsUploadEnabled
         ? await uploadData(svgString, name, description, artistName)
         : { ipfsHashMD: DEBUG_IPFS_CID, ipfsHash: null };
-      // Logged on purpose while Rabby is tested on the live site (#154, #155):
-      // the metadata URL to check the upload by hand. Its "image" field holds
-      // the ipfs:// link to the SVG.
-      console.log(
-        "Metadata URL:",
-        `https://gateway.pinata.cloud/ipfs/${uploaded.ipfsHashMD}`,
-      );
 
-      const result = await connectRabbyWallet();
-      setAccount(result.account);
-      // Only runs if connected
       const minted = await mintNFT(
         result.ethereum,
         result.account,
@@ -144,24 +144,27 @@ const App: React.FC = () => {
       setIpfsHash(uploaded.ipfsHash);
       setIpfsHashMD(ipfsUploadEnabled ? uploaded.ipfsHashMD : null);
       setTransactionHash(minted.hash);
-
-      setIsMinting(false);
+      // The user may have closed the modal while waiting: show the result
+      setModalContent("minting");
+      setIsModalOpen(true);
     } catch (error: any) {
       console.log("error", error);
       if (error?.message === RABBY_NOT_INSTALLED) {
         // Its own modal, so it can carry links the error bar cannot
         setModalContent("rabby_missing");
-        setIsMinting(false);
+        setIsModalOpen(true);
         return;
       }
       setMintingError(normalizeMintError(error, errorMessages));
       setModalContent("minting");
+      setIsModalOpen(true);
+    } finally {
+      mintInFlight.current = false;
       setIsMinting(false);
     }
   };
   useEffect(() => {
     if (!isModalOpen) {
-      setIsMinting(false);
       setMintingError(null);
     }
   }, [isModalOpen]);
