@@ -17,7 +17,8 @@ describe("backend hardening", () => {
   let baseUrl: string;
 
   beforeAll(async () => {
-    process.env.UPLOAD_RATE_MAX = "3";
+    process.env.UPLOAD_RATE_MAX = "4";
+    process.env.PINATA_JWT = "scoped-jwt";
     delete process.env.CORS_ORIGINS;
     let app: any;
     jest
@@ -79,6 +80,16 @@ describe("backend hardening", () => {
     expect(await res.json()).toEqual({ error: "Invalid request." });
   });
 
+  test("authenticates to Pinata with the scoped JWT, not the key pair", async () => {
+    const res = await post(JSON.stringify(upload));
+    expect(res.status).toBe(200);
+    for (const call of (axios.post as jest.Mock).mock.calls) {
+      expect(call[2].headers.Authorization).toBe("Bearer scoped-jwt");
+      expect(call[2].headers).not.toHaveProperty("pinata_api_key");
+      expect(call[2].headers).not.toHaveProperty("pinata_secret_api_key");
+    }
+  });
+
   // Last: it uses up the limit for this client
   test("sets a timeout on both Pinata calls, then rate-limits with a 429", async () => {
     const first = await post(JSON.stringify(upload));
@@ -88,7 +99,7 @@ describe("backend hardening", () => {
       expect(call[2].timeout).toBe(30000);
     }
 
-    // The limit is 3. Requests the body parser rejects never reach it.
+    // The limit is 4, and the JWT test above used one. Requests the body parser rejects never reach it.
     expect((await post(JSON.stringify(upload))).status).toBe(200);
     expect((await post(JSON.stringify(upload))).status).toBe(200);
     const fourth = await post(JSON.stringify(upload));

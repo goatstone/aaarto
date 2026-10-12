@@ -14,6 +14,16 @@ require("dotenv").config();
 
 const PINATA_API_KEY = process.env.PINATA_API_KEY || "";
 const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY || "";
+// A JWT can be scoped to pinFileToIPFS only, so a leaked one can do less than
+// the account-wide key pair. It is used when set; the key pair is the fallback.
+const PINATA_JWT = process.env.PINATA_JWT || "";
+const pinataAuthHeaders = () =>
+  PINATA_JWT
+    ? { Authorization: `Bearer ${PINATA_JWT}` }
+    : {
+        pinata_api_key: PINATA_API_KEY,
+        pinata_secret_api_key: PINATA_SECRET_API_KEY,
+      };
 
 // Origins allowed to call the API from a browser. Not authentication: a script
 // that sends no Origin header is not affected by CORS.
@@ -98,8 +108,7 @@ app.post("/server", uploadLimiter, async (req, res) => {
       {
         headers: {
           ...formDataSVG.getHeaders(),
-          pinata_api_key: PINATA_API_KEY,
-          pinata_secret_api_key: PINATA_SECRET_API_KEY,
+          ...pinataAuthHeaders(),
         },
         timeout: PINATA_TIMEOUT_MS,
       }
@@ -129,8 +138,7 @@ app.post("/server", uploadLimiter, async (req, res) => {
       {
         headers: {
           ...formDataMD.getHeaders(),
-          pinata_api_key: PINATA_API_KEY,
-          pinata_secret_api_key: PINATA_SECRET_API_KEY,
+          ...pinataAuthHeaders(),
         },
         timeout: PINATA_TIMEOUT_MS,
       }
