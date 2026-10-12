@@ -49,6 +49,13 @@ const App: React.FC = () => {
   const mintInFlight = useRef(false);
   const [mintingError, setMintingError] = useState<string | null>(null);
   const [account, setAccount] = useState<null | string>(null);
+  // The account the last mint was sent from: the footer follows the wallet,
+  // but a pending or finished mint must keep naming the account that sent it
+  const [mintAccount, setMintAccount] = useState<null | string>(null);
+  const [provider, setProvider] = useState<null | {
+    on?: (event: string, handler: (...args: any[]) => void) => void;
+    removeListener?: (event: string, handler: (...args: any[]) => void) => void;
+  }>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
   const [tokenId, setTokenId] = useState<string | null>(null);
   const [ipfsHash, setIpfsHash] = useState<string | null>(null);
@@ -72,7 +79,7 @@ const App: React.FC = () => {
     ),
     minting: (
       <MintingInfo
-        account={account}
+        account={mintAccount}
         transactionHash={transactionHash}
         tokenId={tokenId}
         ipfsHash={ipfsHash}
@@ -107,6 +114,8 @@ const App: React.FC = () => {
       // paid-for pins behind (#79)
       const result = await connectRabbyWallet();
       setAccount(result.account);
+      setMintAccount(result.account);
+      setProvider(result.ethereum);
 
       // ?env=dev skips the upload: no CIDs of the drawing to show
       const uploaded = ipfsUploadEnabled
@@ -141,6 +150,15 @@ const App: React.FC = () => {
       setIsMinting(false);
     }
   };
+  // Follow the wallet's selected account (#145). An empty list means the
+  // wallet was locked or disconnected from the site.
+  useEffect(() => {
+    if (!provider?.on) return;
+    const onAccountsChanged = (accounts: string[]) =>
+      setAccount(accounts?.[0] ?? null);
+    provider.on("accountsChanged", onAccountsChanged);
+    return () => provider.removeListener?.("accountsChanged", onAccountsChanged);
+  }, [provider]);
   useEffect(() => {
     if (!isModalOpen) {
       setMintingError(null);

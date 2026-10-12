@@ -4,6 +4,8 @@
 interface RabbyProvider {
   request: (args: { method: string; params?: any[] }) => Promise<any>;
   isRabby?: boolean;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
+  removeListener?: (event: string, handler: (...args: any[]) => void) => void;
 }
 
 // Where to send a user who has no Rabby. Kept here so there is one place to
