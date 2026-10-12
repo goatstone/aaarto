@@ -4,8 +4,6 @@ import '@testing-library/jest-dom';
 import App from '@components/App';
 import { RABBY_DOWNLOAD_URL } from '../src/rabbyHelpers';
 
-// The Coinbase SDK ships ES modules, which Jest can't load without extra config
-jest.mock('../src/coinbaseHelpers', () => ({ connectCoinbaseWallet: jest.fn() }));
 
 // Rabby is "not installed" unless a test says otherwise
 jest.mock('../src/rabbyHelpers', () => ({

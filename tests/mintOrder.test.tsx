@@ -6,7 +6,6 @@ import uploadData from '../src/uploadData';
 import { mintNFT } from '../src/mintNFT';
 import { connectRabbyWallet } from '../src/rabbyHelpers';
 
-jest.mock('../src/coinbaseHelpers', () => ({ connectCoinbaseWallet: jest.fn() }));
 jest.mock('../src/uploadData', () => ({
   ...jest.requireActual('../src/uploadData'),
   __esModule: true,

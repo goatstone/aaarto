@@ -9,7 +9,7 @@ Aaarto (https://aaarto.art/) is a browser drawing app that mints the drawing as 
 ## Commands
 
 ```bash
-npm install          # legacy-peer-deps=true is set in .npmrc (React 19 vs @fluentui/react peer range)
+npm install --legacy-peer-deps   # needed: React 19 vs @fluentui/react peer range. There is no .npmrc in the repo, so plain `npm install` fails with ERESOLVE
 npm start             # webpack serve on :9000 (frontend dev)
 npm run build          # webpack production build -> docs/ (this is what's deployed)
 npm test               # jest
@@ -50,9 +50,9 @@ pm2 restart aaarto-api --update-env   # after editing backend/.env
 **Debug query strings** (`?env=dev` / `?env=full`, parsed once in `src/featureFlags.ts`, consumed in `App.tsx`) gate whether the mint button is enabled and whether IPFS upload runs — see DEBUG.md. This is UI-only, not access control: `POST /server` is unauthenticated, and `?env=dev` still sends a real on-chain transaction (just with a placeholder token URI). Never test `?env=dev` against `network=polygon`.
 
 **Mint flow** (`App.tsx` → `uploadData.ts` → backend `/server` → `mintNFT.ts`):
-1. `uploadData()` POSTs `{ name, svgString, description, artistName }` to `/server` (skipped if `?env=dev`).
-2. Backend pins the SVG to Pinata first (image CID), then builds ERC-721 metadata JSON pointing at that CID and pins it too, returning only the metadata CID (`ipfsHashMD`).
-3. `connectCoinbaseWallet()` (`coinbaseHelpers.ts`) resolves a Coinbase Wallet provider (handles multi-provider/providerMap/single-provider injection cases) and requests accounts.
+1. `connectRabbyWallet()` (`rabbyHelpers.ts`) finds Rabby (EIP-6963 first, then the `isRabby` flag) and requests accounts. It runs first, so cancelling the wallet prompt pins nothing. A missing Rabby opens its own modal.
+2. `uploadData()` POSTs `{ name, svgString, description, artistName }` to `/server` (skipped if `?env=dev`).
+3. Backend pins the SVG to Pinata first (image CID), then builds ERC-721 metadata JSON pointing at that CID and pins it too, returning only the metadata CID (`ipfsHashMD`).
 4. `mintNFT()` switches/adds the configured chain on the wallet if needed, then calls `preSafeMint(account, ipfs://<ipfsHashMD>)` on the contract from `config.contractArtifact`, paying `config.platformFee`.
 5. Errors are normalized to user-facing messages in `App.tsx` (`normalizeMintError`) based on substring matching on `error.message` (insufficient funds, user rejected, wallet not installed, etc.).
 

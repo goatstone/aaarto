@@ -7,7 +7,6 @@
     "lint": "eslint . --config eslintrc.js"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "^4.3.7",
     "@fluentui/react": "^8.122.10",
     "@testing-library/dom": "^10.4.0",
     "@types/react": "^19.0.2",

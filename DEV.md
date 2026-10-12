@@ -75,7 +75,7 @@ devServer: {
 },
 ```
 
-The Coinbase Wallet extension must be installed and set to the same network as `network=` in `.env` (or approve the chain-switch prompt).
+The Rabby wallet extension must be installed and set to the same network as `network=` in `.env` (or approve the chain-switch prompt).
 
 ## Deploying to aaarto.art (AWS)
 
@@ -246,11 +246,11 @@ Notes:
 
 ## Known dependency conflict
 
-`@fluentui/react@8.x` expects `react`/`@types/react` <19; this project uses React 19. Resolved via `.npmrc`:
+`@fluentui/react@8.x` expects `react`/`@types/react` <19; this project uses React 19. There is no `.npmrc` in the repo, so plain `npm install` fails with ERESOLVE. Install with:
 ```
-legacy-peer-deps=true
+npm install --legacy-peer-deps
 ```
-so plain `npm install` works without needing `--legacy-peer-deps` manually.
+(`npm uninstall` needs the same flag.)
 
 ## process polyfill
 

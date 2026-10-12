@@ -9,7 +9,6 @@ import AaartoModal from "@components/AaartoModal";
 import AboutInfo from "./AboutInfo";
 import MintingInfo from "./MintingInfo";
 import Message from "./Message";
-import NoWallet from "./NoWalletModal";
 import RabbyMissing from "./RabbyMissing";
 import uploadData from "../uploadData";
 import { connectRabbyWallet, RABBY_NOT_INSTALLED } from "../rabbyHelpers";
@@ -29,13 +28,10 @@ const aboutStyles = mergeStyleSets({
 });
 const errorMessages = {
   notInstalled: "Rabby Wallet is not available. Please install or open it.",
-  accountAccess: "Connect Coinbase Wallet account with this site.",
   attemptAdd: `Attempting to add the ${config.chainNameDisplay} chain.`,
   attemptSwitch: `Attempting to switch to the ${config.chainNameDisplay} chain.`,
   general: "An error occurred during minting.",
   userCancel: "The request has been cancelled.",
-  alreadyProcessing:
-    "Coinbase Wallet is processing a request, try opening Coinbase Wallet",
   InsufficientFunds:
     "Insufficient funds, please add more funds to your wallet.",
 };
@@ -65,7 +61,7 @@ const App: React.FC = () => {
   const canMint = missingForMint.length === 0;
   const missingText = missingForMint.join(" and ");
 
-  type ModalContent = "about" | "minting" | "no_wallet" | "rabby_missing" | "incomplete";
+  type ModalContent = "about" | "minting" | "rabby_missing" | "incomplete";
   const modalContents = {
     about: <AboutInfo />,
     incomplete: (
@@ -85,28 +81,10 @@ const App: React.FC = () => {
       />
     ),
     rabby_missing: <RabbyMissing />,
-    no_wallet: (
-      <NoWallet
-        show={true}
-        onClose={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        onScanMobile={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        onInstallExtension={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
-    ),
   };
   const [modalContent, setModalContent] = useState<ModalContent>("about");
   // Read once, from the query string at page load (see DEBUG.md)
   const [{ mintEnabled, ipfsUploadEnabled }] = useState(getFeatureFlags);
-  const openNoWalletModal = () => {
-    setModalContent("no_wallet");
-    setIsModalOpen(true);
-  };
   const useUploadMint = async (
     svgString: string,
     name: string,
