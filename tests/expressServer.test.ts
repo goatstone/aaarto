@@ -90,7 +90,8 @@ describe("POST /server", () => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         name,
-        svgString: "<svg/>",
+        svgString:
+          '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" version="1.1"><circle cx="1" cy="1" r="1" fill="#cccccc" id="1"/></svg>',
         description: `description ${name}`,
         artistName: `artist ${name}`,
       }),
@@ -132,5 +133,43 @@ describe("POST /server", () => {
     expect(metadata("A").image).toBe(`ipfs://${bodyA.ipfsHash}`);
     expect(metadata("B").image).toBe(`ipfs://${bodyB.ipfsHash}`);
     expect(bodyA.ipfsHash).not.toBe(bodyB.ipfsHash);
+  });
+
+  describe("invalid uploads", () => {
+    const bad = (body: object) =>
+      fetch(`${baseUrl}/server`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    const base = {
+      name: "A",
+      description: "",
+      artistName: "",
+      svgString:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" version="1.1"></svg>',
+    };
+
+    beforeEach(() => {
+      jest.spyOn(console, "error").mockImplementation(() => {});
+    });
+    afterEach(() => {
+      (console.error as jest.Mock).mockRestore();
+    });
+
+    test.each([
+      ["an SVG with a script", { svgString: base.svgString.replace("></svg>", "><script>alert(1)</script></svg>") }],
+      ["an empty canvas (no shapes)", { svgString: base.svgString.replace("></svg>", '><rect width="100%" height="100%" fill="white"/></svg>') }],
+      ["an empty svgString", { svgString: "" }],
+      ["a blank name", { name: " " }],
+      ["an over-long name", { name: "a".repeat(129) }],
+      ["a non-string artist", { artistName: { a: 1 } }],
+    ])("answers 400 with a generic message and pins nothing for %s", async (_label, overrides) => {
+      (axios.post as jest.Mock).mockClear();
+      const res = await bad({ ...base, ...overrides });
+      expect(res.status).toBe(400);
+      expect(await res.json()).toEqual({ error: "Invalid upload." });
+      expect(axios.post).not.toHaveBeenCalled();
+    });
   });
 });

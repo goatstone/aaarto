@@ -7,6 +7,7 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 const FormData = require("form-data");
+const { validateUpload } = require("./validateUpload");
 require("dotenv").config();
 
 const PINATA_API_KEY = process.env.PINATA_API_KEY || "";
@@ -45,6 +46,11 @@ app.get("/server_status", (req, res) => {
   res.json(status);
 });
 app.post("/server", async (req, res) => {
+  const validation = validateUpload(req.body);
+  if (!validation.ok) {
+    console.error("Upload rejected:", validation.reason);
+    return res.status(400).json({ error: "Invalid upload." });
+  }
   try {
     const { name, svgString, description, artistName } = req.body;
 
