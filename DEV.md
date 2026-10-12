@@ -7,7 +7,7 @@ There are two git-ignored env files, one per piece of the system (see [Architect
 | File | Used by | Contents |
 |---|---|---|
 | `.env` (project root) | webpack, at build time | `network=sepolia` or `polygon`, and `platformFee=<ETH>` |
-| `backend/.env` | `backend/expressServer.js`, at runtime | `PINATA_API_KEY=...` and `PINATA_SECRET_API_KEY=...`; optional `PORT` (default `5000`), `CORS_ORIGINS` (comma-separated, default `https://aaarto.art,http://localhost:9000`) and `UPLOAD_RATE_MAX` (uploads per IP per 15 minutes, default `10`) |
+| `backend/.env` | `backend/expressServer.js`, at runtime | `PINATA_API_KEY=...` and `PINATA_SECRET_API_KEY=...`, or `PINATA_JWT=...` (used when set; create it in Pinata with only the `pinFileToIPFS` permission); optional `PORT` (default `5000`), `CORS_ORIGINS` (comma-separated, default `https://aaarto.art,http://localhost:9000`) and `UPLOAD_RATE_MAX` (uploads per IP per 15 minutes, default `10`) |
 
 The upload endpoint limits each client IP, so nginx must send `X-Forwarded-For` (the config below does); the server trusts one proxy hop.
 
