@@ -43,6 +43,11 @@ module.exports = {
       },
     ],
   },
+  // npm installs and tsc output rewrite thousands of files in node_modules/
+  // and docs/ (the build output); neither is an input, so don't rebuild for them
+  watchOptions: {
+    ignored: ["**/node_modules/**", "**/docs/**"],
+  },
   devServer: {
     static: {
       directory: path.join(__dirname, "docs"),
