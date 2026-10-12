@@ -17,10 +17,12 @@ app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 const port = 5000;
 
-const metadata = {
-  name: "",
-  image: "",
-  description: "",
+// A new object per request: a shared one would be overwritten by a request
+// that starts while an earlier one is still waiting on Pinata.
+const buildMetadata = ({ name, description, artistName, image }) => ({
+  name,
+  image,
+  description,
   attributes: [
     {
       trait_type: "Aaarto Art",
@@ -28,10 +30,10 @@ const metadata = {
     },
     {
       trait_type: "Artist Name",
-      value: "",
+      value: artistName,
     },
   ],
-};
+});
 app.get("/server_status", (req, res) => {
   const uptime = process.uptime(); // Server uptime in seconds
   const status = {
@@ -45,9 +47,6 @@ app.get("/server_status", (req, res) => {
 app.post("/server", async (req, res) => {
   try {
     const { name, svgString, description, artistName } = req.body;
-    metadata.name = name;
-    metadata.description = description;
-    metadata.attributes[1].value = artistName;
 
     // SVG file, upload to Pinata, get a hash
     const formDataSVG = new FormData();
@@ -70,8 +69,13 @@ app.post("/server", async (req, res) => {
     );
     const ipfsHash = response.data.IpfsHash;
 
-    // Update metadata image field with the retrieved IPFS hash
-    metadata.image = `ipfs://${ipfsHash}`;
+    // Build the metadata with the image hash that was just retrieved
+    const metadata = buildMetadata({
+      name,
+      description,
+      artistName,
+      image: `ipfs://${ipfsHash}`,
+    });
 
     // MetaData MD, upload to Pintata
     const formDataMD = new FormData();
