@@ -44,6 +44,8 @@ describe("POST /server", () => {
   let svgRelease: Record<string, ReturnType<typeof deferred>>;
 
   beforeAll(async () => {
+    // These tests post more often than the production rate limit allows
+    process.env.UPLOAD_RATE_MAX = "1000";
     // The server calls app.listen() on import; capture the app instead.
     let app: any;
     jest
