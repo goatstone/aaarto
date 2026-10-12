@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from '@components/App';
 import { RABBY_DOWNLOAD_URL } from '../src/rabbyHelpers';
@@ -68,14 +68,15 @@ describe('App', () => {
     test('should explain what is missing when clicking an incomplete mint button', () => {
       render(<App />);
       fireEvent.click(mintButton());
-      expect(screen.getByText(/please draw something and enter a title/i)).toBeInTheDocument();
+      // In the dialog: the button's screen-reader text (#150) repeats the wording
+      expect(within(screen.getByRole('dialog')).getByText(/please draw something and enter a title/i)).toBeInTheDocument();
     });
 
     test('should only ask for a title when something is drawn', () => {
       const { container } = render(<App />);
       draw(container);
       fireEvent.click(mintButton());
-      expect(screen.getByText(/please enter a title before/i)).toBeInTheDocument();
+      expect(within(screen.getByRole('dialog')).getByText(/please enter a title before/i)).toBeInTheDocument();
     });
 
     test('should enable the mint button with a drawing and a title', () => {

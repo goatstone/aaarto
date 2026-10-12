@@ -194,6 +194,7 @@ const App: React.FC = () => {
           }}
           isMinting={isMinting}
           canMint={canMint}
+          missingText={missingText}
         />
       </Header>
       <Canvas
