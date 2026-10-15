@@ -224,9 +224,7 @@ const App: React.FC = () => {
               cols={32}
               placeholder="Description"
               maxLength={256}
-            >
-              {description}
-            </textarea>
+            />
           </label>
         </section>
         <section>
