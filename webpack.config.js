@@ -3,11 +3,14 @@ const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const webpack = require("webpack");
 require("dotenv").config();
 
-module.exports = {
+// `webpack serve` runs a development build (React warnings, DevTools Components
+// and Profiler tabs, readable stack traces). Everything else, including
+// `npm run build`, is a production build, since docs/bundle.js is what ships.
+module.exports = (env, argv) => ({
   performance: {
     hints: false,
   },
-  mode: "production",
+  mode: argv.mode || (env.WEBPACK_SERVE ? "development" : "production"),
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "docs"),
@@ -58,4 +61,4 @@ module.exports = {
     // forwards it to the backend; in dev the dev server does the same.
     proxy: [{ context: ["/server"], target: "http://localhost:5000" }],
   },
-};
+});

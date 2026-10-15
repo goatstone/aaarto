@@ -136,10 +136,13 @@ The trade-off is that the committed bundle must be built with the right `network
 npm run build
 grep -c 0x03a9423E9Aac42E9F991D292F8e074808D9ABE7f docs/bundle.js   # must print 1 (the polygon contract)
 grep -c 0x92128cD1BCA8cc406d2223Dcf1558E4d926Dd68f docs/bundle.js   # must print 0 (the sepolia contract)
+grep -c "Each child in a list should have a unique" docs/bundle.js   # must print 0 (a development React build prints 2)
 git add -A && git commit -m "build for production" && git push origin main
 ```
 
 The `network=` value is baked into `docs/bundle.js` at build time. A bundle built with `network=sepolia` and committed would silently point the live site at the testnet contract, so always run the two `grep` checks before committing. After testing on Sepolia, set `network=polygon` again before the release build, and never commit a `docs/` folder built for Sepolia.
+
+`npm start` runs a **development** build (React warnings and the DevTools Components/Profiler tabs work) and `npm run build` runs a **production** build (`--mode production`). The third `grep` catches a development bundle, which is about three times larger, before it is committed.
 
 **2. On the server: pull**
 
