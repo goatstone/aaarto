@@ -12,11 +12,14 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString, setSh
 
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
     const svgRef = useRef<SVGSVGElement>(null);
+    // Shape IDs are numeric: the server's validateUpload only accepts digits
+    const nextShapeId = useRef(0);
     const removeElement = (id: string) => {
         setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id; }));
     };
     const handleCanvasClick = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-        const generatedID = Date.now().toString();
+        nextShapeId.current += 1;
+        const generatedID = nextShapeId.current.toString();
         let newElement: JSX.Element | null = null;
         const rect = (event.currentTarget as SVGSVGElement).getBoundingClientRect();
         const x: number = event.clientX - rect.left;
@@ -29,10 +32,10 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString, setSh
             return;
         }
         else if (shape === 'circle') {
-            newElement = <circle cx={x} cy={y} r={size / 2} fill={color} id={generatedID} />;
+            newElement = <circle cx={x} cy={y} r={size / 2} fill={color} id={generatedID} key={generatedID} />;
         }
         else if (shape === 'square') {
-            newElement = <rect x={x - size / 2} y={y - size / 2} fill={color} width={size} height={size} id={generatedID} />;
+            newElement = <rect x={x - size / 2} y={y - size / 2} fill={color} width={size} height={size} id={generatedID} key={generatedID} />;
         }
         if (newElement !== null) {
             setSVGElements(previousElements => ([...previousElements, newElement]));
@@ -60,7 +63,7 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString, setSh
         onClick={handleCanvasClick}
     >
         <rect width="100%" height="100%" fill="white" />
-        {SVGElements.map(item => item)}
+        {SVGElements}
     </svg>);
 };
 
