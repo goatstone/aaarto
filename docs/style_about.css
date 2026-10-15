@@ -48,3 +48,22 @@ img {
   margin-right: auto;
   display: block;
 }
+.center {
+  text-align: center;
+}
+a.button {
+  display: inline-block;
+  background-color: darkgreen;
+  color: #eee;
+  border-radius: 10%;
+  font-size: 1.25em;
+  padding: 0.4em 0.8em;
+}
+iframe.form {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: 828px;
+  margin: 0 auto;
+  border: 0;
+}

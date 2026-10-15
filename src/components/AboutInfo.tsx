@@ -44,6 +44,15 @@ const modalContentStyles = mergeStyleSets({
       "p:first-child": { marginTop: 0 },
       "p:last-child": { marginBottom: 0 },
       a: { fontSize: "1.25em", color: "darkblue" },
+      "a.contact-button": {
+        display: "inline-block",
+        backgroundColor: "darkgreen",
+        color: "#eee",
+        borderRadius: "10%",
+        padding: "0.2em 0.6em",
+        margin: "0 1em 0 0",
+        textDecoration: "none",
+      },
     },
   },
 });
@@ -56,15 +65,15 @@ const AboutInfo: React.FC = () => {
       </div>
       <div className={modalContentStyles.body}>
         <h3>
-          The Aaarto collection can be seen on OpenSea at:
-          <a href="https://opensea.io/collection/aaarto" target="_blank">
-            https://opensea.io/collection/aaarto
+          The Aaarto collection can be seen on Rarible at:
+          <a href="https://rarible.com/polygon/collections/0x03a9423e9aac42e9f991d292f8e074808d9abe7f" target="_blank" rel="noopener noreferrer">
+            Aaarto on Rarible
           </a>
         </h3>
         <p>
           Aaarto is an online drawing program that enables the minting of the
           artwork as a Non-fungible token, an NFT. Aaartos are minted on the
-          <a href="https://polygon.technology/" target="_blank">
+          <a href="https://polygon.technology/" target="_blank" rel="noopener noreferrer">
             Polygon
           </a>{" "}
           network.
@@ -83,10 +92,18 @@ const AboutInfo: React.FC = () => {
         </p>
         <p>
           Aaarto is designed, developed and hosted by:
-          <a href="https://goatstone.com" target="_blank">
+          <a href="https://goatstone.com" target="_blank" rel="noopener noreferrer">
             goatstone.com
           </a>
         </p>
+        <a
+          className="contact-button"
+          href="contact.html"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Contact
+        </a>
         <a href="about.html" target="_blank" rel="noopener noreferrer">
           Click Here To Find Out More About Aaarto...
         </a>
