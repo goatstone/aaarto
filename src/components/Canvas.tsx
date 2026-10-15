@@ -1,4 +1,4 @@
-import React, { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useRef, useState } from 'react';
 
 type CanvasProps = {
     shape: string;
@@ -11,6 +11,7 @@ type CanvasProps = {
 const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString, setShapeCount }) => {
 
     const [SVGElements, setSVGElements] = useState<JSX.Element[]>([]);
+    const svgRef = useRef<SVGSVGElement>(null);
     const removeElement = (id: string) => {
         setSVGElements(prev => prev.filter((el: JSX.Element) => { return el.props.id !== id; }));
     };
@@ -39,7 +40,7 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString, setSh
     };
 
     useEffect(() => {
-        const svgElement = document.getElementsByTagName('svg')[0];
+        const svgElement = svgRef.current;
         const serializer = new XMLSerializer();
         if (svgElement) {
             setSvgString(serializer.serializeToString(svgElement));
@@ -51,6 +52,7 @@ const Canvas: React.FC<CanvasProps> = ({ shape, size, color, setSvgString, setSh
     }, [SVGElements, setShapeCount]);
 
     return (<svg
+        ref={svgRef}
         width="400"
         height="400"
         version="1.1"
