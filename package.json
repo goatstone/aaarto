@@ -14,7 +14,7 @@
     "axios": "^1.7.9",
     "buffer": "^6.0.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^18.0.8",
     "ethers": "^6.13.5",
     "express-rate-limit": "^7.5.1",
     "helmet": "^8.3.0",
