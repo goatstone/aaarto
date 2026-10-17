@@ -105,7 +105,13 @@ const AboutInfo: React.FC = () => {
           Contact
         </a>
         <a href="about.html" target="_blank" rel="noopener noreferrer">
-          Click Here To Find Out More About Aaarto...
+          More About Aaarto
+        </a> |
+        <a href="terms.html" target="_blank" rel="noopener noreferrer">
+          Terms of Service
+        </a> |
+        <a href="privacy.html" target="_blank" rel="noopener noreferrer">
+          Privacy Policy
         </a>
       </div>
     </>
