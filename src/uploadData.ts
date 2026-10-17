@@ -13,12 +13,19 @@ export class UploadError extends Error {
   }
 }
 
+export type UploadResult = {
+  // CID of the metadata JSON (what the token URI points to)
+  ipfsHashMD: string;
+  // CID of the SVG image
+  ipfsHash: string;
+};
+
 const uploadData = async (
   svgString: string,
   name: string,
   description: string,
   artistName: string,
-): Promise<string> => {
+): Promise<UploadResult> => {
   const data = {
     name,
     svgString,
@@ -29,8 +36,8 @@ const uploadData = async (
   try {
     const address = "/server";
     const response = await axios.post(address, data);
-    const ipfsHashMD = response.data.ipfsHashMD;
-    return ipfsHashMD;
+    const { ipfsHashMD, ipfsHash } = response.data;
+    return { ipfsHashMD, ipfsHash };
   } catch (error: any) {
     console.error("Upload failed:", error.message, error.response?.status);
     // Is it a network error?

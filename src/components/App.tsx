@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Canvas from "@components/Canvas";
 import Header from "@components/Header";
 import CanvasControl from "@components/CanvasControl";
@@ -9,9 +9,9 @@ import AaartoModal from "@components/AaartoModal";
 import AboutInfo from "./AboutInfo";
 import MintingInfo from "./MintingInfo";
 import Message from "./Message";
-import NoWallet from "./NoWalletModal";
+import RabbyMissing from "./RabbyMissing";
 import uploadData from "../uploadData";
-import { connectCoinbaseWallet } from "../coinbaseHelpers";
+import { connectRabbyWallet, RABBY_NOT_INSTALLED } from "../rabbyHelpers";
 import { mintNFT } from "../mintNFT";
 import { normalizeMintError } from "../normalizeMintError";
 import config from "../config";
@@ -27,14 +27,11 @@ const aboutStyles = mergeStyleSets({
   },
 });
 const errorMessages = {
-  notInstalled: "Coinbase Wallet is not available. Please install or open it.",
-  accountAccess: "Connect Coinbase Wallet account with this site.",
+  notInstalled: "Rabby Wallet is not available. Please install or open it.",
   attemptAdd: `Attempting to add the ${config.chainNameDisplay} chain.`,
   attemptSwitch: `Attempting to switch to the ${config.chainNameDisplay} chain.`,
   general: "An error occurred during minting.",
   userCancel: "The request has been cancelled.",
-  alreadyProcessing:
-    "Coinbase Wallet is processing a request, try opening Coinbase Wallet",
   InsufficientFunds:
     "Insufficient funds, please add more funds to your wallet.",
 };
@@ -49,9 +46,20 @@ const App: React.FC = () => {
   const [shapeCount, setShapeCount] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
+  const mintInFlight = useRef(false);
   const [mintingError, setMintingError] = useState<string | null>(null);
   const [account, setAccount] = useState<null | string>(null);
+  // The account the last mint was sent from: the footer follows the wallet,
+  // but a pending or finished mint must keep naming the account that sent it
+  const [mintAccount, setMintAccount] = useState<null | string>(null);
+  const [provider, setProvider] = useState<null | {
+    on?: (event: string, handler: (...args: any[]) => void) => void;
+    removeListener?: (event: string, handler: (...args: any[]) => void) => void;
+  }>(null);
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
+  const [tokenId, setTokenId] = useState<string | null>(null);
+  const [ipfsHash, setIpfsHash] = useState<string | null>(null);
+  const [ipfsHashMD, setIpfsHashMD] = useState<string | null>(null);
 
   const missingForMint = [
     ...(shapeCount > 0 ? [] : ["draw something"]),
@@ -60,7 +68,7 @@ const App: React.FC = () => {
   const canMint = missingForMint.length === 0;
   const missingText = missingForMint.join(" and ");
 
-  type ModalContent = "about" | "minting" | "no_wallet" | "incomplete";
+  type ModalContent = "about" | "minting" | "rabby_missing" | "incomplete";
   const modalContents = {
     about: <AboutInfo />,
     incomplete: (
@@ -71,69 +79,88 @@ const App: React.FC = () => {
     ),
     minting: (
       <MintingInfo
-        account={account}
+        account={mintAccount}
         transactionHash={transactionHash}
+        tokenId={tokenId}
+        ipfsHash={ipfsHash}
+        ipfsHashMD={ipfsHashMD}
         mintingError={mintingError}
       />
     ),
-    no_wallet: (
-      <NoWallet
-        show={true}
-        onClose={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        onScanMobile={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        onInstallExtension={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
-    ),
+    rabby_missing: <RabbyMissing />,
   };
   const [modalContent, setModalContent] = useState<ModalContent>("about");
   // Read once, from the query string at page load (see DEBUG.md)
   const [{ mintEnabled, ipfsUploadEnabled }] = useState(getFeatureFlags);
-  const openNoWalletModal = () => {
-    setModalContent("no_wallet");
-    setIsModalOpen(true);
-  };
   const useUploadMint = async (
     svgString: string,
     name: string,
     description: string,
     artistName: string,
   ) => {
+    // Tracked apart from the modal: closing the modal must not re-enable the
+    // button while a transaction may still be pending (#78)
+    if (mintInFlight.current) return;
+    mintInFlight.current = true;
     setIsMinting(true);
     setTransactionHash(null);
+    setTokenId(null);
+    setIpfsHash(null);
+    setIpfsHashMD(null);
     setMintingError(null);
 
     try {
-      const ipfsHashMD = ipfsUploadEnabled
-        ? await uploadData(svgString, name, description, artistName)
-        : DEBUG_IPFS_CID;
-
-      const result = await connectCoinbaseWallet(openNoWalletModal);
+      // Connect before the upload, so cancelling the wallet prompt leaves no
+      // paid-for pins behind (#79)
+      const result = await connectRabbyWallet();
       setAccount(result.account);
-      // Only runs if connected
-      const txHash = await mintNFT(
+      setMintAccount(result.account);
+      setProvider(result.ethereum);
+
+      // ?env=dev skips the upload: no CIDs of the drawing to show
+      const uploaded = ipfsUploadEnabled
+        ? await uploadData(svgString, name, description, artistName)
+        : { ipfsHashMD: DEBUG_IPFS_CID, ipfsHash: null };
+
+      const minted = await mintNFT(
         result.ethereum,
         result.account,
-        `ipfs://${ipfsHashMD}`,
+        `ipfs://${uploaded.ipfsHashMD}`,
       );
-      setTransactionHash(txHash);
-
-      setIsMinting(false);
+      setTokenId(minted.tokenId);
+      setIpfsHash(uploaded.ipfsHash);
+      setIpfsHashMD(ipfsUploadEnabled ? uploaded.ipfsHashMD : null);
+      setTransactionHash(minted.hash);
+      // The user may have closed the modal while waiting: show the result
+      setModalContent("minting");
+      setIsModalOpen(true);
     } catch (error: any) {
       console.log("error", error);
+      if (error?.message === RABBY_NOT_INSTALLED) {
+        // Its own modal, so it can carry links the error bar cannot
+        setModalContent("rabby_missing");
+        setIsModalOpen(true);
+        return;
+      }
       setMintingError(normalizeMintError(error, errorMessages));
       setModalContent("minting");
+      setIsModalOpen(true);
+    } finally {
+      mintInFlight.current = false;
       setIsMinting(false);
     }
   };
+  // Follow the wallet's selected account (#145). An empty list means the
+  // wallet was locked or disconnected from the site.
+  useEffect(() => {
+    if (!provider?.on) return;
+    const onAccountsChanged = (accounts: string[]) =>
+      setAccount(accounts?.[0] ?? null);
+    provider.on("accountsChanged", onAccountsChanged);
+    return () => provider.removeListener?.("accountsChanged", onAccountsChanged);
+  }, [provider]);
   useEffect(() => {
     if (!isModalOpen) {
-      setIsMinting(false);
       setMintingError(null);
     }
   }, [isModalOpen]);
@@ -167,6 +194,7 @@ const App: React.FC = () => {
           }}
           isMinting={isMinting}
           canMint={canMint}
+          missingText={missingText}
         />
       </Header>
       <Canvas
@@ -196,9 +224,7 @@ const App: React.FC = () => {
               cols={32}
               placeholder="Description"
               maxLength={256}
-            >
-              {description}
-            </textarea>
+            />
           </label>
         </section>
         <section>

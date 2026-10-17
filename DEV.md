@@ -6,13 +6,16 @@ There are two git-ignored env files, one per piece of the system (see [Architect
 
 | File | Used by | Contents |
 |---|---|---|
-| `.env` (project root) | webpack, at build time | `network=sepolia` or `polygon` |
-| `backend/.env` | `backend/expressServer.js`, at runtime | `PINATA_API_KEY=...` and `PINATA_SECRET_API_KEY=...` |
+| `.env` (project root) | webpack, at build time | `network=sepolia` or `polygon`, and `platformFee=<ETH>` |
+| `backend/.env` | `backend/expressServer.js`, at runtime | `PINATA_API_KEY=...` and `PINATA_SECRET_API_KEY=...`, or `PINATA_JWT=...` (used when set; create it in Pinata with only the `pinFileToIPFS` permission); optional `PORT` (default `5000`), `CORS_ORIGINS` (comma-separated, default `https://aaarto.art,http://localhost:9000`) and `UPLOAD_RATE_MAX` (uploads per IP per 15 minutes, default `10`) |
+
+The upload endpoint limits each client IP, so nginx must send `X-Forwarded-For` (the config below does); the server trusts one proxy hop.
 
 Copy `env.example` to `.env` at the project root and fill in real values before running the project.
 
 ```
 network=sepolia   # or "polygon" for mainnet
+platformFee=0.001 # ETH/MATIC sent with each mint; must be >= the contract's platformFee()
 
 ```
 
@@ -21,6 +24,10 @@ network=sepolia   # or "polygon" for mainnet
 - `dotenv` loads `.env` in `webpack.config.js` (Node context, runs at build time).
 - `DefinePlugin` inlines each `process.env.X` reference as a literal string in the bundle — every key used in app code must be listed explicitly in `webpack.config.js`, since it's doing string substitution per key, not exposing all of `process.env`.
 - **Never** `require('dotenv')` or reference raw `process.env.X` outside `webpack.config.js` and `src/config.ts`. `dotenv` depends on Node's `path` module, which isn't available in the browser — importing it into app code breaks the bundle. App code should only ever import from `src/config.ts`.
+
+## Platform fee
+
+`platformFee=` in `.env` is the exact amount sent with each mint, so the fee can be raised from the client without changing the contract. It must be **at or above** the contract's `platformFee()` (read it under Read Contract on the block explorer): a lower value reverts with "Insufficient platform fee". The app never sends more than this value. Like `network=`, it is baked in at build start, so restart `webpack serve` after editing and, for production, rebuild and commit `docs/bundle.js`. A missing or invalid value throws at startup.
 
 ## Switching networks
 
@@ -68,7 +75,7 @@ devServer: {
 },
 ```
 
-The Coinbase Wallet extension must be installed and set to the same network as `network=` in `.env` (or approve the chain-switch prompt).
+The Rabby wallet extension must be installed and set to the same network as `network=` in `.env` (or approve the chain-switch prompt).
 
 ## Deploying to aaarto.art (AWS)
 
@@ -88,7 +95,7 @@ The trade-off is that the committed bundle must be built with the right `network
 2. **DNS:** `A` records for `aaarto.art` and `www.aaarto.art` pointing at the instance's Elastic IP.
 3. **Install:** Node 20+, nginx, certbot, and pm2 (`npm i -g pm2`).
 4. **Clone** the repo to `/var/www/aaarto`.
-5. **Install the backend's runtime dependencies** (`express`, `axios`, `cors`, `dotenv`, `form-data`) without pulling in the whole frontend toolchain. For example, `npm install --omit=dev` at the repo root; this is also why the backend should eventually get its own `package.json`.
+5. **Install the backend's runtime dependencies** (`express`, `axios`, `cors`, `dotenv`, `form-data`, `helmet`, `express-rate-limit`) without pulling in the whole frontend toolchain. For example, `npm install --omit=dev` at the repo root; this is also why the backend should eventually get its own `package.json`.
 6. **Create `backend/.env` on the server** with the Pinata keys (do not copy it from a dev machine). No root `.env` is needed here, since the server doesn't build.
 7. **nginx:** create `/etc/nginx/sites-available/aaarto.art`:
    ```nginx
@@ -129,18 +136,25 @@ The trade-off is that the committed bundle must be built with the right `network
 npm run build
 grep -c 0x03a9423E9Aac42E9F991D292F8e074808D9ABE7f docs/bundle.js   # must print 1 (the polygon contract)
 grep -c 0x92128cD1BCA8cc406d2223Dcf1558E4d926Dd68f docs/bundle.js   # must print 0 (the sepolia contract)
+grep -c "Each child in a list should have a unique" docs/bundle.js   # must print 0 (a development React build prints 2)
 git add -A && git commit -m "build for production" && git push origin main
 ```
 
 The `network=` value is baked into `docs/bundle.js` at build time. A bundle built with `network=sepolia` and committed would silently point the live site at the testnet contract, so always run the two `grep` checks before committing. After testing on Sepolia, set `network=polygon` again before the release build, and never commit a `docs/` folder built for Sepolia.
+
+`npm start` runs a **development** build (React warnings and the DevTools Components/Profiler tabs work) and `npm run build` runs a **production** build (`--mode production`). The third `grep` catches a development bundle, which is about three times larger, before it is committed.
 
 **2. On the server: pull**
 
 ```bash
 cd /var/www/aaarto
 git pull origin main
+git diff --stat ORIG_HEAD HEAD -- package.json   # any output: run the install on the next line
+npm install --omit=dev        # only if package.json changed; skipping it crashes the backend with "Cannot find module"
 pm2 restart aaarto-api        # only needed if backend/ changed
 ```
+
+The `package.json` check relies on `git pull` setting `ORIG_HEAD` to where the branch was before the pull. It has not been run on the server yet, so on the first deploy confirm it: `git rev-parse ORIG_HEAD` should print the commit you were on before pulling. If a pull brought nothing new, `ORIG_HEAD` is left over from an earlier operation, so ignore the diff output then. When in doubt, run `npm install --omit=dev`; it is harmless when nothing changed.
 
 nginx serves `docs/` straight from disk, so a frontend-only change is live as soon as the pull finishes. If `backend/package.json` or the root `package.json` gained a dependency the backend uses, run `npm install --omit=dev` before restarting.
 
@@ -148,6 +162,7 @@ nginx serves `docs/` straight from disk, so a frontend-only change is live as so
 
 - `curl https://aaarto.art/server_status` returns JSON with the uptime.
 - The site loads, and a test upload returns an IPFS hash (watch `pm2 logs aaarto-api`).
+- After a restart, `pm2 logs aaarto-api` shows `Server running on port 5000` and no `Cannot find module` error.
 - For changes that touch the mint flow, test on Sepolia locally first (`network=sepolia`) before making the `polygon` release build.
 
 ## Data returned from an upload (IPFS)
@@ -234,11 +249,11 @@ Notes:
 
 ## Known dependency conflict
 
-`@fluentui/react@8.x` expects `react`/`@types/react` <19; this project uses React 19. Resolved via `.npmrc`:
+`@fluentui/react@8.x` expects `react`/`@types/react` <19; this project uses React 19. There is no `.npmrc` in the repo, so plain `npm install` fails with ERESOLVE. Install with:
 ```
-legacy-peer-deps=true
+npm install --legacy-peer-deps
 ```
-so plain `npm install` works without needing `--legacy-peer-deps` manually.
+(`npm uninstall` needs the same flag.)
 
 ## process polyfill
 
