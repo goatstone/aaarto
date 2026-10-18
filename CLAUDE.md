@@ -22,9 +22,9 @@ Backend (separate process, not part of the webpack build):
 
 ```bash
 cd backend
-pm2 start expressServer.js --name aaarto-api
-pm2 logs aaarto-api
-pm2 restart aaarto-api --update-env   # after editing backend/.env
+pm2 start expressServer.js --name aaarto-backend
+pm2 logs aaarto-backend
+pm2 restart aaarto-backend --update-env   # after editing backend/.env
 ```
 
 ## Architecture
@@ -47,7 +47,7 @@ pm2 restart aaarto-api --update-env   # after editing backend/.env
 
 **`src/config.ts`** branches on `network` (`"sepolia" | "polygon" | "amoy"`) to select RPC URL, contract address, and chain ID, and throws at import time if `network` is missing/unrecognized. Switching networks requires restarting `webpack serve` — `DefinePlugin` bakes the value in at build start, so a running dev server won't see a `.env` edit.
 
-**Debug query strings** (`?env=dev` / `?env=full`, parsed once in `src/featureFlags.ts`, consumed in `App.tsx`) gate whether the mint button is enabled and whether IPFS upload runs — see DEBUG.md. This is UI-only, not access control: `POST /server` is unauthenticated, and `?env=dev` still sends a real on-chain transaction (just with a placeholder token URI). Never test `?env=dev` against `network=polygon`.
+**Debug query strings** (`?env=dev` / `?env=full`, parsed once in `src/featureFlags.ts`, consumed in `App.tsx`) only control whether IPFS upload runs; the mint button is enabled for everyone — see DEBUG.md. This is UI-only, not access control: `POST /server` is unauthenticated (rate-limited per IP), and `?env=dev` still sends a real on-chain transaction (just with a placeholder token URI). Never test `?env=dev` against `network=polygon`.
 
 **Mint flow** (`App.tsx` → `uploadData.ts` → backend `/server` → `mintNFT.ts`):
 1. `connectRabbyWallet()` (`rabbyHelpers.ts`) finds Rabby (EIP-6963 first, then the `isRabby` flag) and requests accounts. It runs first, so cancelling the wallet prompt pins nothing. A missing Rabby opens its own modal.

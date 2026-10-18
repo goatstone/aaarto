@@ -91,7 +91,7 @@ const App: React.FC = () => {
   };
   const [modalContent, setModalContent] = useState<ModalContent>("about");
   // Read once, from the query string at page load (see DEBUG.md)
-  const [{ mintEnabled, ipfsUploadEnabled }] = useState(getFeatureFlags);
+  const [{ ipfsUploadEnabled }] = useState(getFeatureFlags);
   const useUploadMint = async (
     svgString: string,
     name: string,
@@ -180,9 +180,7 @@ const App: React.FC = () => {
           About
         </button>
         <MintControl
-          mintEnabled={mintEnabled}
           handleMint={() => {
-            if (!mintEnabled) return;
             if (!canMint) {
               setModalContent("incomplete");
               setIsModalOpen(true);

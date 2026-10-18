@@ -42,11 +42,9 @@ describe('MintControl tooltip (#150)', () => {
     expect(button()).not.toHaveAttribute('title');
   });
 
-  test('explains the "not available yet" state without naming debug flags', () => {
-    render(<MintControl handleMint={() => {}} isMinting={false} mintEnabled={false} />);
-    expect(button()).toBeDisabled();
-    expect(button()).toHaveAttribute('title', 'Minting is not open yet. Please check back soon.');
-    expect(button().getAttribute('title')).not.toMatch(/env|dev|debug/i);
-    expect(button()).toHaveAccessibleDescription('Minting is not open yet. Please check back soon.');
+  test('is enabled by default and reads "Mint The Aaarto"', () => {
+    render(<MintControl handleMint={() => {}} isMinting={false} />);
+    expect(button()).toBeEnabled();
+    expect(button()).toHaveTextContent('Mint The Aaarto');
   });
 });

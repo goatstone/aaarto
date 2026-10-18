@@ -15,8 +15,8 @@ describe('App', () => {
 
   test('should render expected text', () => {
     render(<App />);
-    // With no query string the mint button reads "Minting is not available yet"
-    expect(screen.queryAllByText(/aaarto/i).length).toBe(1);
+    // The header title; the mint button ("Mint The Aaarto") is not an exact match
+    expect(screen.getAllByText('Aaarto').length).toBe(1);
   });
 
   test('should render an SVG tag', () => {
@@ -25,10 +25,12 @@ describe('App', () => {
     expect(a).toBeInTheDocument()
   });
 
-  test('should disable the mint button with no query string', () => {
+  test('should show the mint button with no query string, aria-disabled until there is art and a title', () => {
     window.history.pushState({}, '', '/');
     render(<App />);
-    expect(screen.getByRole('button', { name: /minting is not available yet/i })).toBeDisabled();
+    const button = screen.getByRole('button', { name: /mint the aaarto/i });
+    expect(button).toBeEnabled();
+    expect(button).toHaveAttribute('aria-disabled', 'true');
   });
 
   describe('with ?env=dev', () => {

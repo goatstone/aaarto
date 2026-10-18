@@ -54,10 +54,10 @@ The frontend posts to the **relative** URL `/server` (`src/uploadData.ts`), so t
 4. Start the backend under pm2:
    ```bash
    cd backend
-   pm2 start expressServer.js --name aaarto-api
-   pm2 logs aaarto-api        # tail logs
-   pm2 restart aaarto-api     # after code or .env changes
-   pm2 stop aaarto-api        # stop it (pm2 delete aaarto-api removes it)
+   pm2 start expressServer.js --name aaarto-backend
+   pm2 logs aaarto-backend        # tail logs
+   pm2 restart aaarto-backend     # after code or .env changes
+   pm2 stop aaarto-backend        # stop it (pm2 delete aaarto-backend removes it)
    ```
    Check it: `curl http://localhost:5000/server_status`
 5. Start the frontend from the project root: `npm start`, then open http://localhost:9000
@@ -122,7 +122,7 @@ The trade-off is that the committed bundle must be built with the right `network
 9. **Backend under pm2, surviving reboots:**
    ```bash
    cd /var/www/aaarto/backend
-   pm2 start expressServer.js --name aaarto-api
+   pm2 start expressServer.js --name aaarto-backend
    pm2 save
    pm2 startup     # run the command it prints, once
    ```
@@ -151,7 +151,7 @@ cd /var/www/aaarto
 git pull origin main
 git diff --stat ORIG_HEAD HEAD -- package.json   # any output: run the install on the next line
 npm install --omit=dev        # only if package.json changed; skipping it crashes the backend with "Cannot find module"
-pm2 restart aaarto-api        # only needed if backend/ changed
+pm2 restart aaarto-backend        # only needed if backend/ changed
 ```
 
 The `package.json` check relies on `git pull` setting `ORIG_HEAD` to where the branch was before the pull. It has not been run on the server yet, so on the first deploy confirm it: `git rev-parse ORIG_HEAD` should print the commit you were on before pulling. If a pull brought nothing new, `ORIG_HEAD` is left over from an earlier operation, so ignore the diff output then. When in doubt, run `npm install --omit=dev`; it is harmless when nothing changed.
@@ -161,8 +161,8 @@ nginx serves `docs/` straight from disk, so a frontend-only change is live as so
 ### Verify
 
 - `curl https://aaarto.art/server_status` returns JSON with the uptime.
-- The site loads, and a test upload returns an IPFS hash (watch `pm2 logs aaarto-api`).
-- After a restart, `pm2 logs aaarto-api` shows `Server running on port 5000` and no `Cannot find module` error.
+- The site loads, and a test upload returns an IPFS hash (watch `pm2 logs aaarto-backend`).
+- After a restart, `pm2 logs aaarto-backend` shows `Server running on port 5000` and no `Cannot find module` error.
 - For changes that touch the mint flow, test on Sepolia locally first (`network=sepolia`) before making the `polygon` release build.
 
 ## Data returned from an upload (IPFS)
@@ -241,9 +241,9 @@ Notes:
 |---|---|
 | `/server` returns 404 on localhost | `devServer.proxy` is missing, or the backend isn't running (`pm2 ls`) |
 | Backend runs but Pinata returns 401 | `backend/.env` wasn't found; start pm2 from `backend/` |
-| Changed `backend/.env`, nothing happened | `pm2 restart aaarto-api --update-env` |
+| Changed `backend/.env`, nothing happened | `pm2 restart aaarto-backend --update-env` |
 | Changed root `.env`, nothing happened | Rebuild (`npm run build`) or restart `webpack serve` |
-| 502 from nginx | Backend not running: check `pm2 ls` and `pm2 logs aaarto-api` |
+| 502 from nginx | Backend not running: check `pm2 ls` and `pm2 logs aaarto-backend` |
 | Site shows the wrong chain or contract | The committed `docs/bundle.js` was built with the wrong `network=`; fix the root `.env` on the dev machine, rebuild, commit, and pull on the server |
 | `git pull` on the server complains about local changes | Something was edited or built on the server; `git status`, then `git checkout -- <file>` (the server should have no local changes) |
 

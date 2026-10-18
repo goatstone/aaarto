@@ -1,29 +1,20 @@
 import { getFeatureFlags } from "../src/featureFlags";
 
 describe("getFeatureFlags", () => {
-  test("no query string disables minting", () => {
-    expect(getFeatureFlags("")).toEqual({
-      mintEnabled: false,
-      ipfsUploadEnabled: true,
-    });
+  test("no query string runs the full flow, with the IPFS upload", () => {
+    expect(getFeatureFlags("")).toEqual({ ipfsUploadEnabled: true });
   });
 
-  test("unknown env value disables minting", () => {
-    expect(getFeatureFlags("?env=banana").mintEnabled).toBe(false);
-    expect(getFeatureFlags("?foo=dev").mintEnabled).toBe(false);
+  test("unknown env value runs the full flow", () => {
+    expect(getFeatureFlags("?env=banana")).toEqual({ ipfsUploadEnabled: true });
+    expect(getFeatureFlags("?foo=dev")).toEqual({ ipfsUploadEnabled: true });
   });
 
-  test("env=dev enables minting and disables the IPFS upload", () => {
-    expect(getFeatureFlags("?env=dev")).toEqual({
-      mintEnabled: true,
-      ipfsUploadEnabled: false,
-    });
+  test("env=dev disables the IPFS upload", () => {
+    expect(getFeatureFlags("?env=dev")).toEqual({ ipfsUploadEnabled: false });
   });
 
-  test("env=full enables minting and the IPFS upload", () => {
-    expect(getFeatureFlags("?env=full")).toEqual({
-      mintEnabled: true,
-      ipfsUploadEnabled: true,
-    });
+  test("env=full enables the IPFS upload", () => {
+    expect(getFeatureFlags("?env=full")).toEqual({ ipfsUploadEnabled: true });
   });
 });
